@@ -1,0 +1,4 @@
+icoClipboard ICON "img\clipboard.ico"
+icoCopy ICON "img\copy.ico"
+icoMail ICON "img\mail.ico"
+icoOptions ICON "img\options.ico"

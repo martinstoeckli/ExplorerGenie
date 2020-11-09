@@ -1,0 +1,44 @@
+// ************************************************************************ //
+// WARNUNG
+// -------
+// Diese Datei wird von dem Typbibliotheks-Importer oder dem Typbibliothekseditor
+// erzeugt. Außer Syntaxfehlern analysiert der Editor an der Datei vorgenommene
+// Änderungen. Wenn Sie aber Änderungen mit dem Editor vornehmen, wird diese
+// Datei neu erzeugt und Kommentare oder Formatänderungen gehen verloren.
+// ************************************************************************ //
+// Datei erzeugt am 09.11.2020 09:31:37 (- $Rev: 12980 $, 128122890).
+
+[
+  uuid(A16065CA-D03A-4F74-B1BB-EC91C4C4E9D4),
+  version(1.0)
+
+]
+library ExplorerGenieExt
+{
+
+  importlib("stdole2.tlb");
+
+  interface IApp;
+  coclass App;
+
+
+  [
+    uuid(264D3051-7949-4D69-AD88-C8B04D4B4254),
+    helpstring("Dispatch-Interface für App-Objekt"),
+    dual,
+    oleautomation
+  ]
+  interface IApp: IDispatch
+  {
+  };
+
+  [
+    uuid(D7C1499F-25C0-4C6E-87F5-1C69EEBA6398),
+    helpstring("App Objekt")
+  ]
+  coclass App
+  {
+    [default] interface IApp;
+  };
+
+};
