@@ -23,12 +23,13 @@ type
     /// <summary>
     /// Tries to load an icon resource with a given name, scales it to a given size and converts
     /// it to a bitmap which can be used as menu icon with alpha transparency.
+    /// PBGRA = Multiplexed-Blue-Green-Red-Alpha
     /// </summary>
     /// <param name="iconResourceId">Id of an icon resource of the application.</param>
     /// <param name="destSize">The required size of the bitmap.</param>
     /// <returns>A menu icon bitmap, or 0 if no such resource could be found, or if it could not
     /// be converted to a bitmap.</returns>
-    class function LoadIconAsPARGB32Bitmap(iconResourceId: String; destSize: TSize): HBITMAP;
+    class function LoadIconAsPBGRA32Bitmap(iconResourceId: String; destSize: TSize): HBITMAP;
 
     /// <summary>
     /// Lazy loads a singleton imaging factory from Windows (Windows Imaging Component).
@@ -76,7 +77,7 @@ begin
   inherited Destroy;
 end;
 
-class function TMenuIcon.LoadIconAsPARGB32Bitmap(iconResourceId: String; destSize: TSize): HBITMAP;
+class function TMenuIcon.LoadIconAsPBGRA32Bitmap(iconResourceId: String; destSize: TSize): HBITMAP;
 const
   BitsPerPixel = 32;
 var
@@ -84,6 +85,7 @@ var
   imagingFactory: IWICImagingFactory;
   sourceBitmap: IWICBitmap;
   bitmapScaler: IWICBitmapScaler;
+  bitmapConverter: IWICFormatConverter;
   bitmapInfo: TBitmapInfo;
   bitmapBuffer: Pointer;
   cbStride, cbBufferSize: UINT;
@@ -101,7 +103,9 @@ begin
   if ((imagingFactory = nil) or
       (Failed(imagingFactory.CreateBitmapFromHICON(iconHandle, sourceBitmap)))) or
       (Failed(imagingFactory.CreateBitmapScaler(bitmapScaler)) or
-      (Failed(bitmapScaler.Initialize(sourceBitmap, destSize.Width, destSize.Height, WICBitmapInterpolationModeNearestNeighbor)))) then
+      (Failed(bitmapScaler.Initialize(sourceBitmap, destSize.Width, destSize.Height, WICBitmapInterpolationModeCubic))) or
+      (Failed(imagingFactory.CreateFormatConverter(bitmapConverter))) or
+      (Failed(bitmapConverter.Initialize(bitmapScaler, GUID_WICPixelFormat32bppPBGRA, WICBitmapDitherTypeNone, nil, 0.0, WICBitmapPaletteTypeCustom)))) then
     exit;
 
   ZeroMemory(@bitmapInfo, SizeOf(TBitmapInfo));
@@ -117,8 +121,8 @@ begin
     exit;
 
   cbStride := destSize.Width * (BitsPerPixel div 8);
-  cbBufferSize := destSize.Height * cbStride;
-  if Failed(bitmapScaler.CopyPixels(nil, cbStride, cbBufferSize, bitmapBuffer)) then
+  cbBufferSize := UINT(Abs(destSize.Height)) * cbStride;
+  if Failed(bitmapConverter.CopyPixels(nil, cbStride, cbBufferSize, bitmapBuffer)) then
   begin
     DeleteObject(Result);
     Result := 0;
@@ -148,7 +152,7 @@ begin
   if (not FTriedToCreateBitmapHandle) then
   begin
     FTriedToCreateBitmapHandle := true;
-    FBitmapHandle := LoadIconAsPARGB32Bitmap(FIconResourceId, FDestSize);
+    FBitmapHandle := LoadIconAsPBGRA32Bitmap(FIconResourceId, FDestSize);
   end;
   Result := FBitmapHandle;
 end;

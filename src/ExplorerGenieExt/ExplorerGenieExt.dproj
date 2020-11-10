@@ -114,6 +114,7 @@
         <DCCReference Include="UnitContextMenuRegistrar.pas"/>
         <DCCReference Include="UnitMenuModel.pas"/>
         <DCCReference Include="UnitMenuModelIcon.pas"/>
+        <DCCReference Include="UnitActions.pas"/>
         <RidlCompile Include="ExplorerGenieExt.ridl"/>
         <BuildConfiguration Include="Release">
             <Key>Cfg_2</Key>
@@ -147,7 +148,7 @@
                         <Overwrite>true</Overwrite>
                     </Platform>
                 </DeployFile>
-                <DeployFile LocalName="Win64\Debug\ExplorerGenieExt.64.dll" Configuration="Debug" Class="ProjectOutput">
+                <DeployFile LocalName="..\..\bin\ExplorerGenieExt.64.dll" Configuration="Debug" Class="ProjectOutput">
                     <Platform Name="Win64">
                         <RemoteName>ExplorerGenieExt.dll</RemoteName>
                         <Overwrite>true</Overwrite>

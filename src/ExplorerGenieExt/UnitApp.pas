@@ -15,7 +15,8 @@ uses
   ComServ,
   ExplorerGenieExt_TLB,
   UnitMenuModel,
-  UnitMenuModelIcon;
+  UnitMenuModelIcon,
+  UnitActions;
 
 type
   /// <summary>
@@ -28,10 +29,6 @@ type
     function CreateMenuModels(): TMenuModelList;
     procedure BuildContextMenus(
       menus: TMenuModelList; parent: HMENU; startInsertingAt: UINT; firstFreeCmdId: UINT; var nextFreeCmdId: UINT);
-
-    class procedure OnCopyFileClicked(filenames: TStrings);
-    class procedure OnCopyEmailClicked(filenames: TStrings);
-    class procedure OnCopyOptionsClicked(filenames: TStrings);
 
     // IContextMenu
     function QueryContextMenu(
@@ -46,7 +43,8 @@ type
       pidlFolder: PItemIDList; lpdobj: IDataObject; hKeyProgID: HKEY): HRESULT; stdcall;
   public
     /// <summary>
-    /// Initializes a new instance of a TApp Com object.
+    /// Initializes a new instance of a TApp object.
+    /// For COM objects this acts as a constructor.
     /// </summary>
     procedure Initialize; override;
 
@@ -96,7 +94,7 @@ begin
   submenuCopyFilename.OnClicked :=
     procedure
     begin
-      OnCopyFileClicked(FFilenames);
+      TActions.OnCopyFileClicked(FFilenames);
     end;
 
   submenuCopyEmail := TMenuModel.Create;
@@ -105,7 +103,7 @@ begin
   submenuCopyEmail.OnClicked :=
     procedure
     begin
-      OnCopyEmailClicked(FFilenames);
+      TActions.OnCopyEmailClicked(FFilenames);
     end;
 
   submenuCopyOptions := TMenuModel.Create;
@@ -114,7 +112,7 @@ begin
   submenuCopyOptions.OnClicked :=
     procedure
     begin
-      OnCopyOptionsClicked(FFilenames);
+      TActions.OnCopyOptionsClicked();
     end;
 
   menuClipboard := TMenuModel.Create;
@@ -126,18 +124,6 @@ begin
 
   Result := TMenuModelList.Create(true);
   Result.Add(menuClipboard)
-end;
-
-class procedure TApp.OnCopyFileClicked(filenames: TStrings);
-begin
-end;
-
-class procedure TApp.OnCopyEmailClicked(filenames: TStrings);
-begin
-end;
-
-class procedure TApp.OnCopyOptionsClicked(filenames: TStrings);
-begin
 end;
 
 function TApp.QueryContextMenu(

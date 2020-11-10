@@ -9,9 +9,10 @@ uses
   UnitApp in 'UnitApp.pas' {App: CoClass},
   UnitContextMenuRegistrar in 'UnitContextMenuRegistrar.pas',
   UnitMenuModel in 'UnitMenuModel.pas',
-  UnitMenuModelIcon in 'UnitMenuModelIcon.pas';
+  UnitMenuModelIcon in 'UnitMenuModelIcon.pas',
+  UnitActions in 'UnitActions.pas';
 
-  /// <summary>
+/// <summary>
   /// "Overrides" the base function DllRegisterServer.
   /// </summary>
   function CustomDllRegisterServer: HResult; stdcall;

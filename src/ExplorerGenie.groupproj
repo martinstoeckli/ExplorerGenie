@@ -1,0 +1,36 @@
+﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+    <PropertyGroup>
+        <ProjectGuid>{CA5C8833-A4C0-4EC0-85DA-ED61CBBC4307}</ProjectGuid>
+    </PropertyGroup>
+    <ItemGroup>
+        <Projects Include="ExplorerGenieExt\ExplorerGenieExt.dproj">
+            <Dependencies/>
+        </Projects>
+    </ItemGroup>
+    <ProjectExtensions>
+        <Borland.Personality>Default.Personality.12</Borland.Personality>
+        <Borland.ProjectType/>
+        <BorlandProject>
+            <Default.Personality/>
+        </BorlandProject>
+    </ProjectExtensions>
+    <Target Name="ExplorerGenieExt">
+        <MSBuild Projects="ExplorerGenieExt\ExplorerGenieExt.dproj"/>
+    </Target>
+    <Target Name="ExplorerGenieExt:Clean">
+        <MSBuild Projects="ExplorerGenieExt\ExplorerGenieExt.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="ExplorerGenieExt:Make">
+        <MSBuild Projects="ExplorerGenieExt\ExplorerGenieExt.dproj" Targets="Make"/>
+    </Target>
+    <Target Name="Build">
+        <CallTarget Targets="ExplorerGenieExt"/>
+    </Target>
+    <Target Name="Clean">
+        <CallTarget Targets="ExplorerGenieExt:Clean"/>
+    </Target>
+    <Target Name="Make">
+        <CallTarget Targets="ExplorerGenieExt:Make"/>
+    </Target>
+    <Import Project="$(BDS)\Bin\CodeGear.Group.Targets" Condition="Exists('$(BDS)\Bin\CodeGear.Group.Targets')"/>
+</Project>
