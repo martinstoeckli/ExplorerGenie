@@ -204,6 +204,7 @@ var
   nextFreeCmdId: UINT;
   offsetForNextIdCmdFirst: Integer;
 begin
+  try
   Result := 0;
   if ((uFlags and $0000000F) = CMF_NORMAL) or ((uFlags and CMF_EXPLORE) <> 0) then
   begin
@@ -211,6 +212,9 @@ begin
     BuildContextMenus(FMenus, Menu, indexMenu, idCmdFirst, nextFreeCmdId);
     offsetForNextIdCmdFirst := nextFreeCmdId - idCmdFirst; // Highest used id + 1 - first used id
     Result := MakeResult(SEVERITY_SUCCESS, 0, offsetForNextIdCmdFirst);
+  end;
+  except
+    Result := 0; // Don't let an exception escape to the explorer process
   end;
 end;
 
@@ -274,6 +278,7 @@ begin
       if (menuModel <> nil) and Assigned(menuModel.OnClicked) then
         menuModel.OnClicked();
     except
+      Result := E_FAIL; // Don't let an exception escape to the explorer process
     end;
   end;
 end;
@@ -284,6 +289,7 @@ var
   descriptionA: AnsiString;
   descriptionW: WideString;
 begin
+  try
   Result := S_OK;
   case uType of
   GCS_HELPTEXTA:
@@ -299,6 +305,9 @@ begin
   else
     Result := E_NOTIMPL;
   end;
+  except
+    Result := E_FAIL; // Don't let an exception escape to the explorer process
+  end;
 end;
 
 function TApp.SEIInitialize(
@@ -312,6 +321,7 @@ var
   length: integer;
   filename: String;
 begin
+  try
   Result := E_INVALIDARG;
   FFilenames.Clear;
 
@@ -357,6 +367,9 @@ begin
       GlobalUnlock(stgMedium.hGlobal);
       ReleaseStgMedium(stgMedium);
     end;
+  end;
+  except
+    Result := E_FAIL; // Don't let an exception escape to the explorer process
   end;
 end;
 
