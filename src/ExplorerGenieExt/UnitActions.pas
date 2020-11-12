@@ -22,6 +22,22 @@ type
     class function GetFilenamesParamString(filenames: TStrings): String;
 
     /// <summary>
+    /// Gets the first file/directory if the list contains only one item, otherwise it determines
+    /// the common directory of the items.
+    /// </summary>
+    /// <param name="filenames">List of absolute paths to files.</param>
+    /// <returns>Common directory.</returns>
+    class function GetCommonDirectory(filenames: TStrings): String;
+
+    /// <summary>
+    /// Gets the operation verb for calling ShellExecute(), this is either 'open' or 'runas'
+    /// depending on whether the file/folder should be opened as normal or admin user.
+    /// </summary>
+    /// <param name="asAdmin">SEt to true if it should run as admin.</param>
+    /// <returns>Operation verb.</returns>
+    class function GetShellExecuteOperation(asAdmin: Boolean): String;
+
+    /// <summary>
     /// Starts a new application/process with the given parameters.
     /// Internally it uses CreateProcess() which accepts much longer parameter strings (up to 32767
     /// chars) than we could pass to ShellExecute() or to cmd.exe.
@@ -50,8 +66,25 @@ type
     /// <summary>
     /// Action for menu item "copy options"
     /// </summary>
-    /// <param name="filenames">List with paths of selected files.</param>
     class procedure OnCopyOptionsClicked();
+
+    /// <summary>
+    /// Action for menu item "open cmd"
+    /// </summary>
+    /// <param name="filenames">List with paths of selected files.</param>
+    class procedure OnOpenCmdClicked(filenames: TStrings; asAdmin: Boolean);
+
+    /// <summary>
+    /// Action for menu item "open powershell"
+    /// </summary>
+    /// <param name="filenames">List with paths of selected files.</param>
+    class procedure OnOpenPowershellClicked(filenames: TStrings; asAdmin: Boolean);
+
+    /// <summary>
+    /// Action for menu item "open in explorer"
+    /// </summary>
+    /// <param name="filenames">List with paths of selected files.</param>
+    class procedure OnOpenExplorerClicked(filenames: TStrings; asAdmin: Boolean);
   end;
 
 implementation
@@ -84,6 +117,54 @@ begin
   ExecuteCommand(exePath, '-OpenedFromCopy', true);
 end;
 
+class procedure TActions.OnOpenCmdClicked(filenames: TStrings; asAdmin: Boolean);
+var
+  commonDirectory: String;
+  operation: String;
+  params: String;
+begin
+  commonDirectory := GetCommonDirectory(filenames);
+  if (commonDirectory <> '') then
+  begin
+    operation := GetShellExecuteOperation(asAdmin);
+    params := Format('/k "cd /d %s"', [commonDirectory]);
+    ShellExecute(0, PChar(operation), PChar('cmd.exe'), PChar(params), PChar(params), SW_SHOWNORMAL);
+  end;
+end;
+
+class procedure TActions.OnOpenExplorerClicked(filenames: TStrings; asAdmin: Boolean);
+var
+  commonDirectory: String;
+  operation: String;
+  params: String;
+begin
+  if (filenames.Count = 0) then
+    Exit;
+  commonDirectory := filenames[0]; // Can be a file or a directory
+
+  if (commonDirectory <> '') then
+  begin
+    operation := GetShellExecuteOperation(asAdmin);
+    params := Format('/select,"%s"', [commonDirectory]);
+    ShellExecute(0, PChar(operation), PChar('explorer.exe'), PChar(params), PChar(params), SW_SHOWNORMAL);
+  end;
+end;
+
+class procedure TActions.OnOpenPowershellClicked(filenames: TStrings; asAdmin: Boolean);
+var
+  commonDirectory: String;
+  operation: String;
+  params: String;
+begin
+  commonDirectory := GetCommonDirectory(filenames);
+  if (commonDirectory <> '') then
+  begin
+    operation := GetShellExecuteOperation(asAdmin);
+    params := Format('-noexit -command "& {Set-Location -Path ''%s''}"', [commonDirectory]);
+    ShellExecute(0, PChar(operation), PChar('powershell.exe'), PChar(params), PChar(params), SW_SHOWNORMAL);
+  end;
+end;
+
 class function TActions.FindExplorerGenieCmdPath: String;
 var
   dllPath: String;
@@ -98,6 +179,26 @@ var
 begin
   dllPath := GetModuleName(HInstance);
   Result := TPath.Combine(ExtractFilePath(dllPath), 'ExplorerGenieOpt.exe');
+end;
+
+class function TActions.GetCommonDirectory(filenames: TStrings): String;
+var
+  firstFilePath: String;
+begin
+  if (filenames.Count = 0) then
+    Exit;
+
+  firstFilePath := filenames[0];
+  if (filenames.Count = 1) and (TDirectory.Exists(firstFilePath)) then
+  begin
+    // User selected a directory
+    Result := firstFilePath;
+  end
+  else
+  begin
+    // User selected one or more files/directories
+    Result := ExtractFileDir(firstFilePath);
+  end;
 end;
 
 class function TActions.GetFilenamesParamString(filenames: TStrings): String;
@@ -131,6 +232,14 @@ begin
   finally
     params.Free;
   end;
+end;
+
+class function TActions.GetShellExecuteOperation(asAdmin: Boolean): String;
+begin
+  if (asAdmin) then
+    Result := 'runas'
+  else
+    Result := 'open';
 end;
 
 class procedure TActions.ExecuteCommand(const cmd, params: String; visible: Boolean);

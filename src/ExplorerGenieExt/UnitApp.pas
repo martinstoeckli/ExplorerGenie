@@ -84,6 +84,13 @@ var
   submenuCopyFilename: TMenuModel;
   submenuCopyEmail: TMenuModel;
   submenuCopyOptions: TMenuModel;
+  menuOpen: TMenuModel;
+  submenuOpenCmd: TMenuModel;
+  submenuOpenCmdAdmin: TMenuModel;
+  submenuOpenPowershell: TMenuModel;
+  submenuOpenPowershellAdmin: TMenuModel;
+  submenuOpenExplorer: TMenuModel;
+  submenuOpenExplorerAdmin: TMenuModel;
 begin
   iconSize.Width := GetSystemMetrics(SM_CXMENUCHECK);
   iconSize.Height := GetSystemMetrics(SM_CYMENUCHECK);
@@ -122,8 +129,73 @@ begin
   menuClipboard.Children.Add(submenuCopyEmail);
   menuClipboard.Children.Add(submenuCopyOptions);
 
+  submenuOpenCmd := TMenuModel.Create;
+  submenuOpenCmd.Title := 'Open in Command Prompt';
+  submenuOpenCmd.Icon := TMenuIcon.Create('icoCmd', iconSize);
+  submenuOpenCmd.OnClicked :=
+    procedure
+    begin
+      TActions.OnOpenCmdClicked(FFilenames, false);
+    end;
+
+  submenuOpenCmdAdmin := TMenuModel.Create;
+  submenuOpenCmdAdmin.Title := 'Open in Command Prompt as admin';
+  submenuOpenCmdAdmin.Icon := TMenuIcon.Create('icoCmd', iconSize);
+  submenuOpenCmdAdmin.OnClicked :=
+    procedure
+    begin
+      TActions.OnOpenCmdClicked(FFilenames, true);
+    end;
+
+  submenuOpenPowershell := TMenuModel.Create;
+  submenuOpenPowershell.Title := 'Open in PowerShell';
+  submenuOpenPowershell.Icon := TMenuIcon.Create('icoPowershell', iconSize);
+  submenuOpenPowershell.OnClicked :=
+    procedure
+    begin
+      TActions.OnOpenPowershellClicked(FFilenames, false);
+    end;
+
+  submenuOpenPowershellAdmin := TMenuModel.Create;
+  submenuOpenPowershellAdmin.Title := 'Open in PowerShell as admin';
+  submenuOpenPowershellAdmin.Icon := TMenuIcon.Create('icoPowershell', iconSize);
+  submenuOpenPowershellAdmin.OnClicked :=
+    procedure
+    begin
+      TActions.OnOpenPowershellClicked(FFilenames, true);
+    end;
+
+  submenuOpenExplorer := TMenuModel.Create;
+  submenuOpenExplorer.Title := 'Open in Explorer';
+  submenuOpenExplorer.Icon := TMenuIcon.Create('icoExplorer', iconSize);
+  submenuOpenExplorer.OnClicked :=
+    procedure
+    begin
+      TActions.OnOpenExplorerClicked(FFilenames, false);
+    end;
+
+  submenuOpenExplorerAdmin := TMenuModel.Create;
+  submenuOpenExplorerAdmin.Title := 'Open in Explorer as admin';
+  submenuOpenExplorerAdmin.Icon := TMenuIcon.Create('icoExplorer', iconSize);
+  submenuOpenExplorerAdmin.OnClicked :=
+    procedure
+    begin
+      TActions.OnOpenExplorerClicked(FFilenames, true);
+    end;
+
+  menuOpen := TMenuModel.Create;
+  menuOpen.Title := 'Open in';
+  menuOpen.Icon := TMenuIcon.Create('icoCmd', iconSize);
+  menuOpen.Children.Add(submenuOpenCmd);
+  menuOpen.Children.Add(submenuOpenCmdAdmin);
+  menuOpen.Children.Add(submenuOpenPowershell);
+  menuOpen.Children.Add(submenuOpenPowershellAdmin);
+  menuOpen.Children.Add(submenuOpenExplorer);
+  menuOpen.Children.Add(submenuOpenExplorerAdmin);
+
   Result := TMenuModelList.Create(true);
-  Result.Add(menuClipboard)
+  Result.Add(menuClipboard);
+  Result.Add(menuOpen);
 end;
 
 function TApp.QueryContextMenu(
