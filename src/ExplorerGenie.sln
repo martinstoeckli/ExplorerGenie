@@ -5,7 +5,18 @@ VisualStudioVersion = 16.0.30517.126
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExplorerGenieCmd", "ExplorerGenieCmd\ExplorerGenieCmd.csproj", "{510A4B3B-A01D-4CA9-AF66-A99F022F2643}"
 EndProject
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "ExplorerGenieShared", "ExplorerGenieShared\ExplorerGenieShared.shproj", "{623E3F4A-3BF0-4A9C-AE2A-694D04A55FC8}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{4D97A99F-31DC-45D7-8F3A-C819D8C40039}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExplorerGenieSharedTest", "ExplorerGenieSharedTest\ExplorerGenieSharedTest.csproj", "{DD3C3163-979C-47B9-B7D4-B40C491F1AAC}"
+EndProject
 Global
+	GlobalSection(SharedMSBuildProjectFiles) = preSolution
+		ExplorerGenieShared\ExplorerGenieShared.projitems*{510a4b3b-a01d-4ca9-af66-a99f022f2643}*SharedItemsImports = 4
+		ExplorerGenieShared\ExplorerGenieShared.projitems*{623e3f4a-3bf0-4a9c-ae2a-694d04a55fc8}*SharedItemsImports = 13
+		ExplorerGenieShared\ExplorerGenieShared.projitems*{dd3c3163-979c-47b9-b7d4-b40c491f1aac}*SharedItemsImports = 4
+	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
@@ -15,9 +26,16 @@ Global
 		{510A4B3B-A01D-4CA9-AF66-A99F022F2643}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{510A4B3B-A01D-4CA9-AF66-A99F022F2643}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{510A4B3B-A01D-4CA9-AF66-A99F022F2643}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DD3C3163-979C-47B9-B7D4-B40C491F1AAC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DD3C3163-979C-47B9-B7D4-B40C491F1AAC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DD3C3163-979C-47B9-B7D4-B40C491F1AAC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DD3C3163-979C-47B9-B7D4-B40C491F1AAC}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{DD3C3163-979C-47B9-B7D4-B40C491F1AAC} = {4D97A99F-31DC-45D7-8F3A-C819D8C40039}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {AF7A715D-862E-445E-9DA4-FFEA81DFD444}

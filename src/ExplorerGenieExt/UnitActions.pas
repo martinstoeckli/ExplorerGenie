@@ -17,9 +17,10 @@ type
     /// root directory is stripped away and passed as the first parameter, to reduce the length
     /// of the command line.
     /// </summary>
+    /// <param name="option">An option beginning with "-".</param>
     /// <param name="filenames">List of absolute paths to files.</param>
     /// <returns>Formatted parameter with files.</returns>
-    class function GetFilenamesParamString(filenames: TStrings): String;
+    class function BuildCommandLine(option: String; filenames: TStrings): String;
 
     /// <summary>
     /// Gets the first file/directory if the list contains only one item, otherwise it determines
@@ -95,7 +96,7 @@ var
   params: String;
 begin
   exePath := FindExplorerGenieCmdPath();
-  params := '-CopyFile ' + GetFilenamesParamString(filenames);
+  params := BuildCommandLine('-CopyFile', filenames);
   ExecuteCommand(exePath, params, false);
 end;
 
@@ -105,16 +106,18 @@ var
   params: String;
 begin
   exePath := FindExplorerGenieCmdPath();
-  params := '-CopyEmail ' + GetFilenamesParamString(filenames);
+  params := BuildCommandLine('-CopyEmail', filenames);
   ExecuteCommand(exePath, params, false);
 end;
 
 class procedure TActions.OnCopyOptionsClicked();
 var
   exePath: String;
+  params: String;
 begin
   exePath := FindExplorerGenieOptPath();
-  ExecuteCommand(exePath, '-OpenedFromCopy', true);
+  params := BuildCommandLine('-OpenedFromCopy', nil);
+  ExecuteCommand(exePath, params, true);
 end;
 
 class procedure TActions.OnOpenCmdClicked(filenames: TStrings; asAdmin: Boolean);
@@ -201,36 +204,43 @@ begin
   end;
 end;
 
-class function TActions.GetFilenamesParamString(filenames: TStrings): String;
+class function TActions.BuildCommandLine(option: String; filenames: TStrings): String;
 var
-  params: TStringList;
+  sb: TSTringBuilder;
   rootDir: String;
   rootDirLen: Integer;
   filename: String;
   index: Integer;
 begin
   Result := '';
-  if (filenames.Count = 0) then Exit;
 
-  params := TStringList.Create;
+  sb := TStringBuilder.Create();
   try
-    // extract root directory from filenames (should be the same for every file)
-    rootDir := ExtractFilePath(filenames[0]);
-    rootDirLen := Length(rootDir);
-    params.Add(rootDir);
+    option := StringReplace(option, '"', '', [rfReplaceAll]);
+    sb.Append(option);
 
-    // remove root directory from all filenames, to save command line length
-    for index := 0 to filenames.Count - 1 do
+    if (filenames <> nil) and (filenames.Count > 0) then
     begin
-      filename := filenames[index];
-      if StartsText(rootDir, filename) then
-        Delete(filename, 1, rootDirLen);
-      params.Add(filename);
-    end;
+      sb.Append(' ');
 
-    Result := params.CommaText;
+      // extract root directory from filenames (should be the same for every file)
+      rootDir := ExtractFilePath(filenames[0]);
+      rootDirLen := Length(rootDir);
+      sb.Append('"' + rootDir + '"'); // file paths can never contain double quotes
+
+      // remove root directory from all filenames, to save command line length
+      for index := 0 to filenames.Count - 1 do
+      begin
+        filename := filenames[index];
+        if StartsText(rootDir, filename) then
+          Delete(filename, 1, rootDirLen);
+
+        sb.Append(' "' + filename + '"'); // file paths can never contain double quotes
+      end;
+    end;
+    Result := sb.ToString();
   finally
-    params.Free;
+    sb.Free;
   end;
 end;
 

@@ -12,7 +12,7 @@ uses
   UnitMenuModelIcon in 'UnitMenuModelIcon.pas',
   UnitActions in 'UnitActions.pas';
 
-/// <summary>
+  /// <summary>
   /// "Overrides" the base function DllRegisterServer.
   /// </summary>
   function CustomDllRegisterServer: HResult; stdcall;
