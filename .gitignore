@@ -172,3 +172,4 @@ ClientBin/
 *.pfx
 *.publishsettings
 orleans.codegen.cs
+/src/ExplorerGenieExt/Images.res
