@@ -1,5 +1,7 @@
 # ExplorerGenie
 
+![Icon](screenshots/explorergenie.png)
+
 ExplorerGenie is an extended context menu for the Windows explorer. It will consist of several
 tools to improve working with the Windows explorer, like path copying, opening of the command
 line or verification of a file hash.
