@@ -55,7 +55,7 @@ type
     class procedure ExecuteCommand(const cmd, params: String; visible: Boolean);
 
     class function FindExplorerGenieCmdPath: String;
-    class function FindExplorerGenieOptPath: String;
+    class function FindExplorerGenieOptionsPath: String;
   public
     /// <summary>
     /// Action for menu item "copy file"
@@ -120,7 +120,7 @@ var
   exePath: String;
   params: String;
 begin
-  exePath := FindExplorerGenieOptPath();
+  exePath := FindExplorerGenieOptionsPath();
   params := BuildCommandLine('-OpenedFromCopy', nil);
   ExecuteCommand(exePath, params, true);
 end;
@@ -181,12 +181,12 @@ begin
   Result := TPath.Combine(ExtractFilePath(dllPath), 'ExplorerGenieCmd.exe');
 end;
 
-class function TActions.FindExplorerGenieOptPath: String;
+class function TActions.FindExplorerGenieOptionsPath: String;
 var
   dllPath: String;
 begin
   dllPath := GetModuleName(HInstance);
-  Result := TPath.Combine(ExtractFilePath(dllPath), 'ExplorerGenieOpt.exe');
+  Result := TPath.Combine(ExtractFilePath(dllPath), 'ExplorerGenieOptions.exe');
 end;
 
 class function TActions.GetCommonDirectory(filenames: TStrings): String;
