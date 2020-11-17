@@ -12,7 +12,7 @@ namespace ExplorerGenieShared
     /// <summary>
     /// Sorts a list of filenames 
     /// </summary>
-    public class FilenameSorter
+    internal class FilenameSorter
     {
         private Func<string, bool> _isDirectory;
 

@@ -11,6 +11,17 @@
   <ItemGroup>
     <Compile Include="$(MSBuildThisFileDirectory)CommandLineInterpreter.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)CommandLineArgs.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Win32Api.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Models\CopyEmailFormat.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Models\SettingsModel.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Models\CopyFileFormat.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)FilenameSorter.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)PathUtils.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)RegistryKeyExtensions.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Services\ISettingsService.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Services\SettingsService.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="$(MSBuildThisFileDirectory)Models\" />
   </ItemGroup>
 </Project>

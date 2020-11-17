@@ -12,7 +12,7 @@ namespace ExplorerGenieShared
     /// <summary>
     /// Command line parser of the ExplorerGenieCmd.
     /// </summary>
-    public class CommandLineInterpreter
+    internal class CommandLineInterpreter
     {
         /// <summary>
         /// Interprets the command line and recreates the arguments.

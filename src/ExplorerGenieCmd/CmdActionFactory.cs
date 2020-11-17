@@ -4,6 +4,7 @@
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 using System;
+using ExplorerGenieShared.Services;
 
 namespace ExplorerGenieCmd
 {
@@ -12,6 +13,17 @@ namespace ExplorerGenieCmd
     /// </summary>
     internal class CmdActionFactory
     {
+        private readonly ISettingsService _settingsService;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="CmdActionFactory"/> class.
+        /// </summary>
+        /// <param name="settingsService"></param>
+        public CmdActionFactory(ISettingsService settingsService)
+        {
+            _settingsService = settingsService;
+        }
+
         /// <summary>
         /// Creates a command action given by the option parameter in the command line.
         /// </summary>
@@ -22,11 +34,11 @@ namespace ExplorerGenieCmd
         {
             if ("-CopyFile".Equals(commandLineOption, StringComparison.OrdinalIgnoreCase))
             {
-                return new CmdActionCopyFile();
+                return new CmdActionCopyFile(_settingsService);
             }
             else if ("-CopyEmail".Equals(commandLineOption, StringComparison.OrdinalIgnoreCase))
             {
-                return new CmdActionCopyFile();
+                return new CmdActionCopyFile(_settingsService);
             }
             else
             {

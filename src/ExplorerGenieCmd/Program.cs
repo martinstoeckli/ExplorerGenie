@@ -4,7 +4,9 @@
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 using System;
+using System.IO;
 using ExplorerGenieShared;
+using ExplorerGenieShared.Services;
 
 namespace ExplorerGenieCmd
 {
@@ -25,8 +27,11 @@ namespace ExplorerGenieCmd
             if (string.IsNullOrEmpty(args.Option) || (args.Filenames.Count == 0))
                 return;
 
+            // Make sure there are no short file formats in the list.
+            args.Filenames.ForEach(file => Path.GetFullPath(file));
+
             // Create and execute action.
-            CmdActionFactory factory = new CmdActionFactory();
+            CmdActionFactory factory = new CmdActionFactory(new SettingsService());
             ICmdAction cmdAction = factory.CreateAction(args.Option);
             cmdAction?.Execute(args.Filenames);
         }
