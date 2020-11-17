@@ -55,7 +55,7 @@ namespace ExplorerGenieSharedTest
                 CopyFileOnlyFilename = true,
                 CopyFileConvertToUnc = true,
                 CopyEmailShowMenu = false,
-                CopyEmailFormat = CopyEmailFormat.Generic,
+                CopyEmailFormat = CopyEmailFormat.Thunderbird,
                 CopyEmailConvertToUnc = false,
             };
             ISettingsService service = new SettingsService(RegistryPath);

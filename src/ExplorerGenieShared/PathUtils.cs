@@ -81,5 +81,30 @@ namespace ExplorerGenieShared
         {
             return filename.Replace(@"\", @"\\");
         }
+
+        /// <summary>
+        /// Formats the path, so it can be pasted into an Outlook email.
+        /// </summary>
+        /// <param name="filename">Absolute file path to convert. This file doesn't need to exist.</param>
+        /// <returns>Formatted file path.</returns>
+        public static string ConvertToOutlook(string filename)
+        {
+            string result = filename;
+
+            if (filename.Length >= 2)
+            {
+                if (filename[1] == ':')
+                {
+                    // This is a path with a locale drive like C:\temp\file.txt
+                    return string.Format("<file://{0}>", filename);
+                }
+                else if (filename.StartsWith(@"\\"))
+                {
+                    // This is a network path like \\my-server\temp\file.txt
+                    return string.Format("<{0}>", filename);
+                }
+            }
+            return result;
+        }
     }
 }

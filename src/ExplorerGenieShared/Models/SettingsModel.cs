@@ -17,6 +17,8 @@ namespace ExplorerGenieShared.Models
         /// </summary>
         public SettingsModel()
         {
+            // By default convert to UNC path, because an email receiver probably won't have access
+            // to local drives.
             CopyEmailConvertToUnc = true;
         }
 

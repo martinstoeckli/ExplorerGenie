@@ -10,7 +10,7 @@ namespace ExplorerGenieShared
     /// <summary>
     /// The parameters passed in the command line from ExplorerGenieExt menu shell extension.
     /// </summary>
-    public class CommandLineArgs
+    internal class CommandLineArgs
     {
         private List<string> _filenames;
 

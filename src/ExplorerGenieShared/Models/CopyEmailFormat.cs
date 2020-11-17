@@ -12,10 +12,10 @@ namespace ExplorerGenieShared.Models
     /// </summary>
     public enum CopyEmailFormat
     {
-        /// <summary>Copies the path for pasting in Thunderbird or other email clients.</summary>
-        Generic = 0,
-
         /// <summary>Copies the path for pasting in Outlook</summary>
-        Outlook = 1,
+        Outlook = 0,
+
+        /// <summary>Copies the path for pasting in Thunderbird or other email clients.</summary>
+        Thunderbird = 1,
     }
 }

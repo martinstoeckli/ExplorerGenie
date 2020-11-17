@@ -12,7 +12,7 @@ namespace ExplorerGenieShared
     /// A set of extension methods to the <see cref="RegistryKey"/> class to read values from the
     /// registry.
     /// </summary>
-    public static class RegistryKeyExtensions
+    internal static class RegistryKeyExtensions
     {
         /// <summary>
         /// Reads a value from the registry as type bool.

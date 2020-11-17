@@ -31,5 +31,21 @@ namespace ExplorerGenieSharedTest
             string res = PathUtils.ConvertToC(path);
             Assert.AreEqual(@"C:\\Temp\\mit Leerschlag", res);
         }
+
+        [TestMethod]
+        public void ConvertToOutlook_WorksWithLocaleDrive()
+        {
+            string path = @"C:\Temp\mit Leerschlag.txt";
+            string res = PathUtils.ConvertToOutlook(path);
+            Assert.AreEqual(@"<file://C:\Temp\mit Leerschlag.txt>", res);
+        }
+
+        [TestMethod]
+        public void ConvertToOutlook_WorksWithNetworkDrive()
+        {
+            string path = @"\\my-server\Temp\mit Leerschlag.txt";
+            string res = PathUtils.ConvertToOutlook(path);
+            Assert.AreEqual(@"<\\my-server\Temp\mit Leerschlag.txt>", res);
+        }
     }
 }
