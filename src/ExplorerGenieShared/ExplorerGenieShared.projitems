@@ -11,6 +11,9 @@
   <ItemGroup>
     <Compile Include="$(MSBuildThisFileDirectory)CommandLineInterpreter.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)CommandLineArgs.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ViewModels\RelayCommand.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ViewModels\SettingsViewModel.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ViewModels\ViewModelBase.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Win32Api.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\CopyEmailFormat.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\SettingsModel.cs" />
