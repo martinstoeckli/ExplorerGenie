@@ -1,0 +1,23 @@
+menuCopyFile Copy as path
+submenuCopyFile Copy filename(s)
+submenuCopyEmail Copy as email link
+submenuOptions Options
+menuJumpTo Jump to tool
+
+guiClose Close
+guiInfo Information
+guiShowMenu Show context menu
+guiExample Example
+guiAsOriginalPath Original path
+guiAsUri As URI (Uniform Resource Identifier)
+guiAsC C/C++ syntax
+guiAsOutlook Outlook syntax
+guiAsThunderbird Thunderbird and others
+guiUnc Get network path (UNC) for mapped drives
+guiOnlyFile Only filename without path
+guiApplications Tools
+guiVersion Version
+guiCopyright Copyright
+guiWebsite Website
+guiOpensource License
+guiOpensourceDesc ExplorerGenie is an open source project, published under the terms of the Mozilla Public License v. 2.0.

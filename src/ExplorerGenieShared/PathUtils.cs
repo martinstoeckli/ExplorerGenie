@@ -4,7 +4,10 @@
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 using System;
+using System.Collections.Generic;
+using System.IO;
 using System.Runtime.InteropServices;
+using ExplorerGenieShared.Models;
 
 namespace ExplorerGenieShared
 {
@@ -13,6 +16,68 @@ namespace ExplorerGenieShared
     /// </summary>
     internal static class PathUtils
     {
+        /// <summary>
+        /// Converts a list of filenames according to the settings for the CopyFile action.
+        /// </summary>
+        /// <param name="filenames">List with filenames to convert.</param>
+        /// <param name="settings">Settings defining applicable conversions.</param>
+        public static void ConvertForCopyFileAction(IList<string> filenames, SettingsModel settings)
+        {
+            // Convert to UNC path if requested
+            if (settings.CopyFileConvertToUnc)
+            {
+                filenames.ModifyEach(file => ExpandUncFilename(file));
+            }
+
+            // Convert to choosen format
+            switch (settings.CopyFileFormat)
+            {
+                case CopyFileFormat.OriginalPath:
+                    break; // Already in the requested form
+                case CopyFileFormat.Uri:
+                    filenames.ModifyEach(file => ConvertToUri(file));
+                    break;
+                case CopyFileFormat.C:
+                    filenames.ModifyEach(file => ConvertToC(file));
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(settings.CopyFileFormat));
+            }
+
+            // Convert to filenames only if requested
+            if (settings.CopyFileOnlyFilename)
+            {
+                filenames.ModifyEach(file => Path.GetFileName(file));
+            }
+        }
+
+        /// <summary>
+        /// Converts a list of filenames according to the settings for the CopyEmail action.
+        /// </summary>
+        /// <param name="filenames">List with filenames to convert.</param>
+        /// <param name="settings">Settings defining applicable conversions.</param>
+        public static void ConvertForCopyEmailAction(IList<string> filenames, SettingsModel settings)
+        {
+            // Convert to UNC path if requested
+            if (settings.CopyEmailConvertToUnc)
+            {
+                filenames.ModifyEach(file => ExpandUncFilename(file));
+            }
+
+            // Convert to choosen format
+            switch (settings.CopyEmailFormat)
+            {
+                case CopyEmailFormat.Outlook:
+                    filenames.ModifyEach(file => ConvertToOutlook(file));
+                    break;
+                case CopyEmailFormat.Thunderbird:
+                    filenames.ModifyEach(file => ConvertToUri(file));
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(settings.CopyEmailFormat));
+            }
+        }
+
         /// <summary>
         /// Gets the UNC path, if the locale drive of <paramref name="filename"/> points to a UNC
         /// path.
@@ -105,6 +170,21 @@ namespace ExplorerGenieShared
                 }
             }
             return result;
+        }
+
+        /// <summary>
+        /// List extension, which applies a modification to each element of the list.
+        /// </summary>
+        /// <typeparam name="T">Type of the list.</typeparam>
+        /// <param name="elements">The list to modify.</param>
+        /// <param name="modificator">Function which will be called for each element of the list.</param>
+        public static void ModifyEach<T>(this IList<T> elements, Func<T, T> modificator)
+        {
+            for (int index = 0; index < elements.Count; index++)
+            {
+                T element = elements[index];
+                elements[index] = modificator(element);
+            }
         }
     }
 }

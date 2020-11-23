@@ -1,0 +1,23 @@
+menuCopyFile Als Pfad kopieren
+submenuCopyFile Dateiname(n) kopieren
+submenuCopyEmail Als E-Mail Link kopieren
+submenuOptions Optionen
+menuJumpTo Zu Anwendung springen
+
+guiClose Schliessen
+guiInfo Information
+guiShowMenu Kontextmenu anzeigen
+guiExample Beispiel
+guiAsOriginalPath Original Pfad
+guiAsUri Als URI (Uniform Resource Identifier)
+guiAsC Als C/C++ Pfad
+guiAsOutlook Outlook Syntax
+guiAsThunderbird Thunderbird und andere
+guiUnc Für verbundene Laufwerke den Netzwerkpfad (UNC) einsetzen
+guiOnlyFile Nur Dateiname ohne Pfad
+guiApplications Anwendungen
+guiVersion Version
+guiCopyright Copyright
+guiWebsite Webseite
+guiOpensource Lizenz
+guiOpensourceDesc ExplorerGenie ist ein Open Source Projekt, veröffentlicht gemäss den Bedingungen der Mozilla Public License v. 2.0.
