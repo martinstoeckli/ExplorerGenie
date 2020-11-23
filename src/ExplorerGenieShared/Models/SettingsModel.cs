@@ -18,11 +18,11 @@ namespace ExplorerGenieShared.Models
         public SettingsModel()
         {
             CopyFileShowMenu = true;
-            OpenInShowMenu = true;
-
-            // By default convert to UNC path, because an email receiver probably won't have access
-            // to local drives.
-            CopyEmailConvertToUnc = true;
+            CopyEmailConvertToUnc = true; // receiver probably won't have access to local drives.
+            JumpToShowMenu = true;
+            ToolCommandPrompt = true;
+            ToolPowerShell = true;
+            ToolExplorer = true;
         }
 
         /// <summary>
@@ -63,7 +63,22 @@ namespace ExplorerGenieShared.Models
         /// Gets or sets a value indicating whether the menu tree CopyEmail should be loaded in the
         /// context menu.
         /// </summary>
-        public bool OpenInShowMenu { get; set; }
+        public bool JumpToShowMenu { get; set; }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether the jump to command prompt menu should be shown.
+        /// </summary>
+        public bool ToolCommandPrompt { get; set; }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether the jump to power shell menu should be shown.
+        /// </summary>
+        public bool ToolPowerShell { get; set; }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether the jump to explorer menu should be shown.
+        /// </summary>
+        public bool ToolExplorer { get; set; }
 
         /// <inheritdoc/>
         public override bool Equals(object other)
@@ -81,9 +96,12 @@ namespace ExplorerGenieShared.Models
                 && (CopyFileFormat == other.CopyFileFormat)
                 && (CopyFileOnlyFilename == other.CopyFileOnlyFilename)
                 && (CopyFileConvertToUnc == other.CopyFileConvertToUnc)
-                && (OpenInShowMenu == other.OpenInShowMenu)
                 && (CopyEmailFormat == other.CopyEmailFormat)
-                && (CopyEmailConvertToUnc == other.CopyEmailConvertToUnc);
+                && (CopyEmailConvertToUnc == other.CopyEmailConvertToUnc)
+                && (JumpToShowMenu == other.JumpToShowMenu)
+                && (ToolCommandPrompt == other.ToolCommandPrompt)
+                && (ToolPowerShell == other.ToolPowerShell)
+                && (ToolExplorer == other.ToolExplorer);
         }
 
         /// <inheritdoc/>
@@ -96,9 +114,12 @@ namespace ExplorerGenieShared.Models
                 result = (result * 397) ^ CopyFileFormat.GetHashCode();
                 result = (result * 397) ^ CopyFileOnlyFilename.GetHashCode();
                 result = (result * 397) ^ CopyFileConvertToUnc.GetHashCode();
-                result = (result * 397) ^ OpenInShowMenu.GetHashCode();
                 result = (result * 397) ^ CopyEmailFormat.GetHashCode();
                 result = (result * 397) ^ CopyEmailConvertToUnc.GetHashCode();
+                result = (result * 397) ^ JumpToShowMenu.GetHashCode();
+                result = (result * 397) ^ ToolCommandPrompt.GetHashCode();
+                result = (result * 397) ^ ToolPowerShell.GetHashCode();
+                result = (result * 397) ^ ToolExplorer.GetHashCode();
                 return result;
             }
         }

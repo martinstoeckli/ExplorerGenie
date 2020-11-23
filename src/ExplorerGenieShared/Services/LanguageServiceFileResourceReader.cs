@@ -19,9 +19,9 @@ namespace ExplorerGenieShared.Services
     /// {ResourceDirectoryPath}\Lng.{Domain}.{LanguageCode}
     /// D:\AppDirectory\Lng.AppName.en
     /// </example>
-    /// If no such file could be found, the reader checks whether there exists a fallback resource
-    /// file in the embedded resources. So you can e.g. copy the english language file to the output
-    /// directory, as well as compiling it as "embedded resource".
+    /// If no file for the requested language can be found, the reader checks whether there exists a
+    /// fallback resource file in the embedded resources. So you can e.g. copy the english language
+    /// file to the output directory, as well as compiling it as "embedded resource".
     /// </summary>
     public class LanguageServiceFileResourceReader : ILanguageServiceResourceReader
     {
@@ -43,7 +43,7 @@ namespace ExplorerGenieShared.Services
 
         /// <summary>
         /// Gets or sets the domain of the language resource. For this reader the domain is preset
-        /// the name of the calling assembly without the file extension.
+        /// to the name of the calling assembly without the file extension.
         /// </summary>
         public string Domain { get; set; }
 
@@ -95,6 +95,12 @@ namespace ExplorerGenieShared.Services
             return result;
         }
 
+        /// <summary>
+        /// Checks whether a given line contains a comment starting with //, and therefore can be
+        /// skipped.
+        /// </summary>
+        /// <param name="line">Line to test.</param>
+        /// <returns>Returns true if the line contains a comment, otherwise false.</returns>
         private bool IsComment(string line)
         {
             return line.TrimStart().StartsWith(@"//");
@@ -156,6 +162,14 @@ namespace ExplorerGenieShared.Services
             return Path.Combine(directory, resFileName);
         }
 
+        /// <summary>
+        /// Tries to find an embedded resource file with the same name as the requested language
+        /// resource file. If no exact file can be found it looks for files with text resources of
+        /// any another lanugage (fallback language).
+        /// </summary>
+        /// <param name="resourceFilePath">Path of requested language file.</param>
+        /// <param name="resourceName">If an embedded resource cold be found, its name is returned.</param>
+        /// <returns>Resturns true if a matching resource file could be found, otherwise false.</returns>
         private bool TryFindEmbeddedLanguageResourceName(string resourceFilePath, out string resourceName)
         {
             string[] resourceNames = Assembly.GetCallingAssembly().GetManifestResourceNames();

@@ -21,7 +21,7 @@ namespace ExplorerGenieCmd
         /// <summary>
         /// Initializes a new instance of the <see cref="CmdActionCopyFile"/> class.
         /// </summary>
-        /// <param name="settingsService"></param>
+        /// <param name="settingsService">A service which can store the settings.</param>
         public CmdActionCopyFile(ISettingsService settingsService)
         {
             _settingsService = settingsService;

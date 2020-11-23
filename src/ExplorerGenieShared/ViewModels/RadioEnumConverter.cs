@@ -25,11 +25,11 @@ namespace ExplorerGenieShared.ViewModels
         /// Checks whether the <paramref name="parameter"/> matches the <paramref name="value"/>.
         /// </summary>
         /// <param name="value">Current value of an enumeration property of the viewmodel.</param>
-        /// <param name="targetType">Unused.</param>
+        /// <param name="targetType">The parameter is not used.</param>
         /// <param name="parameter">Enum value which is defined in the XAML attribute 'ConverterParameter'
         /// of the radio button. If it matches with <paramref name="value"/>, this radio button should
         /// be checked.</param>
-        /// <param name="culture">Unused.</param>
+        /// <param name="culture">The parameter is not used.</param>
         /// <returns>Returns true if the radio button should be checked, otherwise false.</returns>
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
@@ -54,8 +54,8 @@ namespace ExplorerGenieShared.ViewModels
         /// <param name="targetType">Type of the enumeration, used in the property of the viewmodel.</param>
         /// <param name="parameter">Enum value which is defined in the XAML attribute 'ConverterParameter'
         /// of the radio button.</param>
-        /// <param name="culture">Unused.</param>
-        /// <returns></returns>
+        /// <param name="culture">The parameter is not used.</param>
+        /// <returns>The enum value of the string <paramref name="parameter"/>.</returns>
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
             string parameterString = parameter?.ToString();

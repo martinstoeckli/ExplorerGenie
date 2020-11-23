@@ -18,7 +18,7 @@ namespace ExplorerGenieCmd
         /// <summary>
         /// Initializes a new instance of the <see cref="CmdActionFactory"/> class.
         /// </summary>
-        /// <param name="settingsService"></param>
+        /// <param name="settingsService">A service which can store the settings.</param>
         public CmdActionFactory(ISettingsService settingsService)
         {
             _settingsService = settingsService;

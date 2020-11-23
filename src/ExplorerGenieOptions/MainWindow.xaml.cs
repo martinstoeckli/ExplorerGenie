@@ -1,17 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿// Copyright © 2020 Martin Stoeckli.
+// This Source Code Form is subject to the terms of the Mozilla Public
+// License, v. 2.0. If a copy of the MPL was not distributed with this
+// file, You can obtain one at http://mozilla.org/MPL/2.0/.
+
+using System;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
+using ExplorerGenieShared;
 
 namespace ExplorerGenieOptions
 {
@@ -20,14 +15,21 @@ namespace ExplorerGenieOptions
     /// </summary>
     public partial class MainWindow : Window
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="MainWindow"/> class.
+        /// </summary>
         public MainWindow()
         {
             InitializeComponent();
-        }
+            CommandLineArgs arguments = CommandLineInterpreter.ParseCommandLine(Environment.CommandLine);
 
-        private void Hyperlink_RequestNavigate(object sender, RequestNavigateEventArgs e)
-        {
-
+            TabControl tabControl = this.FindName("tab") as TabControl;
+            if ("-OpenedFromCopy".Equals(arguments.Option))
+                tabControl.SelectedIndex = 0;
+            else if ("-OpenedFromJump".Equals(arguments.Option))
+                tabControl.SelectedIndex = 1;
+            else
+                tabControl.SelectedIndex = 0;
         }
     }
 }

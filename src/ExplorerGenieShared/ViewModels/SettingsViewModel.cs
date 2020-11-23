@@ -7,6 +7,8 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Reflection;
+using System.Windows;
 using System.Windows.Input;
 using ExplorerGenieShared.Models;
 using ExplorerGenieShared.Services;
@@ -27,20 +29,20 @@ namespace ExplorerGenieShared.ViewModels
         /// Initializes a new instance of the <see cref="SettingsViewModel"/> class.
         /// </summary>
         public SettingsViewModel()
-            : this(new SettingsModel(), null)
+            : this(new SettingsService())
         {
         }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="SettingsViewModel"/> class.
         /// </summary>
-        /// <param name="model">The related model.</param>
         /// <param name="settingsService">A service which can store the settings.</param>
-        public SettingsViewModel(SettingsModel model, ISettingsService settingsService)
+        public SettingsViewModel(ISettingsService settingsService)
         {
-            _model = model;
             _settingsService = settingsService;
+            _model = _settingsService.LoadSettingsOrDefault();
             OpenHomepageCommand = new RelayCommand(OpenHomepage);
+            CloseCommand = new RelayCommand<Window>(CloseWindow);
             UpdateCopyFileExample();
             UpdateCopyEmailExample();
         }
@@ -58,6 +60,16 @@ namespace ExplorerGenieShared.ViewModels
                 UseShellExecute = true,
             };
             Process.Start(startInfo);
+        }
+
+        /// <summary>
+        /// Gets the command to close the application.
+        /// </summary>
+        public ICommand CloseCommand { get; private set; }
+
+        private void CloseWindow(Window callerWindow)
+        {
+            callerWindow.Close();
         }
 
         public bool CopyFileShowMenu
@@ -177,17 +189,61 @@ namespace ExplorerGenieShared.ViewModels
             return Path.Combine(documentDirectory, "My Document.txt");
         }
 
-        public bool OpenInShowMenu
+        public bool JumpToShowMenu
         {
-            get { return _model.OpenInShowMenu; }
+            get { return _model.JumpToShowMenu; }
 
             set
             {
-                if (SetPropertyIndirect(() => _model.OpenInShowMenu, (v) => _model.OpenInShowMenu = v, value, false))
+                if (SetPropertyIndirect(() => _model.JumpToShowMenu, (v) => _model.JumpToShowMenu = v, value, false))
                 {
                     _settingsService?.TrySaveSettingsToLocalDevice(_model);
                 }
             }
+        }
+
+        public bool ToolCommandPrompt
+        {
+            get { return _model.ToolCommandPrompt; }
+
+            set
+            {
+                if (SetPropertyIndirect(() => _model.ToolCommandPrompt, (v) => _model.ToolCommandPrompt = v, value, false))
+                {
+                    _settingsService?.TrySaveSettingsToLocalDevice(_model);
+                }
+            }
+        }
+
+        public bool ToolPowerShell
+        {
+            get { return _model.ToolPowerShell; }
+
+            set
+            {
+                if (SetPropertyIndirect(() => _model.ToolPowerShell, (v) => _model.ToolPowerShell = v, value, false))
+                {
+                    _settingsService?.TrySaveSettingsToLocalDevice(_model);
+                }
+            }
+        }
+
+        public bool ToolExplorer
+        {
+            get { return _model.ToolExplorer; }
+
+            set
+            {
+                if (SetPropertyIndirect(() => _model.ToolExplorer, (v) => _model.ToolExplorer = v, value, false))
+                {
+                    _settingsService?.TrySaveSettingsToLocalDevice(_model);
+                }
+            }
+        }
+
+        public string Version
+        {
+            get { return Assembly.GetExecutingAssembly().GetName().Version.ToString(); }
         }
     }
 }

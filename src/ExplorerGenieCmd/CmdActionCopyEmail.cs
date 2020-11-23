@@ -18,7 +18,7 @@ namespace ExplorerGenieCmd
         /// <summary>
         /// Initializes a new instance of the <see cref="CmdActionCopyEmail"/> class.
         /// </summary>
-        /// <param name="settingsService"></param>
+        /// <param name="settingsService">A service which can store the settings.</param>
         public CmdActionCopyEmail(ISettingsService settingsService)
         {
             _settingsService = settingsService;

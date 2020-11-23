@@ -42,13 +42,16 @@ namespace ExplorerGenieShared.Services
             if (registry == null)
                 return model;
 
-            model.CopyFileShowMenu = registry.GetValueAsBool("CopyFileShowMenu", model.CopyFileShowMenu);
-            model.CopyFileFormat = registry.GetValueAsEnum("CopyFileFormat", model.CopyFileFormat);
-            model.CopyFileOnlyFilename = registry.GetValueAsBool("CopyFileOnlyFilename", model.CopyFileOnlyFilename);
-            model.CopyFileConvertToUnc = registry.GetValueAsBool("CopyFileConvertToUnc", model.CopyFileConvertToUnc);
-            model.OpenInShowMenu = registry.GetValueAsBool("CopyEmailShowMenu", model.CopyFileShowMenu);
-            model.CopyEmailFormat = registry.GetValueAsEnum("CopyEmailFormat", model.CopyEmailFormat);
-            model.CopyEmailConvertToUnc = registry.GetValueAsBool("CopyEmailConvertToUnc", model.CopyEmailConvertToUnc);
+            model.CopyFileShowMenu = registry.GetValueAsBool(nameof(model.CopyFileShowMenu), model.CopyFileShowMenu);
+            model.CopyFileFormat = registry.GetValueAsEnum(nameof(model.CopyFileFormat), model.CopyFileFormat);
+            model.CopyFileOnlyFilename = registry.GetValueAsBool(nameof(model.CopyFileOnlyFilename), model.CopyFileOnlyFilename);
+            model.CopyFileConvertToUnc = registry.GetValueAsBool(nameof(model.CopyFileConvertToUnc), model.CopyFileConvertToUnc);
+            model.CopyEmailFormat = registry.GetValueAsEnum(nameof(model.CopyEmailFormat), model.CopyEmailFormat);
+            model.CopyEmailConvertToUnc = registry.GetValueAsBool(nameof(model.CopyEmailConvertToUnc), model.CopyEmailConvertToUnc);
+            model.JumpToShowMenu = registry.GetValueAsBool(nameof(model.JumpToShowMenu), model.JumpToShowMenu);
+            model.ToolCommandPrompt = registry.GetValueAsBool(nameof(model.ToolCommandPrompt), model.ToolCommandPrompt);
+            model.ToolPowerShell = registry.GetValueAsBool(nameof(model.ToolPowerShell), model.ToolPowerShell);
+            model.ToolExplorer = registry.GetValueAsBool(nameof(model.ToolExplorer), model.ToolExplorer);
             return model;
         }
 
@@ -58,13 +61,16 @@ namespace ExplorerGenieShared.Services
             try
             {
                 RegistryKey registry = Registry.CurrentUser.CreateSubKey(_registryPath, RegistryKeyPermissionCheck.ReadWriteSubTree);
-                registry.SetValue("CopyFileShowMenu", model.CopyFileShowMenu);
-                registry.SetValue("CopyFileFormat", model.CopyFileFormat);
-                registry.SetValue("CopyFileOnlyFilename", model.CopyFileOnlyFilename);
-                registry.SetValue("CopyFileConvertToUnc", model.CopyFileConvertToUnc);
-                registry.SetValue("CopyEmailShowMenu", model.OpenInShowMenu);
-                registry.SetValue("CopyEmailFormat", model.CopyEmailFormat);
-                registry.SetValue("CopyEmailConvertToUnc", model.CopyEmailConvertToUnc);
+                registry.SetValue(nameof(model.CopyFileShowMenu), model.CopyFileShowMenu);
+                registry.SetValue(nameof(model.CopyFileFormat), model.CopyFileFormat);
+                registry.SetValue(nameof(model.CopyFileOnlyFilename), model.CopyFileOnlyFilename);
+                registry.SetValue(nameof(model.CopyFileConvertToUnc), model.CopyFileConvertToUnc);
+                registry.SetValue(nameof(model.CopyEmailFormat), model.CopyEmailFormat);
+                registry.SetValue(nameof(model.CopyEmailConvertToUnc), model.CopyEmailConvertToUnc);
+                registry.SetValue(nameof(model.JumpToShowMenu), model.JumpToShowMenu);
+                registry.SetValue(nameof(model.ToolCommandPrompt), model.ToolCommandPrompt);
+                registry.SetValue(nameof(model.ToolPowerShell), model.ToolPowerShell);
+                registry.SetValue(nameof(model.ToolExplorer), model.ToolExplorer);
                 return true;
             }
             catch (Exception)

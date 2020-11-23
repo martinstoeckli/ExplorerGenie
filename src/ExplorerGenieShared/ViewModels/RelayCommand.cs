@@ -92,8 +92,10 @@ namespace ExplorerGenieShared.ViewModels
         {
             if (_execute != null)
             {
-                parameter = Convert.ChangeType(parameter, typeof(T));
-                _execute((T)parameter);
+                if (parameter is T typedParameter)
+                    _execute(typedParameter);
+                else
+                    _execute(default(T));
             }
         }
 
