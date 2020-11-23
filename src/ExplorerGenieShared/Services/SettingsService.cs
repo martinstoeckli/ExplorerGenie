@@ -46,7 +46,7 @@ namespace ExplorerGenieShared.Services
             model.CopyFileFormat = registry.GetValueAsEnum("CopyFileFormat", model.CopyFileFormat);
             model.CopyFileOnlyFilename = registry.GetValueAsBool("CopyFileOnlyFilename", model.CopyFileOnlyFilename);
             model.CopyFileConvertToUnc = registry.GetValueAsBool("CopyFileConvertToUnc", model.CopyFileConvertToUnc);
-            model.CopyEmailShowMenu = registry.GetValueAsBool("CopyEmailShowMenu", model.CopyFileShowMenu);
+            model.OpenInShowMenu = registry.GetValueAsBool("CopyEmailShowMenu", model.CopyFileShowMenu);
             model.CopyEmailFormat = registry.GetValueAsEnum("CopyEmailFormat", model.CopyEmailFormat);
             model.CopyEmailConvertToUnc = registry.GetValueAsBool("CopyEmailConvertToUnc", model.CopyEmailConvertToUnc);
             return model;
@@ -62,7 +62,7 @@ namespace ExplorerGenieShared.Services
                 registry.SetValue("CopyFileFormat", model.CopyFileFormat);
                 registry.SetValue("CopyFileOnlyFilename", model.CopyFileOnlyFilename);
                 registry.SetValue("CopyFileConvertToUnc", model.CopyFileConvertToUnc);
-                registry.SetValue("CopyEmailShowMenu", model.CopyEmailShowMenu);
+                registry.SetValue("CopyEmailShowMenu", model.OpenInShowMenu);
                 registry.SetValue("CopyEmailFormat", model.CopyEmailFormat);
                 registry.SetValue("CopyEmailConvertToUnc", model.CopyEmailConvertToUnc);
                 return true;

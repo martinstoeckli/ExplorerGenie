@@ -17,6 +17,9 @@ namespace ExplorerGenieShared.Models
         /// </summary>
         public SettingsModel()
         {
+            CopyFileShowMenu = true;
+            OpenInShowMenu = true;
+
             // By default convert to UNC path, because an email receiver probably won't have access
             // to local drives.
             CopyEmailConvertToUnc = true;
@@ -46,12 +49,6 @@ namespace ExplorerGenieShared.Models
         public bool CopyFileConvertToUnc { get; set; }
 
         /// <summary>
-        /// Gets or sets a value indicating whether the menu tree CopyEmail should be loaded in the
-        /// context menu.
-        /// </summary>
-        public bool CopyEmailShowMenu { get; set; }
-
-        /// <summary>
         /// Gets or sets the format for the copy email format.
         /// </summary>
         public CopyEmailFormat CopyEmailFormat { get; set; }
@@ -61,6 +58,12 @@ namespace ExplorerGenieShared.Models
         /// to its UNC network path im possible.
         /// </summary>
         public bool CopyEmailConvertToUnc { get; set; }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether the menu tree CopyEmail should be loaded in the
+        /// context menu.
+        /// </summary>
+        public bool OpenInShowMenu { get; set; }
 
         /// <inheritdoc/>
         public override bool Equals(object other)
@@ -78,7 +81,7 @@ namespace ExplorerGenieShared.Models
                 && (CopyFileFormat == other.CopyFileFormat)
                 && (CopyFileOnlyFilename == other.CopyFileOnlyFilename)
                 && (CopyFileConvertToUnc == other.CopyFileConvertToUnc)
-                && (CopyEmailShowMenu == other.CopyEmailShowMenu)
+                && (OpenInShowMenu == other.OpenInShowMenu)
                 && (CopyEmailFormat == other.CopyEmailFormat)
                 && (CopyEmailConvertToUnc == other.CopyEmailConvertToUnc);
         }
@@ -93,7 +96,7 @@ namespace ExplorerGenieShared.Models
                 result = (result * 397) ^ CopyFileFormat.GetHashCode();
                 result = (result * 397) ^ CopyFileOnlyFilename.GetHashCode();
                 result = (result * 397) ^ CopyFileConvertToUnc.GetHashCode();
-                result = (result * 397) ^ CopyEmailShowMenu.GetHashCode();
+                result = (result * 397) ^ OpenInShowMenu.GetHashCode();
                 result = (result * 397) ^ CopyEmailFormat.GetHashCode();
                 result = (result * 397) ^ CopyEmailConvertToUnc.GetHashCode();
                 return result;

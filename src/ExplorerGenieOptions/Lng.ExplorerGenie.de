@@ -1,0 +1,16 @@
+// menu
+1000 Pfad kopieren
+1001 Dateiname(n) kopieren
+1002 Als E-Mail Link kopieren
+1003 Optionen
+
+// gui
+10000 Schliessen
+10001 Beispiel
+10010 Original Pfad
+10011 Als URI (Uniform Resource Identifier)
+10013 Als C/C++ Pfad
+10014 Outlook Syntax
+10015 Für verbundene Laufwerke den Netzwerkpfad (UNC) einsetzen
+10016 Thunderbird und andere
+10017 Nur Dateiname ohne Pfad

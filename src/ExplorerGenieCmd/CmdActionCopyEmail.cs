@@ -3,7 +3,6 @@
 // License, v. 2.0. If a copy of the MPL was not distributed with this
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-using System;
 using System.Collections.Generic;
 using System.Windows;
 using ExplorerGenieShared;
@@ -32,24 +31,7 @@ namespace ExplorerGenieCmd
             new FilenameSorter().Sort(filenames);
             SettingsModel settings = _settingsService.LoadSettingsOrDefault();
 
-            // Convert to UNC path if requested
-            if (settings.CopyEmailConvertToUnc)
-            {
-                filenames.ForEach(file => PathUtils.ExpandUncFilename(file));
-            }
-
-            // Convert to choosen format
-            switch (settings.CopyEmailFormat)
-            {
-                case CopyEmailFormat.Outlook:
-                    filenames.ForEach(file => PathUtils.ConvertToOutlook(file));
-                    break;
-                case CopyEmailFormat.Thunderbird:
-                    filenames.ForEach(file => PathUtils.ConvertToUri(file));
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException(nameof(settings.CopyEmailFormat));
-            }
+            PathUtils.ConvertForCopyEmailAction(filenames, settings);
 
             string clipboardText = string.Join(separator, filenames);
             Clipboard.SetText(clipboardText);

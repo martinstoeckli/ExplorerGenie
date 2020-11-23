@@ -1,0 +1,16 @@
+// menu
+1000 Copy as path
+1001 Copy filename(s)
+1002 Copy as email link
+1003 Options
+
+// gui
+10000 Close
+10001 Example
+10010 Original path
+10011 As URI (Uniform Resource Identifier)
+10013 C/C++ syntax
+10014 Outlook syntax
+10015 Get network path (UNC) for mapped drives
+10016 Thunderbird and others
+10017 Only filename without path

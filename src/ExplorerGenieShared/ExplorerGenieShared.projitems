@@ -11,9 +11,15 @@
   <ItemGroup>
     <Compile Include="$(MSBuildThisFileDirectory)CommandLineInterpreter.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)CommandLineArgs.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Services\ILanguageService.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Services\ILanguageServiceResourceReader.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Services\LanguageService.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Services\LanguageServiceFileResourceReader.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ViewModels\RadioEnumConverter.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewModels\RelayCommand.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewModels\SettingsViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewModels\ViewModelBase.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ViewModels\ViewModelBaseWithLanguage.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Win32Api.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\CopyEmailFormat.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\SettingsModel.cs" />

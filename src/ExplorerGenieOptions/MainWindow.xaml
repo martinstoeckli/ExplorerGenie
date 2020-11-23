@@ -7,11 +7,12 @@
         xmlns:vm="clr-namespace:ExplorerGenieShared.ViewModels"
         mc:Ignorable="d"
         Title="ExplorerGenie"
-        Height="480" Width="640"
-        Icon="Resources/options.ico">
+        Height="420" Width="720"
+        Icon="Resources/options.ico" ResizeMode="CanResizeWithGrip">
     
     <Window.Resources>
         <ImageSource x:Key="imgsrcLogo">/Resources/explorergenie.png</ImageSource>
+        <vm:RadioEnumConverter x:Key="radioEnumConverter" />
     </Window.Resources>
 
     <Window.DataContext>
@@ -20,7 +21,7 @@
 
     <Grid Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}">
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="200"/>
+            <ColumnDefinition Width="180"/>
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
 
@@ -35,13 +36,41 @@
             </TextBlock>
         </Grid>
         <TabControl Grid.Column="1" HorizontalAlignment="Stretch" Margin="0,10,10,10" VerticalAlignment="Stretch" TabStripPlacement="Left">
-            <TabItem Header="Copy path" Height="42">
-                <Grid>
-                </Grid>
+            <TabItem Header="{Binding Language[1000]}" Height="42">
+                <StackPanel Orientation="Vertical" Margin="12,15,12,15">
+                    <CheckBox IsChecked="{Binding CopyFileShowMenu}" Content="Kontextmenu anzeigen" VerticalAlignment="Center"/>
+                    <GroupBox Header="{Binding Language[1001]}" Margin="0,6,0,0" Padding="6">
+                        <StackPanel Orientation="Vertical">
+                            <RadioButton IsChecked="{Binding Path=CopyFileFormat, Converter={StaticResource radioEnumConverter}, ConverterParameter=OriginalPath}" Content="{Binding Language[10010]}"/>
+                            <RadioButton IsChecked="{Binding Path=CopyFileFormat, Converter={StaticResource radioEnumConverter}, ConverterParameter=Uri}" Content="{Binding Language[10011]}"/>
+                            <RadioButton IsChecked="{Binding Path=CopyFileFormat, Converter={StaticResource radioEnumConverter}, ConverterParameter=C}" Content="{Binding Language[10013]}"/>
+
+                            <CheckBox IsChecked="{Binding CopyFileOnlyFilename}" Content="{Binding Language[10017]}" VerticalAlignment="Center" Margin="0,6,0,0" />
+                            <CheckBox IsChecked="{Binding CopyFileConvertToUnc}" Content="{Binding Language[10015]}" VerticalAlignment="Center"/>
+                            <StackPanel Orientation="Horizontal" Margin="0,6,0,0" >
+                                <Label Content="{Binding Language[10001]}" Target="{Binding CopyFileExample}" VerticalAlignment="Center"/>
+                                <TextBlock x:Name="CopyFileExample" Text="{Binding CopyFileExample}" VerticalAlignment="Center" Background="AliceBlue"/>
+                            </StackPanel>
+                        </StackPanel>
+                    </GroupBox>
+                    <GroupBox Header="{Binding Language[1002]}" Margin="0,6,0,0" Padding="6">
+                        <StackPanel Orientation="Vertical">
+                            <RadioButton IsChecked="{Binding Path=CopyEmailFormat, Converter={StaticResource radioEnumConverter}, ConverterParameter=Outlook}" Content="{Binding Language[10014]}"/>
+                            <RadioButton IsChecked="{Binding Path=CopyEmailFormat, Converter={StaticResource radioEnumConverter}, ConverterParameter=Thunderbird}" Content="{Binding Language[10016]}"/>
+
+                            <CheckBox IsChecked="{Binding CopyEmailConvertToUnc}" Content="{Binding Language[10015]}" VerticalAlignment="Center" Margin="0,6,0,0" />
+                            <StackPanel Orientation="Horizontal" Margin="0,6,0,0" >
+                                <Label Content="{Binding Language[10001]}" Target="{Binding CopyEmailExample}" VerticalAlignment="Center"/>
+                                <TextBlock x:Name="CopyEmailExample" Text="{Binding CopyEmailExample}" VerticalAlignment="Center" Background="AliceBlue"/>
+                            </StackPanel>
+                        </StackPanel>
+                    </GroupBox>
+                </StackPanel>
             </TabItem>
             <TabItem Header="Open in" Height="42">
-                <Grid>
-                </Grid>
+                <StackPanel Orientation="Vertical" Margin="12,15,12,15">
+                    <CheckBox IsChecked="{Binding OpenInShowMenu}" Content="Kontextmenu anzeigen" VerticalAlignment="Center"/>
+                </StackPanel>
             </TabItem>
             <TabItem Header="Info" Height="42">
                 <Grid>
