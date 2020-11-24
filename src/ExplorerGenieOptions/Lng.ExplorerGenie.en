@@ -2,7 +2,13 @@ menuCopyFile Copy as path
 submenuCopyFile Copy filename(s)
 submenuCopyEmail Copy as email link
 submenuOptions Options
-menuJumpTo Jump to tool
+menuGoto Go to tool
+menuGotoCmd Open in Command Prompt
+menuGotoCmdAdmin Open in Command Prompt as admin
+menuGotoPowershell Open in Power Shell
+menuGotoPowershellAdmin Open in Power Shell as admin
+menuGotoExplorer Open in Explorer
+menuGotoExplorerAdmin Open in Explorer as admin
 
 guiClose Close
 guiInfo Information

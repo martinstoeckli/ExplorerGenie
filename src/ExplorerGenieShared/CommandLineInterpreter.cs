@@ -3,8 +3,10 @@
 // License, v. 2.0. If a copy of the MPL was not distributed with this
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
+using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Reflection;
 using System.Text;
 
 namespace ExplorerGenieShared
@@ -24,6 +26,8 @@ namespace ExplorerGenieShared
             CommandLineArgs result = new CommandLineArgs();
 
             List<string> parts = SplitCommandLine(commandLine);
+            RemoveOwnExeName(parts);
+
             if (ArgumentIsOption(parts, 0))
             {
                 result.Option = parts[0];
@@ -41,6 +45,13 @@ namespace ExplorerGenieShared
                 }
             }
             return result;
+        }
+
+        private static void RemoveOwnExeName(List<string> parts)
+        {
+            string assemblyName = Assembly.GetExecutingAssembly().Location;
+            if ((parts.Count >= 1) && parts[0].Equals(assemblyName, StringComparison.InvariantCultureIgnoreCase))
+                parts.RemoveAt(0);
         }
 
         private static bool ArgumentIsOption(List<string> parts, int index)

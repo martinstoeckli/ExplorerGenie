@@ -6,6 +6,9 @@
         <Projects Include="ExplorerGenieExt\ExplorerGenieExt.dproj">
             <Dependencies/>
         </Projects>
+        <Projects Include="ExplorerGenieExtTest\ExplorerGenieExtTest.dproj">
+            <Dependencies/>
+        </Projects>
     </ItemGroup>
     <ProjectExtensions>
         <Borland.Personality>Default.Personality.12</Borland.Personality>
@@ -23,14 +26,23 @@
     <Target Name="ExplorerGenieExt:Make">
         <MSBuild Projects="ExplorerGenieExt\ExplorerGenieExt.dproj" Targets="Make"/>
     </Target>
+    <Target Name="ExplorerGenieExtTest">
+        <MSBuild Projects="ExplorerGenieExtTest\ExplorerGenieExtTest.dproj"/>
+    </Target>
+    <Target Name="ExplorerGenieExtTest:Clean">
+        <MSBuild Projects="ExplorerGenieExtTest\ExplorerGenieExtTest.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="ExplorerGenieExtTest:Make">
+        <MSBuild Projects="ExplorerGenieExtTest\ExplorerGenieExtTest.dproj" Targets="Make"/>
+    </Target>
     <Target Name="Build">
-        <CallTarget Targets="ExplorerGenieExt"/>
+        <CallTarget Targets="ExplorerGenieExt;ExplorerGenieExtTest"/>
     </Target>
     <Target Name="Clean">
-        <CallTarget Targets="ExplorerGenieExt:Clean"/>
+        <CallTarget Targets="ExplorerGenieExt:Clean;ExplorerGenieExtTest:Clean"/>
     </Target>
     <Target Name="Make">
-        <CallTarget Targets="ExplorerGenieExt:Make"/>
+        <CallTarget Targets="ExplorerGenieExt:Make;ExplorerGenieExtTest:Make"/>
     </Target>
     <Import Project="$(BDS)\Bin\CodeGear.Group.Targets" Condition="Exists('$(BDS)\Bin\CodeGear.Group.Targets')"/>
 </Project>

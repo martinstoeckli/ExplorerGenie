@@ -54,7 +54,7 @@ namespace ExplorerGenieSharedTest
                 CopyFileFormat = CopyFileFormat.Uri,
                 CopyFileOnlyFilename = true,
                 CopyFileConvertToUnc = true,
-                JumpToShowMenu = false,
+                GotoShowMenu = false,
                 CopyEmailFormat = CopyEmailFormat.Thunderbird,
                 CopyEmailConvertToUnc = false,
             };

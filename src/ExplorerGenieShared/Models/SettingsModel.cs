@@ -19,10 +19,10 @@ namespace ExplorerGenieShared.Models
         {
             CopyFileShowMenu = true;
             CopyEmailConvertToUnc = true; // receiver probably won't have access to local drives.
-            JumpToShowMenu = true;
-            ToolCommandPrompt = true;
-            ToolPowerShell = true;
-            ToolExplorer = true;
+            GotoShowMenu = true;
+            GotoCommandPrompt = true;
+            GotoPowerShell = true;
+            GotoExplorer = true;
         }
 
         /// <summary>
@@ -63,22 +63,22 @@ namespace ExplorerGenieShared.Models
         /// Gets or sets a value indicating whether the menu tree CopyEmail should be loaded in the
         /// context menu.
         /// </summary>
-        public bool JumpToShowMenu { get; set; }
+        public bool GotoShowMenu { get; set; }
 
         /// <summary>
-        /// Gets or sets a value indicating whether the jump to command prompt menu should be shown.
+        /// Gets or sets a value indicating whether the "go to command prompt" menu should be shown.
         /// </summary>
-        public bool ToolCommandPrompt { get; set; }
+        public bool GotoCommandPrompt { get; set; }
 
         /// <summary>
-        /// Gets or sets a value indicating whether the jump to power shell menu should be shown.
+        /// Gets or sets a value indicating whether the "go to power shell" menu should be shown.
         /// </summary>
-        public bool ToolPowerShell { get; set; }
+        public bool GotoPowerShell { get; set; }
 
         /// <summary>
-        /// Gets or sets a value indicating whether the jump to explorer menu should be shown.
+        /// Gets or sets a value indicating whether the "go to explorer" menu should be shown.
         /// </summary>
-        public bool ToolExplorer { get; set; }
+        public bool GotoExplorer { get; set; }
 
         /// <inheritdoc/>
         public override bool Equals(object other)
@@ -98,10 +98,10 @@ namespace ExplorerGenieShared.Models
                 && (CopyFileConvertToUnc == other.CopyFileConvertToUnc)
                 && (CopyEmailFormat == other.CopyEmailFormat)
                 && (CopyEmailConvertToUnc == other.CopyEmailConvertToUnc)
-                && (JumpToShowMenu == other.JumpToShowMenu)
-                && (ToolCommandPrompt == other.ToolCommandPrompt)
-                && (ToolPowerShell == other.ToolPowerShell)
-                && (ToolExplorer == other.ToolExplorer);
+                && (GotoShowMenu == other.GotoShowMenu)
+                && (GotoCommandPrompt == other.GotoCommandPrompt)
+                && (GotoPowerShell == other.GotoPowerShell)
+                && (GotoExplorer == other.GotoExplorer);
         }
 
         /// <inheritdoc/>
@@ -116,10 +116,10 @@ namespace ExplorerGenieShared.Models
                 result = (result * 397) ^ CopyFileConvertToUnc.GetHashCode();
                 result = (result * 397) ^ CopyEmailFormat.GetHashCode();
                 result = (result * 397) ^ CopyEmailConvertToUnc.GetHashCode();
-                result = (result * 397) ^ JumpToShowMenu.GetHashCode();
-                result = (result * 397) ^ ToolCommandPrompt.GetHashCode();
-                result = (result * 397) ^ ToolPowerShell.GetHashCode();
-                result = (result * 397) ^ ToolExplorer.GetHashCode();
+                result = (result * 397) ^ GotoShowMenu.GetHashCode();
+                result = (result * 397) ^ GotoCommandPrompt.GetHashCode();
+                result = (result * 397) ^ GotoPowerShell.GetHashCode();
+                result = (result * 397) ^ GotoExplorer.GetHashCode();
                 return result;
             }
         }

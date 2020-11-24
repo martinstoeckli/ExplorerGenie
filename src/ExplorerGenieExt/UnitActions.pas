@@ -78,19 +78,24 @@ type
     /// Action for menu item "open cmd"
     /// </summary>
     /// <param name="filenames">List with paths of selected files.</param>
-    class procedure OnOpenCmdClicked(filenames: TStrings; asAdmin: Boolean);
+    class procedure OnGotoCmdClicked(filenames: TStrings; asAdmin: Boolean);
 
     /// <summary>
     /// Action for menu item "open powershell"
     /// </summary>
     /// <param name="filenames">List with paths of selected files.</param>
-    class procedure OnOpenPowershellClicked(filenames: TStrings; asAdmin: Boolean);
+    class procedure OnGotoPowershellClicked(filenames: TStrings; asAdmin: Boolean);
 
     /// <summary>
     /// Action for menu item "open in explorer"
     /// </summary>
     /// <param name="filenames">List with paths of selected files.</param>
-    class procedure OnOpenExplorerClicked(filenames: TStrings; asAdmin: Boolean);
+    class procedure OnGotoExplorerClicked(filenames: TStrings; asAdmin: Boolean);
+
+    /// <summary>
+    /// Action for menu item "Go to options"
+    /// </summary>
+    class procedure OnGotoOptionsClicked();
   end;
 
 implementation
@@ -125,7 +130,7 @@ begin
   ExecuteCommand(exePath, params, true);
 end;
 
-class procedure TActions.OnOpenCmdClicked(filenames: TStrings; asAdmin: Boolean);
+class procedure TActions.OnGotoCmdClicked(filenames: TStrings; asAdmin: Boolean);
 var
   commonDirectory: String;
   operation: String;
@@ -140,7 +145,22 @@ begin
   end;
 end;
 
-class procedure TActions.OnOpenExplorerClicked(filenames: TStrings; asAdmin: Boolean);
+class procedure TActions.OnGotoPowershellClicked(filenames: TStrings; asAdmin: Boolean);
+var
+  commonDirectory: String;
+  operation: String;
+  params: String;
+begin
+  commonDirectory := GetCommonDirectory(filenames);
+  if (commonDirectory <> '') then
+  begin
+    operation := GetShellExecuteOperation(asAdmin);
+    params := Format('-noexit -command "& {Set-Location -Path ''%s''}"', [commonDirectory]);
+    ShellExecute(0, PChar(operation), PChar('powershell.exe'), PChar(params), PChar(params), SW_SHOWNORMAL);
+  end;
+end;
+
+class procedure TActions.OnGotoExplorerClicked(filenames: TStrings; asAdmin: Boolean);
 var
   commonDirectory: String;
   operation: String;
@@ -158,19 +178,14 @@ begin
   end;
 end;
 
-class procedure TActions.OnOpenPowershellClicked(filenames: TStrings; asAdmin: Boolean);
+class procedure TActions.OnGotoOptionsClicked;
 var
-  commonDirectory: String;
-  operation: String;
+  exePath: String;
   params: String;
 begin
-  commonDirectory := GetCommonDirectory(filenames);
-  if (commonDirectory <> '') then
-  begin
-    operation := GetShellExecuteOperation(asAdmin);
-    params := Format('-noexit -command "& {Set-Location -Path ''%s''}"', [commonDirectory]);
-    ShellExecute(0, PChar(operation), PChar('powershell.exe'), PChar(params), PChar(params), SW_SHOWNORMAL);
-  end;
+  exePath := FindExplorerGenieOptionsPath();
+  params := BuildCommandLine('-OpenedFromGoto', nil);
+  ExecuteCommand(exePath, params, true);
 end;
 
 class function TActions.FindExplorerGenieCmdPath: String;

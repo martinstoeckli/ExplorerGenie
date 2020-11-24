@@ -26,7 +26,7 @@ namespace ExplorerGenieOptions
             TabControl tabControl = this.FindName("tab") as TabControl;
             if ("-OpenedFromCopy".Equals(arguments.Option))
                 tabControl.SelectedIndex = 0;
-            else if ("-OpenedFromJump".Equals(arguments.Option))
+            else if ("-OpenedFromGoto".Equals(arguments.Option))
                 tabControl.SelectedIndex = 1;
             else
                 tabControl.SelectedIndex = 0;

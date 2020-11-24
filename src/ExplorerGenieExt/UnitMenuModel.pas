@@ -9,12 +9,13 @@ interface
 uses
   Classes,
   Generics.Collections,
+  System.SysUtils,
   Windows,
   UnitMenuModelIcon;
 
 type
   TMenuModelList = class;
-  TMenuClickedDelegate = reference to procedure();
+//  TMenuClickedDelegate = reference to procedure();
 
   /// <summary>
   /// The model class which can describe a menu tree structure.
@@ -25,7 +26,7 @@ type
     FChildren: TMenuModelList;
     FTitle: String;
     FIcon: TMenuIcon;
-    FOnClicked: TMenuClickedDelegate;
+    FOnClicked: TProc;
     function GetOrCreateChildren(): TMenuModelList;
     function GetHasChildren(): Boolean;
   public
@@ -60,7 +61,7 @@ type
     /// <summary>
     /// Gets or sets a delgate which should be executed when the user clicked the menu item.
     /// </summary>
-    property OnClicked: TMenuClickedDelegate read FOnClicked write FOnClicked;
+    property OnClicked: TProc read FOnClicked write FOnClicked;
 
     /// <summary>
     /// Gets a lazy created list of sub menu items.

@@ -2,7 +2,13 @@ menuCopyFile Als Pfad kopieren
 submenuCopyFile Dateiname(n) kopieren
 submenuCopyEmail Als E-Mail Link kopieren
 submenuOptions Optionen
-menuJumpTo Zu Anwendung springen
+menuGoto Gehe zu Tool
+menuGotoCmd Öffne in Command Prompt
+menuGotoCmdAdmin Öffne in Command Prompt als Admin
+menuGotoPowershell Öffne in Power Shell
+menuGotoPowershellAdmin Öffne in Power Shell als Admin
+menuGotoExplorer Öffne in Explorer
+menuGotoExplorerAdmin Öffne in Explorer als Admin
 
 guiClose Schliessen
 guiInfo Information

@@ -70,14 +70,14 @@
                     </GroupBox>
                 </StackPanel>
             </TabItem>
-            <TabItem Header="{Binding Language[menuJumpTo]}" Height="42">
+            <TabItem Header="{Binding Language[menuGoto]}" Height="42">
                 <StackPanel Orientation="Vertical" Margin="12,15,12,15">
-                    <CheckBox IsChecked="{Binding JumpToShowMenu}" Content="{Binding Language[guiShowMenu]}" VerticalAlignment="Center"/>
+                    <CheckBox IsChecked="{Binding GotoShowMenu}" Content="{Binding Language[guiShowMenu]}" VerticalAlignment="Center"/>
                     <GroupBox Header="{Binding Language[guiApplications]}" Margin="0,6,0,0" Padding="6">
                         <StackPanel Orientation="Vertical">
-                            <CheckBox IsChecked="{Binding ToolCommandPrompt}" Content="Command Prompt" VerticalAlignment="Center" Margin="0,6,0,0" />
-                            <CheckBox IsChecked="{Binding ToolPowerShell}" Content="Power Shell" VerticalAlignment="Center" Margin="0,6,0,0" />
-                            <CheckBox IsChecked="{Binding ToolExplorer}" Content="Explorer" VerticalAlignment="Center" Margin="0,6,0,0" />
+                            <CheckBox IsChecked="{Binding GotoCommandPrompt}" Content="Command Prompt" VerticalAlignment="Center" Margin="0,6,0,0" />
+                            <CheckBox IsChecked="{Binding GotoPowerShell}" Content="Power Shell" VerticalAlignment="Center" Margin="0,6,0,0" />
+                            <CheckBox IsChecked="{Binding GotoExplorer}" Content="Explorer" VerticalAlignment="Center" Margin="0,6,0,0" />
                         </StackPanel>
                     </GroupBox>
                 </StackPanel>
