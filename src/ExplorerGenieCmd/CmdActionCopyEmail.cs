@@ -4,13 +4,15 @@
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 using System.Collections.Generic;
-using System.Windows;
 using ExplorerGenieShared;
 using ExplorerGenieShared.Models;
 using ExplorerGenieShared.Services;
 
 namespace ExplorerGenieCmd
 {
+    /// <summary>
+    /// This action copies the filename(s) to the Windows clipboard, to be used inside emails.
+    /// </summary>
     internal class CmdActionCopyEmail : ICmdAction
     {
         private readonly ISettingsService _settingsService;
@@ -34,7 +36,7 @@ namespace ExplorerGenieCmd
             PathUtils.ConvertForCopyEmailAction(filenames, settings);
 
             string clipboardText = string.Join(separator, filenames);
-            Clipboard.SetText(clipboardText);
+            Win32ApiClipboard.TrySetText(clipboardText);
         }
     }
 }

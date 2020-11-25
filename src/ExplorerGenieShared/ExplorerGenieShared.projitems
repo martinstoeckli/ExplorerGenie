@@ -11,6 +11,7 @@
   <ItemGroup>
     <Compile Include="$(MSBuildThisFileDirectory)CommandLineInterpreter.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)CommandLineArgs.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ListExtensions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Services\ILanguageService.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Services\ILanguageServiceResourceReader.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Services\LanguageService.cs" />
@@ -29,6 +30,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)RegistryKeyExtensions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Services\ISettingsService.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Services\SettingsService.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Win32ApiClipboard.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="$(MSBuildThisFileDirectory)Models\" />

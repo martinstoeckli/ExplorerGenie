@@ -10,7 +10,10 @@ uses
   UnitContextMenuRegistrar in 'UnitContextMenuRegistrar.pas',
   UnitMenuModel in 'UnitMenuModel.pas',
   UnitMenuModelIcon in 'UnitMenuModelIcon.pas',
-  UnitActions in 'UnitActions.pas';
+  UnitActions in 'UnitActions.pas',
+  UnitSettingsModel in 'UnitSettingsModel.pas',
+  UnitSettingsService in 'UnitSettingsService.pas',
+  UnitLanguageService in 'UnitLanguageService.pas';
 
   /// <summary>
   /// "Overrides" the base function DllRegisterServer.

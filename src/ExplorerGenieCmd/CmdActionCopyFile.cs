@@ -4,7 +4,6 @@
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 using System.Collections.Generic;
-using System.Windows;
 using ExplorerGenieShared;
 using ExplorerGenieShared.Models;
 using ExplorerGenieShared.Services;
@@ -37,7 +36,7 @@ namespace ExplorerGenieCmd
             PathUtils.ConvertForCopyFileAction(filenames, settings);
 
             string clipboardText = string.Join(separator, filenames);
-            Clipboard.SetText(clipboardText);
+            Win32ApiClipboard.TrySetText(clipboardText);
         }
     }
 }

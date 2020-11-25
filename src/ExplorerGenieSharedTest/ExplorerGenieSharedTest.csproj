@@ -54,6 +54,8 @@
   <ItemGroup>
     <Compile Include="CommandLineInterpreterTest.cs" />
     <Compile Include="FilenameSorterTest.cs" />
+    <Compile Include="LanguageServiceFileResourceReaderTest.cs" />
+    <Compile Include="ListExtensionsTest.cs" />
     <Compile Include="PathUtilsTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SettingsServiceTest.cs" />

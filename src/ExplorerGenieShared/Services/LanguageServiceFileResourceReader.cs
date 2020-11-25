@@ -77,7 +77,7 @@ namespace ExplorerGenieShared.Services
             return result;
         }
 
-        private Dictionary<string, string> ReadFromStream(StreamReader languageResourceStream)
+        internal Dictionary<string, string> ReadFromStream(StreamReader languageResourceStream)
         {
             var result = new Dictionary<string, string>(StringComparer.InvariantCultureIgnoreCase);
 

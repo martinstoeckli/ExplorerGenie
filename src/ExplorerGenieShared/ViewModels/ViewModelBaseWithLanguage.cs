@@ -17,8 +17,7 @@ namespace ExplorerGenieShared.ViewModels
         /// </summary>
         public ViewModelBaseWithLanguage()
         {
-            var languageResourceReader = new LanguageServiceFileResourceReader();
-            languageResourceReader.Domain = "ExplorerGenie";
+            var languageResourceReader = new LanguageServiceFileResourceReader { Domain = "ExplorerGenie" };
             Language = new LanguageService(languageResourceReader);
         }
 

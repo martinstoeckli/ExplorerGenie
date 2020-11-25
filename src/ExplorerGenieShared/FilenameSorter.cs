@@ -14,7 +14,7 @@ namespace ExplorerGenieShared
     /// </summary>
     internal class FilenameSorter
     {
-        private Func<string, bool> _isDirectory;
+        private readonly Func<string, bool> _isDirectory;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="FilenameSorter"/> class.

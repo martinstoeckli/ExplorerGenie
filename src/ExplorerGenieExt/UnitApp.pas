@@ -21,7 +21,10 @@ uses
   ExplorerGenieExt_TLB,
   UnitMenuModel,
   UnitMenuModelIcon,
-  UnitActions;
+  UnitActions,
+  UnitLanguageService,
+  UnitSettingsModel,
+  UnitSettingsService;
 
 type
   /// <summary>
@@ -31,7 +34,7 @@ type
   private
     FMenus: TMenuModelList;
     FFilenames: TStringList;
-    function CreateMenuModels(): TMenuModelList;
+    function CreateMenuModels(settingsService: TSettingsService; languageService: ILanguageService): TMenuModelList;
     procedure BuildContextMenus(
       menus: TMenuModelList; parent: HMENU; startInsertingAt: UINT; firstFreeCmdId: UINT; var nextFreeCmdId: UINT);
 
@@ -64,10 +67,21 @@ const
   APP_DESCRIPTION = 'ExplorerGenie adds tools to the explorers context menu';
 
 procedure TApp.Initialize;
+var
+  settingsService: TSettingsService;
+  languageService: ILanguageService;
 begin
   inherited Initialize;
   FFilenames := TStringList.Create;
-  FMenus := CreateMenuModels();
+
+  settingsService := TSettingsService.Create();
+  languageService := TLanguageServiceFactory.CreateLanguageService('ExplorerGenie');
+  try
+    FMenus := CreateMenuModels(settingsService, languageService);
+  finally
+    languageService := nil;
+    settingsService.Free;
+  end;
 end;
 
 destructor TApp.Destroy;
@@ -82,125 +96,157 @@ begin
   inherited Destroy;
 end;
 
-function TApp.CreateMenuModels(): TMenuModelList;
+function TApp.CreateMenuModels(settingsService: TSettingsService; languageService: ILanguageService): TMenuModelList;
 var
+  settings: TSettingsModel;
   iconSize: TSize;
   menuClipboard: TMenuModel;
   submenuCopyFilename: TMenuModel;
   submenuCopyEmail: TMenuModel;
   submenuCopyOptions: TMenuModel;
-  menuOpen: TMenuModel;
-  submenuOpenCmd: TMenuModel;
-  submenuOpenCmdAdmin: TMenuModel;
-  submenuOpenPowershell: TMenuModel;
-  submenuOpenPowershellAdmin: TMenuModel;
-  submenuOpenExplorer: TMenuModel;
-  submenuOpenExplorerAdmin: TMenuModel;
+  menuGoto: TMenuModel;
+  submenuGotoCmd: TMenuModel;
+  submenuGotoCmdAdmin: TMenuModel;
+  submenuGotoPowershell: TMenuModel;
+  submenuGotoPowershellAdmin: TMenuModel;
+  submenuGotoExplorer: TMenuModel;
+  submenuGotoExplorerAdmin: TMenuModel;
+  submenuGotoOptions: TMenuModel;
 begin
+  Result := TMenuModelList.Create(true);
+  settings := TSettingsModel.Create();
+  try
   iconSize.Width := GetSystemMetrics(SM_CXMENUCHECK);
   iconSize.Height := GetSystemMetrics(SM_CYMENUCHECK);
+  settingsService.LoadSettingsOrDefault(settings);
 
-  submenuCopyFilename := TMenuModel.Create;
-  submenuCopyFilename.Title := 'Copy filename(s)';
-  submenuCopyFilename.Icon := TMenuIcon.Create('icoCopy', iconSize);
-  submenuCopyFilename.OnClicked :=
-    procedure
+  if (settings.CopyFileShowMenu) then
+  begin
+    menuClipboard := TMenuModel.Create;
+    menuClipboard.Title := languageService.LoadText('menuCopyFile', 'Copy as path');
+    menuClipboard.Icon := TMenuIcon.Create('icoClipboard', iconSize);
+    Result.Add(menuClipboard);
+
+    submenuCopyFilename := TMenuModel.Create;
+    submenuCopyFilename.Title := languageService.LoadText('submenuCopyFile', 'Copy filename(s)');
+    submenuCopyFilename.Icon := TMenuIcon.Create('icoCopy', iconSize);
+    submenuCopyFilename.OnClicked :=
+      procedure
+      begin
+        TActions.OnCopyFileClicked(FFilenames);
+      end;
+    menuClipboard.Children.Add(submenuCopyFilename);
+
+    submenuCopyEmail := TMenuModel.Create;
+    submenuCopyEmail.Title := languageService.LoadText('submenuCopyEmail', 'Copy as email link');
+    submenuCopyEmail.Icon := TMenuIcon.Create('icoMail', iconSize);
+    submenuCopyEmail.OnClicked :=
+      procedure
+      begin
+        TActions.OnCopyEmailClicked(FFilenames);
+      end;
+    menuClipboard.Children.Add(submenuCopyEmail);
+
+    submenuCopyOptions := TMenuModel.Create;
+    submenuCopyOptions.Title := languageService.LoadText('submenuOptions', 'Options');
+    submenuCopyOptions.Icon := TMenuIcon.Create('icoOptions', iconSize);
+    submenuCopyOptions.OnClicked :=
+      procedure
+      begin
+        TActions.OnCopyOptionsClicked();
+      end;
+    menuClipboard.Children.Add(submenuCopyOptions);
+  end;
+
+  if (settings.GotoShowMenu) then
+  begin
+    menuGoto := TMenuModel.Create;
+    menuGoto.Title := languageService.LoadText('menuGoto', 'Go to tool');
+    menuGoto.Icon := TMenuIcon.Create('icoCmd', iconSize);
+    Result.Add(menuGoto);
+
+    if (settings.GotoCommandPrompt) then
     begin
-      TActions.OnCopyFileClicked(FFilenames);
+      submenuGotoCmd := TMenuModel.Create;
+      submenuGotoCmd.Title := languageService.LoadText('menuGotoCmd', 'Open in Command Prompt');
+      submenuGotoCmd.Icon := TMenuIcon.Create('icoCmd', iconSize);
+      submenuGotoCmd.OnClicked :=
+        procedure
+        begin
+          TActions.OnGotoCmdClicked(FFilenames, false);
+        end;
+      menuGoto.Children.Add(submenuGotoCmd);
+
+      submenuGotoCmdAdmin := TMenuModel.Create;
+      submenuGotoCmdAdmin.Title := languageService.LoadText('menuGotoCmdAdmin', 'Open in Command Prompt as admin');
+      submenuGotoCmdAdmin.Icon := TMenuIcon.Create('icoCmd', iconSize);
+      submenuGotoCmdAdmin.OnClicked :=
+        procedure
+        begin
+          TActions.OnGotoCmdClicked(FFilenames, true);
+        end;
+      menuGoto.Children.Add(submenuGotoCmdAdmin);
     end;
 
-  submenuCopyEmail := TMenuModel.Create;
-  submenuCopyEmail.Title := 'Copy as email link';
-  submenuCopyEmail.Icon := TMenuIcon.Create('icoMail', iconSize);
-  submenuCopyEmail.OnClicked :=
-    procedure
+    if (settings.GotoPowerShell) then
     begin
-      TActions.OnCopyEmailClicked(FFilenames);
+      submenuGotoPowershell := TMenuModel.Create;
+      submenuGotoPowershell.Title := languageService.LoadText('menuGotoPowershell', 'Open in Power Shell');
+      submenuGotoPowershell.Icon := TMenuIcon.Create('icoPowershell', iconSize);
+      submenuGotoPowershell.OnClicked :=
+        procedure
+        begin
+          TActions.OnGotoPowershellClicked(FFilenames, false);
+        end;
+      menuGoto.Children.Add(submenuGotoPowershell);
+
+      submenuGotoPowershellAdmin := TMenuModel.Create;
+      submenuGotoPowershellAdmin.Title := languageService.LoadText('menuGotoPowershellAdmin', 'Open in Power Shell as admin');
+      submenuGotoPowershellAdmin.Icon := TMenuIcon.Create('icoPowershell', iconSize);
+      submenuGotoPowershellAdmin.OnClicked :=
+        procedure
+        begin
+          TActions.OnGotoPowershellClicked(FFilenames, true);
+        end;
+      menuGoto.Children.Add(submenuGotoPowershellAdmin);
     end;
 
-  submenuCopyOptions := TMenuModel.Create;
-  submenuCopyOptions.Title := 'Options';
-  submenuCopyOptions.Icon := TMenuIcon.Create('icoOptions', iconSize);
-  submenuCopyOptions.OnClicked :=
-    procedure
+    if (settings.GotoExplorer) then
     begin
-      TActions.OnCopyOptionsClicked();
+      submenuGotoExplorer := TMenuModel.Create;
+      submenuGotoExplorer.Title := languageService.LoadText('menuGotoExplorer', 'Open in Explorer');
+      submenuGotoExplorer.Icon := TMenuIcon.Create('icoExplorer', iconSize);
+      submenuGotoExplorer.OnClicked :=
+        procedure
+        begin
+          TActions.OnGotoExplorerClicked(FFilenames, false);
+        end;
+      menuGoto.Children.Add(submenuGotoExplorer);
+
+      submenuGotoExplorerAdmin := TMenuModel.Create;
+      submenuGotoExplorerAdmin.Title := languageService.LoadText('menuGotoExplorerAdmin', 'Open in Explorer as admin');
+      submenuGotoExplorerAdmin.Icon := TMenuIcon.Create('icoExplorer', iconSize);
+      submenuGotoExplorerAdmin.OnClicked :=
+        procedure
+        begin
+          TActions.OnGotoExplorerClicked(FFilenames, true);
+        end;
+      menuGoto.Children.Add(submenuGotoExplorerAdmin);
     end;
 
-  menuClipboard := TMenuModel.Create;
-  menuClipboard.Title := 'Copy path';
-  menuClipboard.Icon := TMenuIcon.Create('icoClipboard', iconSize);
-  menuClipboard.Children.Add(submenuCopyFilename);
-  menuClipboard.Children.Add(submenuCopyEmail);
-  menuClipboard.Children.Add(submenuCopyOptions);
-
-  submenuOpenCmd := TMenuModel.Create;
-  submenuOpenCmd.Title := 'Open in Command Prompt';
-  submenuOpenCmd.Icon := TMenuIcon.Create('icoCmd', iconSize);
-  submenuOpenCmd.OnClicked :=
-    procedure
-    begin
-      TActions.OnOpenCmdClicked(FFilenames, false);
-    end;
-
-  submenuOpenCmdAdmin := TMenuModel.Create;
-  submenuOpenCmdAdmin.Title := 'Open in Command Prompt as admin';
-  submenuOpenCmdAdmin.Icon := TMenuIcon.Create('icoCmd', iconSize);
-  submenuOpenCmdAdmin.OnClicked :=
-    procedure
-    begin
-      TActions.OnOpenCmdClicked(FFilenames, true);
-    end;
-
-  submenuOpenPowershell := TMenuModel.Create;
-  submenuOpenPowershell.Title := 'Open in PowerShell';
-  submenuOpenPowershell.Icon := TMenuIcon.Create('icoPowershell', iconSize);
-  submenuOpenPowershell.OnClicked :=
-    procedure
-    begin
-      TActions.OnOpenPowershellClicked(FFilenames, false);
-    end;
-
-  submenuOpenPowershellAdmin := TMenuModel.Create;
-  submenuOpenPowershellAdmin.Title := 'Open in PowerShell as admin';
-  submenuOpenPowershellAdmin.Icon := TMenuIcon.Create('icoPowershell', iconSize);
-  submenuOpenPowershellAdmin.OnClicked :=
-    procedure
-    begin
-      TActions.OnOpenPowershellClicked(FFilenames, true);
-    end;
-
-  submenuOpenExplorer := TMenuModel.Create;
-  submenuOpenExplorer.Title := 'Open in Explorer';
-  submenuOpenExplorer.Icon := TMenuIcon.Create('icoExplorer', iconSize);
-  submenuOpenExplorer.OnClicked :=
-    procedure
-    begin
-      TActions.OnOpenExplorerClicked(FFilenames, false);
-    end;
-
-  submenuOpenExplorerAdmin := TMenuModel.Create;
-  submenuOpenExplorerAdmin.Title := 'Open in Explorer as admin';
-  submenuOpenExplorerAdmin.Icon := TMenuIcon.Create('icoExplorer', iconSize);
-  submenuOpenExplorerAdmin.OnClicked :=
-    procedure
-    begin
-      TActions.OnOpenExplorerClicked(FFilenames, true);
-    end;
-
-  menuOpen := TMenuModel.Create;
-  menuOpen.Title := 'Open in';
-  menuOpen.Icon := TMenuIcon.Create('icoCmd', iconSize);
-  menuOpen.Children.Add(submenuOpenCmd);
-  menuOpen.Children.Add(submenuOpenCmdAdmin);
-  menuOpen.Children.Add(submenuOpenPowershell);
-  menuOpen.Children.Add(submenuOpenPowershellAdmin);
-  menuOpen.Children.Add(submenuOpenExplorer);
-  menuOpen.Children.Add(submenuOpenExplorerAdmin);
-
-  Result := TMenuModelList.Create(true);
-  Result.Add(menuClipboard);
-  Result.Add(menuOpen);
+    submenuGotoOptions := TMenuModel.Create;
+    submenuGotoOptions.Title := languageService.LoadText('submenuOptions', 'Options');
+    submenuGotoOptions.Icon := TMenuIcon.Create('icoOptions', iconSize);
+    submenuGotoOptions.OnClicked :=
+      procedure
+      begin
+        TActions.OnGotoOptionsClicked();
+      end;
+    menuGoto.Children.Add(submenuGotoOptions);
+  end;
+  finally
+    settings.Free();
+  end;
 end;
 
 function TApp.QueryContextMenu(
@@ -226,12 +272,12 @@ end;
 procedure TApp.BuildContextMenus(
   menus: TMenuModelList; parent: HMENU; startInsertingAt: UINT; firstFreeCmdId: UINT; var nextFreeCmdId: UINT);
 var
-  index: UINT;
+  index: Integer;
   menuModel: TMenuModel;
   menuItemInfo: TMenuItemInfo;
   popupMenu: HMENU;
 begin
-  for index := 0 to menus.Count -1 do
+  for index := 0 to menus.Count - 1 do
   begin
     menuModel := menus[index];
     menuModel.RelativeCmdId := nextFreeCmdId - firstFreeCmdId; // Later we need the relative id.
@@ -250,7 +296,7 @@ begin
       popupMenu := CreatePopupMenu;
       menuItemInfo.fMask := MIIM_ID or MIIM_STRING or MIIM_BITMAP or MIIM_SUBMENU;
       menuItemInfo.hSubMenu := popupMenu;
-      InsertMenuItem(parent, startInsertingAt + index, True, menuItemInfo);
+      InsertMenuItem(parent, startInsertingAt + UINT(index), True, menuItemInfo);
 
       // Recursive call for children
       BuildContextMenus(menuModel.Children, popupMenu, 0, firstFreeCmdId, nextFreeCmdId);
@@ -259,7 +305,7 @@ begin
     begin
       // This is a normal menu item with an action
       menuItemInfo.fMask := MIIM_ID or MIIM_STRING or MIIM_BITMAP;
-      InsertMenuItem(parent, startInsertingAt + index, True, menuItemInfo);
+      InsertMenuItem(parent, startInsertingAt + UINT(index), True, menuItemInfo);
     end;
   end;
 end;

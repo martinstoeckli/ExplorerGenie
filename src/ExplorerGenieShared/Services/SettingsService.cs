@@ -48,10 +48,10 @@ namespace ExplorerGenieShared.Services
             model.CopyFileConvertToUnc = registry.GetValueAsBool(nameof(model.CopyFileConvertToUnc), model.CopyFileConvertToUnc);
             model.CopyEmailFormat = registry.GetValueAsEnum(nameof(model.CopyEmailFormat), model.CopyEmailFormat);
             model.CopyEmailConvertToUnc = registry.GetValueAsBool(nameof(model.CopyEmailConvertToUnc), model.CopyEmailConvertToUnc);
-            model.JumpToShowMenu = registry.GetValueAsBool(nameof(model.JumpToShowMenu), model.JumpToShowMenu);
-            model.ToolCommandPrompt = registry.GetValueAsBool(nameof(model.ToolCommandPrompt), model.ToolCommandPrompt);
-            model.ToolPowerShell = registry.GetValueAsBool(nameof(model.ToolPowerShell), model.ToolPowerShell);
-            model.ToolExplorer = registry.GetValueAsBool(nameof(model.ToolExplorer), model.ToolExplorer);
+            model.GotoShowMenu = registry.GetValueAsBool(nameof(model.GotoShowMenu), model.GotoShowMenu);
+            model.GotoCommandPrompt = registry.GetValueAsBool(nameof(model.GotoCommandPrompt), model.GotoCommandPrompt);
+            model.GotoPowerShell = registry.GetValueAsBool(nameof(model.GotoPowerShell), model.GotoPowerShell);
+            model.GotoExplorer = registry.GetValueAsBool(nameof(model.GotoExplorer), model.GotoExplorer);
             return model;
         }
 
@@ -67,10 +67,10 @@ namespace ExplorerGenieShared.Services
                 registry.SetValue(nameof(model.CopyFileConvertToUnc), model.CopyFileConvertToUnc);
                 registry.SetValue(nameof(model.CopyEmailFormat), model.CopyEmailFormat);
                 registry.SetValue(nameof(model.CopyEmailConvertToUnc), model.CopyEmailConvertToUnc);
-                registry.SetValue(nameof(model.JumpToShowMenu), model.JumpToShowMenu);
-                registry.SetValue(nameof(model.ToolCommandPrompt), model.ToolCommandPrompt);
-                registry.SetValue(nameof(model.ToolPowerShell), model.ToolPowerShell);
-                registry.SetValue(nameof(model.ToolExplorer), model.ToolExplorer);
+                registry.SetValue(nameof(model.GotoShowMenu), model.GotoShowMenu);
+                registry.SetValue(nameof(model.GotoCommandPrompt), model.GotoCommandPrompt);
+                registry.SetValue(nameof(model.GotoPowerShell), model.GotoPowerShell);
+                registry.SetValue(nameof(model.GotoExplorer), model.GotoExplorer);
                 return true;
             }
             catch (Exception)

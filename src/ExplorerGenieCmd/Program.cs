@@ -28,7 +28,7 @@ namespace ExplorerGenieCmd
                 return;
 
             // Make sure there are no short file formats in the list.
-            args.Filenames.ForEach(file => Path.GetFullPath(file));
+            args.Filenames.ModifyEach(file => Path.GetFullPath(file));
 
             // Create and execute action.
             CmdActionFactory factory = new CmdActionFactory(new SettingsService());

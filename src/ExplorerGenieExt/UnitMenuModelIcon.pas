@@ -15,7 +15,8 @@ type
 
   /// <summary>
   /// Part of a TMenuModel which points to a resource icon and can convert it to a bitmap handle,
-  /// which can be shown in the context menu.
+  /// which can be shown in the context menu. The bitmap handle is owned by the TMenuIcon and is
+  /// freed automatically.
   /// </summary>
   TMenuIcon = class(TObject)
   private
@@ -33,7 +34,7 @@ type
     /// <param name="iconResourceId">Id of an icon resource of the application.</param>
     /// <param name="destSize">The required size of the bitmap.</param>
     /// <returns>A menu icon bitmap, or 0 if no such resource could be found, or if it could not
-    /// be converted to a bitmap.</returns>
+    /// be converted to a bitmap. The handle is owned by the TMenuIcon.</returns>
     class function LoadIconAsPBGRA32Bitmap(iconResourceId: String; destSize: TSize): HBITMAP;
 
     /// <summary>

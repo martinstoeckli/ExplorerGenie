@@ -38,7 +38,7 @@ namespace ExplorerGenieCmd
             }
             else if ("-CopyEmail".Equals(commandLineOption, StringComparison.OrdinalIgnoreCase))
             {
-                return new CmdActionCopyFile(_settingsService);
+                return new CmdActionCopyEmail(_settingsService);
             }
             else
             {

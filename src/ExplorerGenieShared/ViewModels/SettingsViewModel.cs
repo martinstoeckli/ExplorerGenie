@@ -189,52 +189,52 @@ namespace ExplorerGenieShared.ViewModels
             return Path.Combine(documentDirectory, "My Document.txt");
         }
 
-        public bool JumpToShowMenu
+        public bool GotoShowMenu
         {
-            get { return _model.JumpToShowMenu; }
+            get { return _model.GotoShowMenu; }
 
             set
             {
-                if (SetPropertyIndirect(() => _model.JumpToShowMenu, (v) => _model.JumpToShowMenu = v, value, false))
+                if (SetPropertyIndirect(() => _model.GotoShowMenu, (v) => _model.GotoShowMenu = v, value, false))
                 {
                     _settingsService?.TrySaveSettingsToLocalDevice(_model);
                 }
             }
         }
 
-        public bool ToolCommandPrompt
+        public bool GotoCommandPrompt
         {
-            get { return _model.ToolCommandPrompt; }
+            get { return _model.GotoCommandPrompt; }
 
             set
             {
-                if (SetPropertyIndirect(() => _model.ToolCommandPrompt, (v) => _model.ToolCommandPrompt = v, value, false))
+                if (SetPropertyIndirect(() => _model.GotoCommandPrompt, (v) => _model.GotoCommandPrompt = v, value, false))
                 {
                     _settingsService?.TrySaveSettingsToLocalDevice(_model);
                 }
             }
         }
 
-        public bool ToolPowerShell
+        public bool GotoPowerShell
         {
-            get { return _model.ToolPowerShell; }
+            get { return _model.GotoPowerShell; }
 
             set
             {
-                if (SetPropertyIndirect(() => _model.ToolPowerShell, (v) => _model.ToolPowerShell = v, value, false))
+                if (SetPropertyIndirect(() => _model.GotoPowerShell, (v) => _model.GotoPowerShell = v, value, false))
                 {
                     _settingsService?.TrySaveSettingsToLocalDevice(_model);
                 }
             }
         }
 
-        public bool ToolExplorer
+        public bool GotoExplorer
         {
-            get { return _model.ToolExplorer; }
+            get { return _model.GotoExplorer; }
 
             set
             {
-                if (SetPropertyIndirect(() => _model.ToolExplorer, (v) => _model.ToolExplorer = v, value, false))
+                if (SetPropertyIndirect(() => _model.GotoExplorer, (v) => _model.GotoExplorer = v, value, false))
                 {
                     _settingsService?.TrySaveSettingsToLocalDevice(_model);
                 }
