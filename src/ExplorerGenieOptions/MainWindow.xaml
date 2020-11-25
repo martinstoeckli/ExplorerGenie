@@ -26,7 +26,7 @@
 
     <Grid Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}">
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="180"/>
+            <ColumnDefinition Width="156"/>
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
 
@@ -35,7 +35,7 @@
                 <RowDefinition Height="*" />
                 <RowDefinition Height="42" />
             </Grid.RowDefinitions>
-            <Image Grid.Row="0" Source="{StaticResource imgsrcLogo}"/>
+            <Image Grid.Row="0" Source="{StaticResource imgsrcLogo}" Margin="4,4,2,12"/>
             <Button Grid.Row="1" Command="{Binding CloseCommand}" CommandParameter="{Binding ElementName=thisWindow}" Content="{Binding Language[guiClose]}" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="12,0,0,0" Padding="14,6,14,6" IsCancel="True"/>
         </Grid>
         <TabControl Grid.Column="1" x:Name="tab" HorizontalAlignment="Stretch" Margin="0,10,10,10" VerticalAlignment="Stretch" TabStripPlacement="Left">
@@ -52,7 +52,7 @@
                             <CheckBox IsChecked="{Binding CopyFileConvertToUnc}" Content="{Binding Language[guiUnc]}" VerticalAlignment="Center"/>
                             <StackPanel Orientation="Horizontal" Margin="0,6,0,0" >
                                 <Label Content="{Binding Language[guiExample]}" Target="{Binding CopyFileExample}" VerticalAlignment="Center"/>
-                                <TextBlock x:Name="CopyFileExample" Text="{Binding CopyFileExample}" VerticalAlignment="Center" Background="AliceBlue"/>
+                                <TextBlock x:Name="CopyFileExample" Text="{Binding CopyFileExample}" VerticalAlignment="Center" Background="AliceBlue" Padding="4"/>
                             </StackPanel>
                         </StackPanel>
                     </GroupBox>
@@ -64,7 +64,7 @@
                             <CheckBox IsChecked="{Binding CopyEmailConvertToUnc}" Content="{Binding Language[guiUnc]}" VerticalAlignment="Center" Margin="0,6,0,0" />
                             <StackPanel Orientation="Horizontal" Margin="0,6,0,0" >
                                 <Label Content="{Binding Language[guiExample]}" Target="{Binding CopyEmailExample}" VerticalAlignment="Center"/>
-                                <TextBlock x:Name="CopyEmailExample" Text="{Binding CopyEmailExample}" VerticalAlignment="Center" Background="AliceBlue"/>
+                                <TextBlock x:Name="CopyEmailExample" Text="{Binding CopyEmailExample}" VerticalAlignment="Center" Background="AliceBlue" Padding="4"/>
                             </StackPanel>
                         </StackPanel>
                     </GroupBox>

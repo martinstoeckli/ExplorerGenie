@@ -15,7 +15,6 @@ uses
 
 type
   TMenuModelList = class;
-//  TMenuClickedDelegate = reference to procedure();
 
   /// <summary>
   /// The model class which can describe a menu tree structure.

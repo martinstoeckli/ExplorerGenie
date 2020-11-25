@@ -77,7 +77,7 @@ begin
   settingsService := TSettingsService.Create();
   languageService := TLanguageServiceFactory.CreateLanguageService('ExplorerGenie');
   try
-  FMenus := CreateMenuModels(settingsService, languageService);
+    FMenus := CreateMenuModels(settingsService, languageService);
   finally
     languageService := nil;
     settingsService.Free;

@@ -9,7 +9,7 @@ using System.Collections.Generic;
 namespace ExplorerGenieShared
 {
     /// <summary>
-    /// Extension methods for the <see cref="List<>"/> class.
+    /// Extension methods for <see cref="IList{T}"/>.
     /// </summary>
     public static class ListExtensions
     {

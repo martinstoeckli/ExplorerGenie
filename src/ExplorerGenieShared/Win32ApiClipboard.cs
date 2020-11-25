@@ -42,13 +42,13 @@ namespace ExplorerGenieShared
                 return false;
             try
             {
+                EmptyClipboard();
                 string nullTerminatedText = text + "\0";
                 byte[] buffer = Encoding.Unicode.GetBytes(nullTerminatedText);
                 IntPtr hGlobal = Marshal.AllocHGlobal(buffer.Length);
                 try
                 {
                     Marshal.Copy(buffer, 0, hGlobal, buffer.Length);
-                    EmptyClipboard();
                     IntPtr res = SetClipboardData(CF_UNICODETEXT, hGlobal);
                     if (res == IntPtr.Zero)
                         return false;

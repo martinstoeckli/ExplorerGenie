@@ -41,6 +41,7 @@ namespace ExplorerGenieShared.ViewModels
     /// </summary>
     /// <typeparam name="T">Type of the parameter, the command can pass on to its action.</typeparam>
     [SuppressMessage("StyleCop.CSharp.MaintainabilityRules", "SA1402:FileMayOnlyContainASingleClass", Justification = "Generic variation.")]
+    #pragma warning disable IDE0034 // I like an explicit 'default' expression
     public class RelayCommand<T> : ICommand
     {
         private readonly Action<T> _execute = null;
