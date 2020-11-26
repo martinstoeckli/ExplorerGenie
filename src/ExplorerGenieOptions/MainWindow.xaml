@@ -9,14 +9,27 @@
         mc:Ignorable="d"
         Title="ExplorerGenie"
         Height="420" Width="720"
-        Icon="Resources/options.ico" ResizeMode="CanResizeWithGrip">
-    
+        Icon="Resources/options.ico" ResizeMode="CanResizeWithGrip" Loaded="MainWindow_Loaded">
+
     <Window.Resources>
+        <BooleanToVisibilityConverter x:Key="BoolToVisibility" />
         <ImageSource x:Key="imgsrcLogo">/Resources/explorergenie.png</ImageSource>
+        <DrawingImage x:Key="imgsrcPaste">
+            <DrawingImage.Drawing>
+                <DrawingGroup>
+                    <DrawingGroup.Children>
+                        <GeometryDrawing Brush="#000000" Geometry="M19,20H5V4H7V7H17V4H19M12,2A1,1 0 0,1 13,3A1,1 0 0,1 12,4A1,1 0 0,1 11,3A1,1 0 0,1 12,2M19,2H14.82C14.4,0.84 13.3,0 12,0C10.7,0 9.6,0.84 9.18,2H5A2,2 0 0,0 3,4V20A2,2 0 0,0 5,22H19A2,2 0 0,0 21,20V4A2,2 0 0,0 19,2Z" />
+                    </DrawingGroup.Children>
+                </DrawingGroup>
+            </DrawingImage.Drawing>
+        </DrawingImage>
         <vm:RadioEnumConverter x:Key="radioEnumConverter" />
         <Style TargetType="TextBlock" x:Key="InfoGridHeader">
             <Setter Property="Margin" Value="0,0,10,6"/>
             <Setter Property="FontWeight" Value="Bold"/>
+        </Style>
+        <Style TargetType="TabItem">
+            <Setter Property="Height" Value="42"/>
         </Style>
     </Window.Resources>
 
@@ -39,7 +52,9 @@
             <Button Grid.Row="1" Command="{Binding CloseCommand}" CommandParameter="{Binding ElementName=thisWindow}" Content="{Binding Language[guiClose]}" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="12,0,0,0" Padding="14,6,14,6" IsCancel="True"/>
         </Grid>
         <TabControl Grid.Column="1" x:Name="tab" HorizontalAlignment="Stretch" Margin="0,10,10,10" VerticalAlignment="Stretch" TabStripPlacement="Left">
-            <TabItem Header="{Binding Language[menuCopyFile]}" Height="42">
+
+            <!-- Copy file -->
+            <TabItem Header="{Binding Language[menuCopyFile]}">
                 <StackPanel Orientation="Vertical" Margin="12,15,12,15">
                     <CheckBox IsChecked="{Binding CopyFileShowMenu}" Content="{Binding Language[guiShowMenu]}" VerticalAlignment="Center"/>
                     <GroupBox Header="{Binding Language[submenuCopyFile]}" Margin="0,6,0,0" Padding="6">
@@ -70,7 +85,9 @@
                     </GroupBox>
                 </StackPanel>
             </TabItem>
-            <TabItem Header="{Binding Language[menuGoto]}" Height="42">
+
+            <!-- Goto -->
+            <TabItem Header="{Binding Language[menuGoto]}">
                 <StackPanel Orientation="Vertical" Margin="12,15,12,15">
                     <CheckBox IsChecked="{Binding GotoShowMenu}" Content="{Binding Language[guiShowMenu]}" VerticalAlignment="Center"/>
                     <GroupBox Header="{Binding Language[guiApplications]}" Margin="0,6,0,0" Padding="6">
@@ -82,7 +99,107 @@
                     </GroupBox>
                 </StackPanel>
             </TabItem>
-            <TabItem Header="{Binding Language[guiInfo]}" Height="42">
+
+            <!-- Hashes -->
+            <TabItem Header="{Binding Language[menuHash]}">
+                <Grid Margin="12,15,12,15">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                    <CheckBox Grid.Row="0" IsChecked="{Binding HashShowMenu}" Content="{Binding Language[guiShowMenu]}" VerticalAlignment="Center"/>
+                    <GroupBox Grid.Row="1" Header="{Binding Language[guiHashValues]}" Margin="0,6,0,0" Padding="6">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="auto"/>
+                                <RowDefinition Height="*"/>
+                                <RowDefinition Height="auto"/>
+                                <RowDefinition Height="auto"/>
+                            </Grid.RowDefinitions>
+
+                            <ComboBox
+                                Grid.Row="0"
+                                ItemsSource="{Binding FilenamesForHash}"
+                                SelectedItem="{Binding SelectedFilenameForHash}"
+                                />
+                            <DataGrid
+                                Grid.Row="1"
+                                x:Name="hashDataGrid"
+                                ItemsSource="{Binding HashResults}"
+                                Margin="0,10,0,10.5"
+                                GridLinesVisibility="None"
+                                IsReadOnly="True"
+                                VerticalContentAlignment="Bottom"
+                                AutoGenerateColumns="False" HeadersVisibility="Column" IsTabStop="False" CanUserReorderColumns="False" CanUserResizeRows="False" CanUserSortColumns="False">
+                                <DataGrid.Resources>
+                                    <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightBrushKey}" Color="Transparent"/>
+                                </DataGrid.Resources>
+                                <DataGrid.Columns>
+                                    <DataGridTextColumn Binding="{Binding HashAlgorithm}" Width="auto"/>
+                                    <DataGridTextColumn Binding="{Binding HashValue}" Width="*"/>
+                                    <DataGridTemplateColumn Width="32">
+                                        <DataGridTemplateColumn.CellTemplate>
+                                            <DataTemplate>
+                                                <TextBlock x:Name="verifiedIcon" Margin="5 0 0 0" VerticalAlignment="Center" FontSize="15" FontWeight="Bold"/>
+                                                <DataTemplate.Triggers>
+                                                    <DataTrigger Binding="{Binding Path=Verified}" Value="True">
+                                                        <Setter TargetName="verifiedIcon" Property="Text" Value="✓" />
+                                                        <Setter TargetName="verifiedIcon" Property="Foreground" Value="#00CC00" />
+                                                    </DataTrigger>
+                                                    <DataTrigger Binding="{Binding Path=Verified}" Value="False">
+                                                        <Setter TargetName="verifiedIcon" Property="Text" Value="✗" />
+                                                        <Setter TargetName="verifiedIcon" Property="Foreground" Value="#CC0000" />
+                                                    </DataTrigger>
+                                                </DataTemplate.Triggers>
+                                            </DataTemplate>
+                                        </DataGridTemplateColumn.CellTemplate>
+                                    </DataGridTemplateColumn>
+                                </DataGrid.Columns>
+                                <DataGrid.RowStyle>
+                                    <Style TargetType="DataGridRow">
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding Verified}" Value="true">
+                                                <Setter Property="Background" Value="#dafbda"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                        <Style.Resources>
+                                            <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="Transparent" />
+                                            <SolidColorBrush x:Key="{x:Static SystemColors.HighlightTextBrushKey}" Color="Black" />
+                                        </Style.Resources>
+                                    </Style>
+                                </DataGrid.RowStyle>
+                            </DataGrid>
+                            <Label Grid.Row="2" Content="{Binding Language[guiHashVerification]}" Target="{Binding hashVerification}"/>
+                            <Grid Grid.Row="3">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="32"/>
+                                </Grid.ColumnDefinitions>
+                                <TextBox Grid.Column="0" x:Name="hashVerification" Text="{Binding HashCandidate, UpdateSourceTrigger=PropertyChanged}" Padding="4" AcceptsReturn="False" TextWrapping="NoWrap">
+                                    <TextBox.Style>
+                                        <Style TargetType="{x:Type TextBox}">
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding HashVerified}" Value="true">
+                                                    <Setter Property="Background" Value="#dafbda" />
+                                                </DataTrigger>
+                                                <DataTrigger Binding="{Binding HashVerified}" Value="false">
+                                                    <Setter Property="Background" Value="#fbdada" />
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </TextBox.Style>
+                                </TextBox>
+                                <Button Grid.Column="1" Command="{Binding PasteHashFromClipboardCommand}" Margin="4,0,0,0" ToolTip="{Binding Language[guiPaste]}">
+                                    <Image Source="{StaticResource imgsrcPaste}" Width="18" Height="18"/>
+                                </Button>
+                            </Grid>
+                        </Grid>
+                    </GroupBox>
+                </Grid>
+            </TabItem>
+
+            <!-- Information -->
+            <TabItem Header="{Binding Language[guiInfo]}">
                 <StackPanel Orientation="Vertical" Margin="12,15,12,15">
                     <TextBlock Text="ExplorerGenie" HorizontalAlignment="Center" Foreground="SteelBlue" FontSize="20" FontWeight="DemiBold" Margin="0,0,0,10"/>
                     <Grid>

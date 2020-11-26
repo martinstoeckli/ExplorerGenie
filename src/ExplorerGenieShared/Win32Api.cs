@@ -21,6 +21,13 @@ namespace ExplorerGenieShared
         public const int ERROR_MORE_DATA = 234;
         public const int NOERROR = 0;
 
+        [DllImport("kernel32.dll")]
+        public static extern IntPtr GlobalLock(IntPtr hMem);
+
+        [DllImport("kernel32.dll")]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        public static extern bool GlobalUnlock(IntPtr hMem);
+
         [DllImport("mpr.dll", CharSet = CharSet.Unicode)]
         [return: MarshalAs(UnmanagedType.U4)]
         public static extern int WNetGetUniversalNameW(string lpLocalPath, [MarshalAs(UnmanagedType.U4)] int dwInfoLevel, IntPtr lpBuffer, [MarshalAs(UnmanagedType.U4)] ref int lpBufferSize);

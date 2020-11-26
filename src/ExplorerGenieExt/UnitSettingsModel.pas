@@ -17,6 +17,7 @@ type
     FGotoCommandPrompt: Boolean;
     FGotoPowerShell: Boolean;
     FGotoExplorer: Boolean;
+    FHashShowMenu: Boolean;
   public
     constructor Create();
     procedure SetToDefault();
@@ -25,6 +26,7 @@ type
     property GotoCommandPrompt: Boolean read FGotoCommandPrompt write FGotoCommandPrompt;
     property GotoPowerShell: Boolean read FGotoPowerShell write FGotoPowerShell;
     property GotoExplorer: Boolean read FGotoExplorer write FGotoExplorer;
+    property HashShowMenu: Boolean read FHashShowMenu write FHashShowMenu;
   end;
 
 implementation
@@ -41,6 +43,7 @@ begin
   GotoCommandPrompt := true;
   GotoPowerShell := true;
   GotoExplorer := true;
+  HashShowMenu := true;
 end;
 
 end.

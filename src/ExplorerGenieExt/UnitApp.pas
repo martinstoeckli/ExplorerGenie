@@ -112,6 +112,7 @@ var
   submenuGotoExplorer: TMenuModel;
   submenuGotoExplorerAdmin: TMenuModel;
   submenuGotoOptions: TMenuModel;
+  menuHash: TMenuModel;
 begin
   Result := TMenuModelList.Create(true);
   settings := TSettingsModel.Create();
@@ -153,7 +154,7 @@ begin
     submenuCopyOptions.OnClicked :=
       procedure
       begin
-        TActions.OnCopyOptionsClicked();
+        TActions.OnCopyOptionsClicked(FFilenames);
       end;
     menuClipboard.Children.Add(submenuCopyOptions);
   end;
@@ -168,7 +169,7 @@ begin
     if (settings.GotoCommandPrompt) then
     begin
       submenuGotoCmd := TMenuModel.Create;
-      submenuGotoCmd.Title := languageService.LoadText('menuGotoCmd', 'Open in Command Prompt');
+      submenuGotoCmd.Title := languageService.LoadText('submenuGotoCmd', 'Open in Command Prompt');
       submenuGotoCmd.Icon := TMenuIcon.Create('icoCmd', iconSize);
       submenuGotoCmd.OnClicked :=
         procedure
@@ -178,7 +179,7 @@ begin
       menuGoto.Children.Add(submenuGotoCmd);
 
       submenuGotoCmdAdmin := TMenuModel.Create;
-      submenuGotoCmdAdmin.Title := languageService.LoadText('menuGotoCmdAdmin', 'Open in Command Prompt as admin');
+      submenuGotoCmdAdmin.Title := languageService.LoadText('submenuGotoCmdAdmin', 'Open in Command Prompt as admin');
       submenuGotoCmdAdmin.Icon := TMenuIcon.Create('icoCmd', iconSize);
       submenuGotoCmdAdmin.OnClicked :=
         procedure
@@ -191,7 +192,7 @@ begin
     if (settings.GotoPowerShell) then
     begin
       submenuGotoPowershell := TMenuModel.Create;
-      submenuGotoPowershell.Title := languageService.LoadText('menuGotoPowershell', 'Open in Power Shell');
+      submenuGotoPowershell.Title := languageService.LoadText('submenuGotoPowershell', 'Open in Power Shell');
       submenuGotoPowershell.Icon := TMenuIcon.Create('icoPowershell', iconSize);
       submenuGotoPowershell.OnClicked :=
         procedure
@@ -201,7 +202,7 @@ begin
       menuGoto.Children.Add(submenuGotoPowershell);
 
       submenuGotoPowershellAdmin := TMenuModel.Create;
-      submenuGotoPowershellAdmin.Title := languageService.LoadText('menuGotoPowershellAdmin', 'Open in Power Shell as admin');
+      submenuGotoPowershellAdmin.Title := languageService.LoadText('submenuGotoPowershellAdmin', 'Open in Power Shell as admin');
       submenuGotoPowershellAdmin.Icon := TMenuIcon.Create('icoPowershell', iconSize);
       submenuGotoPowershellAdmin.OnClicked :=
         procedure
@@ -214,7 +215,7 @@ begin
     if (settings.GotoExplorer) then
     begin
       submenuGotoExplorer := TMenuModel.Create;
-      submenuGotoExplorer.Title := languageService.LoadText('menuGotoExplorer', 'Open in Explorer');
+      submenuGotoExplorer.Title := languageService.LoadText('submenuGotoExplorer', 'Open in Explorer');
       submenuGotoExplorer.Icon := TMenuIcon.Create('icoExplorer', iconSize);
       submenuGotoExplorer.OnClicked :=
         procedure
@@ -224,7 +225,7 @@ begin
       menuGoto.Children.Add(submenuGotoExplorer);
 
       submenuGotoExplorerAdmin := TMenuModel.Create;
-      submenuGotoExplorerAdmin.Title := languageService.LoadText('menuGotoExplorerAdmin', 'Open in Explorer as admin');
+      submenuGotoExplorerAdmin.Title := languageService.LoadText('submenuGotoExplorerAdmin', 'Open in Explorer as admin');
       submenuGotoExplorerAdmin.Icon := TMenuIcon.Create('icoExplorer', iconSize);
       submenuGotoExplorerAdmin.OnClicked :=
         procedure
@@ -240,9 +241,22 @@ begin
     submenuGotoOptions.OnClicked :=
       procedure
       begin
-        TActions.OnGotoOptionsClicked();
+        TActions.OnGotoOptionsClicked(FFilenames);
       end;
     menuGoto.Children.Add(submenuGotoOptions);
+  end;
+
+  if (settings.HashShowMenu) then
+  begin
+    menuHash := TMenuModel.Create;
+    menuHash.Title := languageService.LoadText('menuHash', 'Calculate hash');
+    menuHash.Icon := TMenuIcon.Create('icoHash', iconSize);
+    menuHash.OnClicked :=
+      procedure
+      begin
+        TActions.OnHashClicked(FFilenames);
+      end;
+    Result.Add(menuHash);
   end;
   finally
     settings.Free();
