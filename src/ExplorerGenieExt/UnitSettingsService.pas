@@ -55,6 +55,8 @@ begin
         settings.GotoPowerShell := StrToBoolDef(registry.ReadString('GotoPowerShell'), settings.GotoPowerShell);
       if (registry.ValueExists('GotoExplorer')) then
         settings.GotoExplorer := StrToBoolDef(registry.ReadString('GotoExplorer'), settings.GotoExplorer);
+      if (registry.ValueExists('HashShowMenu')) then
+        settings.HashShowMenu := StrToBoolDef(registry.ReadString('HashShowMenu'), settings.HashShowMenu);
     end;
   except
     // keep default values

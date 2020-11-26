@@ -3,13 +3,16 @@ submenuCopyFile Copy filename(s)
 submenuCopyEmail Copy as email link
 submenuOptions Options
 menuGoto Go to tool
-menuGotoCmd Open in Command Prompt
-menuGotoCmdAdmin Open in Command Prompt as admin
-menuGotoPowershell Open in Power Shell
-menuGotoPowershellAdmin Open in Power Shell as admin
-menuGotoExplorer Open in Explorer
-menuGotoExplorerAdmin Open in Explorer as admin
+submenuGotoCmd Open in Command Prompt
+submenuGotoCmdAdmin Open in Command Prompt as admin
+submenuGotoPowershell Open in Power Shell
+submenuGotoPowershellAdmin Open in Power Shell as admin
+submenuGotoExplorer Open in Explorer
+submenuGotoExplorerAdmin Open in Explorer as admin
+menuHash Calculate hash
 
+guiCopy Copy
+guiPaste Paste
 guiClose Close
 guiInfo Information
 guiShowMenu Show context menu
@@ -22,6 +25,10 @@ guiAsThunderbird Thunderbird and others
 guiUnc Get network path (UNC) for mapped drives
 guiOnlyFile Only filename without path
 guiApplications Tools
+guiHashValues Hash values
+guiHashValue Hash value
+guiAlgorithm Algorithm
+guiHashVerification Verify a hash by typing or pasting it to the text box.
 guiVersion Version
 guiCopyright Copyright
 guiWebsite Website

@@ -3,13 +3,16 @@ submenuCopyFile Dateiname(n) kopieren
 submenuCopyEmail Als E-Mail Link kopieren
 submenuOptions Optionen
 menuGoto Gehe zu Tool
-menuGotoCmd Öffne in Command Prompt
-menuGotoCmdAdmin Öffne in Command Prompt als Admin
-menuGotoPowershell Öffne in Power Shell
-menuGotoPowershellAdmin Öffne in Power Shell als Admin
-menuGotoExplorer Öffne in Explorer
-menuGotoExplorerAdmin Öffne in Explorer als Admin
+submenuGotoCmd Öffne in Command Prompt
+submenuGotoCmdAdmin Öffne in Command Prompt als Admin
+submenuGotoPowershell Öffne in Power Shell
+submenuGotoPowershellAdmin Öffne in Power Shell als Admin
+submenuGotoExplorer Öffne in Explorer
+submenuGotoExplorerAdmin Öffne in Explorer als Admin
+menuHash Hash berechnen
 
+guiCopy Kopieren
+guiPaste Einfügen
 guiClose Schliessen
 guiInfo Information
 guiShowMenu Kontextmenu anzeigen
@@ -22,6 +25,10 @@ guiAsThunderbird Thunderbird und andere
 guiUnc Für verbundene Laufwerke den Netzwerkpfad (UNC) einsetzen
 guiOnlyFile Nur Dateiname ohne Pfad
 guiApplications Anwendungen
+guiHashValues Hashwerte
+guiHashValue Hashwert
+guiAlgorithm Algorithmus
+guiHashVerification Verifiziere Hashwert durch Eintippen oder Einfügen in die Textbox.
 guiVersion Version
 guiCopyright Copyright
 guiWebsite Webseite

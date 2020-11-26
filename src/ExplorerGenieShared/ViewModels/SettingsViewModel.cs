@@ -5,8 +5,10 @@
 
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using System.Windows;
 using System.Windows.Input;
@@ -22,14 +24,19 @@ namespace ExplorerGenieShared.ViewModels
     {
         private readonly SettingsModel _model;
         private readonly ISettingsService _settingsService;
+        private List<string> _filenames;
         private string _copyFileExample;
         private string _copyEmailExample;
+        private List<FilepathViewModel> _filenamesForHash;
+        private FilepathViewModel _selectedFilenameForHash;
+        private string _hashCandidate;
+        private bool? _hashVerified;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="SettingsViewModel"/> class.
         /// </summary>
         public SettingsViewModel()
-            : this(new SettingsService())
+            : this(new SettingsService(), CommandLineInterpreter.ParseCommandLine(Environment.CommandLine).Filenames)
         {
         }
 
@@ -37,12 +44,18 @@ namespace ExplorerGenieShared.ViewModels
         /// Initializes a new instance of the <see cref="SettingsViewModel"/> class.
         /// </summary>
         /// <param name="settingsService">A service which can store the settings.</param>
-        public SettingsViewModel(ISettingsService settingsService)
+        /// <param name="filenames">User selected list of files, passed by the menu extension.</param>
+        public SettingsViewModel(ISettingsService settingsService, List<string> filenames)
         {
             _settingsService = settingsService;
+            _filenames = filenames;
+            new FilenameSorter().Sort(_filenames);
             _model = _settingsService.LoadSettingsOrDefault();
             OpenHomepageCommand = new RelayCommand(OpenHomepage);
             CloseCommand = new RelayCommand<Window>(CloseWindow);
+            PasteHashFromClipboardCommand = new RelayCommand(PasteHashFromClipboard);
+            HashResults = new ObservableCollection<HashResultViewModel>();
+
             UpdateCopyFileExample();
             UpdateCopyEmailExample();
         }
@@ -239,6 +252,126 @@ namespace ExplorerGenieShared.ViewModels
                     _settingsService?.TrySaveSettingsToLocalDevice(_model);
                 }
             }
+        }
+
+        public bool HashShowMenu
+        {
+            get { return _model.HashShowMenu; }
+
+            set
+            {
+                if (SetPropertyIndirect(() => _model.HashShowMenu, (v) => _model.HashShowMenu = v, value, false))
+                {
+                    _settingsService?.TrySaveSettingsToLocalDevice(_model);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Gets a list of filenames, passed by the context menu.
+        /// </summary>
+        public List<FilepathViewModel> FilenamesForHash
+        {
+            get
+            {
+                if (_filenamesForHash == null)
+                {
+                    _filenamesForHash = new List<FilepathViewModel>();
+                    foreach (string filename in _filenames)
+                    {
+                        if (File.Exists(filename))
+                            _filenamesForHash.Add(new FilepathViewModel { Filepath = filename });
+                    }
+                    SelectedFilenameForHash = FilenamesForHash.FirstOrDefault();
+                }
+                return _filenamesForHash; 
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the user selected filename.
+        /// </summary>
+        public FilepathViewModel SelectedFilenameForHash
+        {
+            get { return _selectedFilenameForHash; }
+            set 
+            {
+                if (SetProperty(ref _selectedFilenameForHash, value, false))
+                {
+                    HashResults.Clear();
+                    var hashes = HashCalculator.CalculateHashes(SelectedFilenameForHash.Filepath);
+                    foreach (HashCalculator.HashResult hash in hashes)
+                        HashResults.Add(new HashResultViewModel { HashAlgorithm = hash.HashAlgorithm, HashValue = hash.HashValue });
+                    UpdateHashHighlighting();
+                }
+            }
+        }
+
+        /// <summary>
+        /// Gets a list of calculated hash values.
+        /// </summary>
+        public ObservableCollection<HashResultViewModel> HashResults { get; private set; }
+
+        /// <summary>
+        /// Gets or sets the user entered hash value to verify.
+        /// </summary>
+        public string HashCandidate
+        {
+            get { return _hashCandidate; }
+
+            set 
+            {
+                if (SetProperty(ref _hashCandidate, value, false))
+                {
+                    UpdateHashHighlighting();
+                }
+            }
+        }
+
+        private void UpdateHashHighlighting()
+        {
+            string trimmedCandidate = HashCandidate?.Trim();
+
+            // Update candidate highlighting
+            if (string.IsNullOrEmpty(trimmedCandidate))
+                HashVerified = null;
+            else
+                HashVerified = HashResults.Any(item => string.Equals(item.HashValue, trimmedCandidate, StringComparison.OrdinalIgnoreCase));
+
+            // Update hash highlighting
+            foreach (HashResultViewModel hashResult in HashResults)
+            {
+                if (string.IsNullOrEmpty(trimmedCandidate))
+                    hashResult.Verified = null;
+                else
+                    hashResult.Verified = string.Equals(hashResult.HashValue, trimmedCandidate, StringComparison.OrdinalIgnoreCase);
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether the <see cref="HashCandidate"/> matches one of
+        /// the <see cref="HashResults"/>.
+        /// </summary>
+        public bool? HashVerified
+        {
+            get { return _hashVerified; }
+            set { SetProperty(ref _hashVerified, value, false); }
+        }
+
+        /// <summary>
+        /// Gets the command which inserts the hash from the clipboard into the <see cref="HashCandidate"/>.
+        /// </summary>
+        public ICommand PasteHashFromClipboardCommand { get; private set; }
+
+        public void PasteHashFromClipboard(object obj)
+        {
+            string textFromClipboard = Clipboard.GetText();
+            if (textFromClipboard != null)
+            {
+                string[] lines = textFromClipboard.Split(new char[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
+                textFromClipboard = lines.FirstOrDefault();
+            }
+            HashCandidate = textFromClipboard;
         }
 
         public string Version

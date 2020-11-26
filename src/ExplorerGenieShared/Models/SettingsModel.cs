@@ -23,6 +23,7 @@ namespace ExplorerGenieShared.Models
             GotoCommandPrompt = true;
             GotoPowerShell = true;
             GotoExplorer = true;
+            HashShowMenu = true;
         }
 
         /// <summary>
@@ -80,6 +81,12 @@ namespace ExplorerGenieShared.Models
         /// </summary>
         public bool GotoExplorer { get; set; }
 
+        /// <summary>
+        /// Gets or sets a value indicating whether the menu tree "hash" should be loaded in the
+        /// context menu.
+        /// </summary>
+        public bool HashShowMenu { get; set; }
+
         /// <inheritdoc/>
         public override bool Equals(object other)
         {
@@ -101,7 +108,8 @@ namespace ExplorerGenieShared.Models
                 && (GotoShowMenu == other.GotoShowMenu)
                 && (GotoCommandPrompt == other.GotoCommandPrompt)
                 && (GotoPowerShell == other.GotoPowerShell)
-                && (GotoExplorer == other.GotoExplorer);
+                && (GotoExplorer == other.GotoExplorer)
+                && (HashShowMenu == other.HashShowMenu);
         }
 
         /// <inheritdoc/>
@@ -120,6 +128,7 @@ namespace ExplorerGenieShared.Models
                 result = (result * 397) ^ GotoCommandPrompt.GetHashCode();
                 result = (result * 397) ^ GotoPowerShell.GetHashCode();
                 result = (result * 397) ^ GotoExplorer.GetHashCode();
+                result = (result * 397) ^ HashShowMenu.GetHashCode();
                 return result;
             }
         }

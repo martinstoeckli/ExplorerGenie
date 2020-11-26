@@ -56,6 +56,7 @@ type
 
     class function FindExplorerGenieCmdPath: String;
     class function FindExplorerGenieOptionsPath: String;
+    class function ContainsFiles(filenames: TStrings): Boolean;
   public
     /// <summary>
     /// Action for menu item "copy file"
@@ -72,7 +73,8 @@ type
     /// <summary>
     /// Action for menu item "copy options"
     /// </summary>
-    class procedure OnCopyOptionsClicked();
+    /// <param name="filenames">List with paths of selected files.</param>
+    class procedure OnCopyOptionsClicked(filenames: TStrings);
 
     /// <summary>
     /// Action for menu item "open cmd"
@@ -95,7 +97,14 @@ type
     /// <summary>
     /// Action for menu item "Go to options"
     /// </summary>
-    class procedure OnGotoOptionsClicked();
+    /// <param name="filenames">List with paths of selected files.</param>
+    class procedure OnGotoOptionsClicked(filenames: TStrings);
+
+    /// <summary>
+    /// Action for menu item "Hash"
+    /// </summary>
+    /// <param name="filenames">List with paths of selected files.</param>
+    class procedure OnHashClicked(filenames: TStrings);
   end;
 
 implementation
@@ -120,13 +129,13 @@ begin
   ExecuteCommand(exePath, params, false);
 end;
 
-class procedure TActions.OnCopyOptionsClicked();
+class procedure TActions.OnCopyOptionsClicked(filenames: TStrings);
 var
   exePath: String;
   params: String;
 begin
   exePath := FindExplorerGenieOptionsPath();
-  params := BuildCommandLine('-OpenedFromCopy', nil);
+  params := BuildCommandLine('-OpenedFromCopy', filenames);
   ExecuteCommand(exePath, params, true);
 end;
 
@@ -178,13 +187,23 @@ begin
   end;
 end;
 
-class procedure TActions.OnGotoOptionsClicked;
+class procedure TActions.OnGotoOptionsClicked(filenames: TStrings);
 var
   exePath: String;
   params: String;
 begin
   exePath := FindExplorerGenieOptionsPath();
-  params := BuildCommandLine('-OpenedFromGoto', nil);
+  params := BuildCommandLine('-OpenedFromGoto', filenames);
+  ExecuteCommand(exePath, params, true);
+end;
+
+class procedure TActions.OnHashClicked(filenames: TStrings);
+var
+  exePath: String;
+  params: String;
+begin
+  exePath := FindExplorerGenieOptionsPath();
+  params := BuildCommandLine('-OpenedFromHash', filenames);
   ExecuteCommand(exePath, params, true);
 end;
 
@@ -270,6 +289,19 @@ begin
     Result := 'runas'
   else
     Result := 'open';
+end;
+
+class function TActions.ContainsFiles(filenames: TStrings): Boolean;
+var
+  index: Integer;
+begin
+  Result := false;
+  index := 0;
+  while (not Result) and (index < filenames.Count) do
+  begin
+    Result := TFile.Exists(filenames[index]);
+    Inc(index);
+  end;
 end;
 
 class procedure TActions.ExecuteCommand(const cmd, params: String; visible: Boolean);

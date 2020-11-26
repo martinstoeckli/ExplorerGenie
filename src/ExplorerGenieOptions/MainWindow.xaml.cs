@@ -7,6 +7,7 @@ using System;
 using System.Windows;
 using System.Windows.Controls;
 using ExplorerGenieShared;
+using ExplorerGenieShared.ViewModels;
 
 namespace ExplorerGenieOptions
 {
@@ -28,8 +29,23 @@ namespace ExplorerGenieOptions
                 tabControl.SelectedIndex = 0;
             else if ("-OpenedFromGoto".Equals(arguments.Option))
                 tabControl.SelectedIndex = 1;
+            else if ("-OpenedFromHash".Equals(arguments.Option))
+                tabControl.SelectedIndex = 2;
             else
                 tabControl.SelectedIndex = 0;
+        }
+
+        private void MainWindow_Loaded(object sender, RoutedEventArgs e)
+        {
+            // Unfortunately the DataGrid header seems not bindable with sane complexity.
+            DataGrid hashDataGrid = FindName("hashDataGrid") as DataGrid;
+            hashDataGrid.Columns[0].Header = GetViewModel().Language["guiAlgorithm"];
+            hashDataGrid.Columns[1].Header = GetViewModel().Language["guiHashValue"];
+        }
+
+        private SettingsViewModel GetViewModel()
+        {
+            return (SettingsViewModel)DataContext;
         }
     }
 }

@@ -52,6 +52,7 @@ namespace ExplorerGenieShared.Services
             model.GotoCommandPrompt = registry.GetValueAsBool(nameof(model.GotoCommandPrompt), model.GotoCommandPrompt);
             model.GotoPowerShell = registry.GetValueAsBool(nameof(model.GotoPowerShell), model.GotoPowerShell);
             model.GotoExplorer = registry.GetValueAsBool(nameof(model.GotoExplorer), model.GotoExplorer);
+            model.HashShowMenu = registry.GetValueAsBool(nameof(model.HashShowMenu), model.HashShowMenu);
             return model;
         }
 
@@ -71,6 +72,7 @@ namespace ExplorerGenieShared.Services
                 registry.SetValue(nameof(model.GotoCommandPrompt), model.GotoCommandPrompt);
                 registry.SetValue(nameof(model.GotoPowerShell), model.GotoPowerShell);
                 registry.SetValue(nameof(model.GotoExplorer), model.GotoExplorer);
+                registry.SetValue(nameof(model.HashShowMenu), model.HashShowMenu);
                 return true;
             }
             catch (Exception)

@@ -5,7 +5,6 @@
 
 using System;
 using System.Runtime.InteropServices;
-using System.Text;
 
 namespace ExplorerGenieShared
 {
@@ -27,6 +26,9 @@ namespace ExplorerGenieShared
         private static extern bool EmptyClipboard();
 
         [DllImport("user32.dll")]
+        private static extern IntPtr GetClipboardData(uint uFormat);
+
+        [DllImport("user32.dll")]
         private static extern IntPtr SetClipboardData(uint uFormat, IntPtr hMem);
 
         private const uint CF_UNICODETEXT = 13;
@@ -43,15 +45,11 @@ namespace ExplorerGenieShared
             try
             {
                 EmptyClipboard();
-                string nullTerminatedText = text + "\0";
-                byte[] buffer = Encoding.Unicode.GetBytes(nullTerminatedText);
-                IntPtr hGlobal = Marshal.AllocHGlobal(buffer.Length);
+                IntPtr hGlobal = Marshal.StringToHGlobalUni(text);
                 try
                 {
-                    Marshal.Copy(buffer, 0, hGlobal, buffer.Length);
                     IntPtr res = SetClipboardData(CF_UNICODETEXT, hGlobal);
-                    if (res == IntPtr.Zero)
-                        return false;
+                    return (res != IntPtr.Zero);
                 }
                 finally
                 {
@@ -62,7 +60,6 @@ namespace ExplorerGenieShared
             {
                 CloseClipboard();
             }
-            return true;
         }
     }
 }

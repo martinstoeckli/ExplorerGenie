@@ -11,11 +11,14 @@
   <ItemGroup>
     <Compile Include="$(MSBuildThisFileDirectory)CommandLineInterpreter.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)CommandLineArgs.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)HashCalculator.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ListExtensions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Services\ILanguageService.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Services\ILanguageServiceResourceReader.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Services\LanguageService.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Services\LanguageServiceFileResourceReader.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ViewModels\FilepathViewModel.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ViewModels\HashResultViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewModels\RadioEnumConverter.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewModels\RelayCommand.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewModels\SettingsViewModel.cs" />
