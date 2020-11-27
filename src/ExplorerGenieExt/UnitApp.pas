@@ -76,6 +76,11 @@ begin
 
   settingsService := TSettingsService.Create();
   languageService := TLanguageServiceFactory.CreateLanguageService('ExplorerGenie');
+{$IFDEF DEBUG}
+  // development: Here we can force loading of a specific language.
+  languageService := TLanguageServiceFactory.CreateLanguageService('ExplorerGenie', 'en');
+{$ENDIF}
+
   try
     FMenus := CreateMenuModels(settingsService, languageService);
   finally

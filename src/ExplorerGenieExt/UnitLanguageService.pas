@@ -51,6 +51,15 @@ type
     /// preset to the name of the calling DLL/EXE without the file extension..</param>
     /// <returns>New language service.</returns>
     class function CreateLanguageService(domain: String): ILanguageService; overload;
+
+    /// <summary>
+    /// Creates a new language service instance.
+    /// </summary>
+    /// <param name="domain">The domain of the language resource. For this reader the domain is
+    /// preset to the name of the calling DLL/EXE without the file extension..</param>
+    /// <param name="languageCode">Two letter language code of the resource.</param>
+    /// <returns>New language service.</returns>
+    class function CreateLanguageService(domain: String; languageCode: String): ILanguageService; overload;
   end;
 
   /// <summary>
@@ -135,6 +144,11 @@ end;
 class function TLanguageServiceFactory.CreateLanguageService(domain: String): ILanguageService;
 begin
   Result := TLanguageService.Create(domain, '');
+end;
+
+class function TLanguageServiceFactory.CreateLanguageService(domain: String; languageCode: String): ILanguageService;
+begin
+  Result := TLanguageService.Create(domain, languageCode);
 end;
 
 { TLanguageService }

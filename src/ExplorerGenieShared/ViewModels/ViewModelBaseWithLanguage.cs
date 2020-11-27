@@ -19,6 +19,11 @@ namespace ExplorerGenieShared.ViewModels
         {
             var languageResourceReader = new LanguageServiceFileResourceReader { Domain = "ExplorerGenie" };
             Language = new LanguageService(languageResourceReader);
+
+#if DEBUG
+            // development: Here we can force loading of a specific language.
+            Language = new LanguageService(languageResourceReader, "en");
+#endif
         }
 
         /// <summary>
