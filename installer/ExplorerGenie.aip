@@ -7,13 +7,15 @@
     <ROW Property="AI_REQUIRED_DOTNET_VERSION" MultiBuildValue="DefaultBuild:4.5" ValueLocId="-"/>
     <ROW Property="ALLUSERS" Value="1"/>
     <ROW Property="ARPCOMMENTS" Value="This installer database contains the logic and data required to install [|ProductName]." ValueLocId="*"/>
+    <ROW Property="ARPCONTACT" Value="https://www.martinstoeckli.ch/explorergenie"/>
+    <ROW Property="ARPHELPLINK" Value="https://www.martinstoeckli.ch/explorergenie"/>
     <ROW Property="ARPURLINFOABOUT" Value="https://www.martinstoeckli.ch/explorergenie"/>
     <ROW Property="CTRLS" Value="2"/>
     <ROW Property="Manufacturer" Value="MartinStoeckli"/>
-    <ROW Property="ProductCode" Value="1031:{82C544B3-FC32-4D04-839A-335F14C756CB} 1033:{82C544B3-FC32-4D04-839A-335F14C756CB} " Type="16"/>
+    <ROW Property="ProductCode" Value="1031:{5ADB196A-043E-42FF-B5F0-39E553D6E02C} 1033:{5ADB196A-043E-42FF-B5F0-39E553D6E02C} " Type="16"/>
     <ROW Property="ProductLanguage" Value="1033"/>
     <ROW Property="ProductName" Value="ExplorerGenie"/>
-    <ROW Property="ProductVersion" Value="1.0.0" Type="32"/>
+    <ROW Property="ProductVersion" Value="1.1.0" Type="32"/>
     <ROW Property="RUNAPPLICATION" Value="1" Type="4"/>
     <ROW Property="SecureCustomProperties" Value="OLDPRODUCTS;AI_NEWERPRODUCTFOUND"/>
     <ROW Property="UpgradeCode" Value="{1FFB6672-4607-4D94-B23F-21C09B0FC732}"/>
@@ -64,7 +66,7 @@
     <ROW Action="AI_DetectSoftware" Sequence="151"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.BuildComponent">
-    <ROW BuildKey="DefaultBuild" BuildName="DefaultBuild" BuildOrder="1" BuildType="1" PackageFolder="Setup Files" Languages="en;de" LangOpt="1" InstallationType="4" UseLargeSchema="true" Unicode="true"/>
+    <ROW BuildKey="DefaultBuild" BuildName="DefaultBuild" BuildOrder="1" BuildType="1" PackageFolder="Setup Files" PackageFileName="explorergenie" Languages="en;de" LangOpt="1" InstallationType="4" UseLargeSchema="true" Unicode="true"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.DictionaryComponent">
     <ROW Path="&lt;AI_DICTS&gt;ui.ail"/>

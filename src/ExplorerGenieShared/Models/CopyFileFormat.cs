@@ -20,5 +20,8 @@ namespace ExplorerGenieShared.Models
 
         /// <summary>Copies the path in escaped C/C++ syntax.</summary>
         C = 2,
+
+        /// <summary>Copies the path with slashes for Html files.</summary>
+        Html = 3,
     }
 }

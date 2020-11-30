@@ -31,7 +31,7 @@ ExplorerGenie can calculate some well-known hashes for the selected files, the l
 
 Because context menus run inside the explorer process itself (shell-extension), and therefore can potentially interfere with this process, we took special care about the stability of this extension.
 
-- The code of the shell extension is kept to a minimum, it only starts the real application, which does the work and is running in a separate process.
+- The code of the shell extension is kept to a minimum, it only starts the real application, which does the work and is running in its own separate process.
 - The shell extension is written in Delphi, which compiles to native applications. This way we can avoid loading of a (DotNet) runtime and possible version conflicts, and do not impact performance of explorer and file-open dialogs.
 
 ## Credits

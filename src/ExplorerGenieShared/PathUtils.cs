@@ -37,6 +37,9 @@ namespace ExplorerGenieShared
                 case CopyFileFormat.Uri:
                     filenames.ModifyEach(file => ConvertToUri(file));
                     break;
+                case CopyFileFormat.Html:
+                    filenames.ModifyEach(file => ContertToHtml(file));
+                    break;
                 case CopyFileFormat.C:
                     filenames.ModifyEach(file => ConvertToC(file));
                     break;
@@ -132,6 +135,19 @@ namespace ExplorerGenieShared
             {
                 return filename;
             }
+        }
+
+        /// <summary>
+        /// Converts a file path to its HTML form with slashes.
+        /// <example>
+        /// C:\Temp\mit Leerschlag ➽ C:/Temp/mit Leerschlag
+        /// </example>
+        /// </summary>
+        /// <param name="filename">Absolute file path to convert. This file doesn't need to exist.</param>
+        /// <returns>Html path of the file.</returns>
+        public static string ContertToHtml(string filename)
+        {
+            return filename.Replace(@"\", @"/");
         }
 
         /// <summary>

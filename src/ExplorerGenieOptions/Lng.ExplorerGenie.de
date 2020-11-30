@@ -19,6 +19,7 @@ guiShowMenu Kontextmenu anzeigen
 guiExample Beispiel
 guiAsOriginalPath Original Pfad
 guiAsUri Als URI (Uniform Resource Identifier)
+guiAsHtml Als Html Pfad
 guiAsC Als C/C++ Pfad
 guiAsOutlook Outlook Syntax
 guiAsThunderbird Thunderbird und andere

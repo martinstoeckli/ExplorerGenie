@@ -39,7 +39,7 @@
 
     <Grid Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}">
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="156"/>
+            <ColumnDefinition Width="140"/>
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
 
@@ -61,6 +61,7 @@
                         <StackPanel Orientation="Vertical">
                             <RadioButton IsChecked="{Binding Path=CopyFileFormat, Converter={StaticResource radioEnumConverter}, ConverterParameter=OriginalPath}" Content="{Binding Language[guiAsOriginalPath]}"/>
                             <RadioButton IsChecked="{Binding Path=CopyFileFormat, Converter={StaticResource radioEnumConverter}, ConverterParameter=Uri}" Content="{Binding Language[guiAsUri]}"/>
+                            <RadioButton IsChecked="{Binding Path=CopyFileFormat, Converter={StaticResource radioEnumConverter}, ConverterParameter=Html}" Content="{Binding Language[guiAsHtml]}"/>
                             <RadioButton IsChecked="{Binding Path=CopyFileFormat, Converter={StaticResource radioEnumConverter}, ConverterParameter=C}" Content="{Binding Language[guiAsC]}"/>
 
                             <CheckBox IsChecked="{Binding CopyFileOnlyFilename}" Content="{Binding Language[guiOnlyFile]}" VerticalAlignment="Center" Margin="0,6,0,0" />
