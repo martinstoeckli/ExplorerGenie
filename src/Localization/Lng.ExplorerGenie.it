@@ -1,0 +1,37 @@
+menuCopyFile Copia come percorso
+submenuCopyFile Copia nomi dei file
+submenuCopyEmail Copia come collegamento email
+submenuOptions Opzioni
+menuGoto Vai allo strumento
+submenuGotoCmd Apri nel Prompt dei comandi
+submenuGotoCmdAdmin Apri nel Prompt dei comandi come amministratore
+submenuGotoPowershell Apri in Power Shell
+submenuGotoPowershellAdmin Apri in Power Shell come ammnistratore
+submenuGotoExplorer Apri in Esplora Risorse
+submenuGotoExplorerAdmin Apri in Esplora Risorse come amministratore
+menuHash Calcola hash
+
+guiCopy Copia
+guiPaste Incolla
+guiClose Chiudi
+guiInfo Informazioni
+guiShowMenu Visualizza Menu contestuale
+guiExample Esempio
+guiAsOriginalPath Percorso Originale
+guiAsUri Come URI (Uniform Resource Identifier)
+guiAsHtml Come percorso Html
+guiAsC Sintassi C/C++
+guiAsOutlook Sintassi Outlook
+guiAsThunderbird Thunderbird e altri
+guiUnc Ottieni percorso di rete (UNC) per le unita' mappate
+guiOnlyFile Solo il nome del file senza percorso
+guiApplications Strumenti
+guiHashValues Valori Hash
+guiHashValue Valore Hash
+guiAlgorithm Algoritmo
+guiHashVerification Verifica un hash digitandolo o incollandolo nella casella di testo.
+guiVersion Versione
+guiCopyright Copyright
+guiWebsite Sito Web
+guiOpensource Licenza
+guiOpensourceDesc ExplorerGenie e' un progetto open source, pubblicato sotto i termini della Mozilla Public License v. 2.0.

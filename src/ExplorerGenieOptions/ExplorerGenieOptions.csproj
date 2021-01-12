@@ -84,16 +84,22 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <AdditionalFiles Include="..\Localization\Lng.ExplorerGenie.it">
+      <Link>Lng.ExplorerGenie.it</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </AdditionalFiles>
+    <AdditionalFiles Include="..\Localization\Lng.ExplorerGenie.de">
+      <Link>Lng.ExplorerGenie.de</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </AdditionalFiles>
+    <AdditionalFiles Include="..\Localization\Lng.ExplorerGenie.en">
+      <Link>Lng.ExplorerGenie.en</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </AdditionalFiles>
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
-    <AdditionalFiles Include="Lng.ExplorerGenie.de">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </AdditionalFiles>
-    <EmbeddedResource Include="Lng.ExplorerGenie.en">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
