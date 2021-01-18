@@ -120,6 +120,7 @@
         <DCCReference Include="UnitSettingsModel.pas"/>
         <DCCReference Include="UnitSettingsService.pas"/>
         <DCCReference Include="UnitLanguageService.pas"/>
+        <DCCReference Include="UnitCSharpFormatter.pas"/>
         <RidlCompile Include="ExplorerGenieExt.ridl"/>
         <BuildConfiguration Include="Release">
             <Key>Cfg_2</Key>

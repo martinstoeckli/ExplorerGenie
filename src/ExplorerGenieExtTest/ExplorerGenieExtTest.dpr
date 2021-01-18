@@ -12,7 +12,9 @@ uses
   DUnitX.Loggers.Xml.NUnit,
   DUnitX.TestFramework,
   UnitLanguageServiceTest in 'UnitLanguageServiceTest.pas',
-  UnitLanguageService in '..\ExplorerGenieExt\UnitLanguageService.pas';
+  UnitLanguageService in '..\ExplorerGenieExt\UnitLanguageService.pas',
+  UnitCSharpFormatterTest in 'UnitCSharpFormatterTest.pas',
+  UnitCSharpFormatter in '..\ExplorerGenieExt\UnitCSharpFormatter.pas';
 
 var
   runner : ITestRunner;
