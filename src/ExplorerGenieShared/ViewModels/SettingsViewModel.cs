@@ -53,6 +53,7 @@ namespace ExplorerGenieShared.ViewModels
             _model = _settingsService.LoadSettingsOrDefault();
             OpenHomepageCommand = new RelayCommand(OpenHomepage);
             CloseCommand = new RelayCommand<Window>(CloseWindow);
+            CopyHashToClipboardCommand = new RelayCommand<HashResultViewModel>(CopyHashToClipboard);
             PasteHashFromClipboardCommand = new RelayCommand(PasteHashFromClipboard);
             HashResults = new ObservableCollection<HashResultViewModel>();
 
@@ -356,6 +357,16 @@ namespace ExplorerGenieShared.ViewModels
         {
             get { return _hashVerified; }
             set { SetProperty(ref _hashVerified, value, false); }
+        }
+
+        /// <summary>
+        /// Gets the command which copies the hash to the clipboard/>.
+        /// </summary>
+        public ICommand CopyHashToClipboardCommand { get; private set; }
+
+        public void CopyHashToClipboard(HashResultViewModel hashResult)
+        {
+            Clipboard.SetText(hashResult.HashValue);
         }
 
         /// <summary>

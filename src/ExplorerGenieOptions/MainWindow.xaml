@@ -14,6 +14,15 @@
     <Window.Resources>
         <BooleanToVisibilityConverter x:Key="BoolToVisibility" />
         <ImageSource x:Key="imgsrcLogo">/Resources/explorergenie.png</ImageSource>
+        <DrawingImage x:Key="imgsrcCopy">
+            <DrawingImage.Drawing>
+                <DrawingGroup>
+                    <DrawingGroup.Children>
+                        <GeometryDrawing Brush="#007fff" Geometry="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z" />
+                    </DrawingGroup.Children>
+                </DrawingGroup>
+            </DrawingImage.Drawing>
+        </DrawingImage>
         <DrawingImage x:Key="imgsrcPaste">
             <DrawingImage.Drawing>
                 <DrawingGroup>
@@ -141,17 +150,9 @@
                                     <DataGridTemplateColumn Width="32">
                                         <DataGridTemplateColumn.CellTemplate>
                                             <DataTemplate>
-                                                <TextBlock x:Name="verifiedIcon" Margin="5 0 0 0" VerticalAlignment="Center" FontSize="15" FontWeight="Bold"/>
-                                                <DataTemplate.Triggers>
-                                                    <DataTrigger Binding="{Binding Path=Verified}" Value="True">
-                                                        <Setter TargetName="verifiedIcon" Property="Text" Value="✓" />
-                                                        <Setter TargetName="verifiedIcon" Property="Foreground" Value="#00CC00" />
-                                                    </DataTrigger>
-                                                    <DataTrigger Binding="{Binding Path=Verified}" Value="False">
-                                                        <Setter TargetName="verifiedIcon" Property="Text" Value="✗" />
-                                                        <Setter TargetName="verifiedIcon" Property="Foreground" Value="#CC0000" />
-                                                    </DataTrigger>
-                                                </DataTemplate.Triggers>
+                                                <Button Command="{Binding Path=DataContext.CopyHashToClipboardCommand, RelativeSource={RelativeSource AncestorType={x:Type DataGrid}}}" CommandParameter="{Binding}" Margin="4,0,4,0">
+                                                    <Image Source="{StaticResource imgsrcCopy}" Width="12" Height="16"/>
+                                                </Button>
                                             </DataTemplate>
                                         </DataGridTemplateColumn.CellTemplate>
                                     </DataGridTemplateColumn>

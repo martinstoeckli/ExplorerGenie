@@ -21,7 +21,8 @@ namespace ExplorerGenieShared.Services
     /// </example>
     /// If no file for the requested language can be found, the reader checks whether there exists a
     /// fallback resource file in the embedded resources. So you can e.g. copy the english language
-    /// file to the output directory, as well as compiling it as "embedded resource".
+    /// file to the output directory, as well as compiling it as "embedded resource", just set the
+    /// build action for this file to "Embedded Resource" instead of "AdditionalFiles".
     /// </summary>
     public class LanguageServiceFileResourceReader : ILanguageServiceResourceReader
     {

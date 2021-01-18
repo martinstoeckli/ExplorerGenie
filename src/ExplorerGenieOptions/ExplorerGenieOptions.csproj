@@ -92,10 +92,10 @@
       <Link>Lng.ExplorerGenie.de</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </AdditionalFiles>
-    <AdditionalFiles Include="..\Localization\Lng.ExplorerGenie.en">
+    <EmbeddedResource Include="..\Localization\Lng.ExplorerGenie.en">
       <Link>Lng.ExplorerGenie.en</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </AdditionalFiles>
+    </EmbeddedResource>
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
