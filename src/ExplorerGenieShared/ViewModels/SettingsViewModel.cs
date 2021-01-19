@@ -27,6 +27,7 @@ namespace ExplorerGenieShared.ViewModels
         private List<string> _filenames;
         private string _copyFileExample;
         private string _copyEmailExample;
+        private List<SystemFolderViewModel> _systemFolders;
         private List<FilepathViewModel> _filenamesForHash;
         private FilepathViewModel _selectedFilenameForHash;
         private string _hashCandidate;
@@ -53,6 +54,7 @@ namespace ExplorerGenieShared.ViewModels
             _model = _settingsService.LoadSettingsOrDefault();
             OpenHomepageCommand = new RelayCommand(OpenHomepage);
             CloseCommand = new RelayCommand<Window>(CloseWindow);
+            GotoSystemFolderCommand = new RelayCommand<SystemFolderViewModel>(GotoSystemFolder);
             CopyHashToClipboardCommand = new RelayCommand<HashResultViewModel>(CopyHashToClipboard);
             PasteHashFromClipboardCommand = new RelayCommand(PasteHashFromClipboard);
             HashResults = new ObservableCollection<HashResultViewModel>();
@@ -268,6 +270,76 @@ namespace ExplorerGenieShared.ViewModels
             }
         }
 
+        public List<SystemFolderViewModel> SystemFolders
+        {
+            get
+            {
+                var foldersOfInterest = new Environment.SpecialFolder[]
+                {
+                    Environment.SpecialFolder.ProgramFiles,
+                    Environment.SpecialFolder.ProgramFilesX86,
+                    Environment.SpecialFolder.CommonProgramFiles,
+                    Environment.SpecialFolder.CommonProgramFilesX86,
+                    Environment.SpecialFolder.ApplicationData,
+                    Environment.SpecialFolder.LocalApplicationData,
+                    Environment.SpecialFolder.CommonApplicationData,
+                    Environment.SpecialFolder.MyDocuments,
+                    Environment.SpecialFolder.MyMusic,
+                    Environment.SpecialFolder.MyPictures,
+                    Environment.SpecialFolder.MyVideos,
+                    Environment.SpecialFolder.CommonDocuments,
+                    Environment.SpecialFolder.CommonMusic,
+                    Environment.SpecialFolder.CommonPictures,
+                    Environment.SpecialFolder.CommonVideos,
+                    Environment.SpecialFolder.Windows,
+                    Environment.SpecialFolder.System,
+                    Environment.SpecialFolder.SystemX86,
+                    Environment.SpecialFolder.Desktop,
+                    Environment.SpecialFolder.DesktopDirectory,
+                    Environment.SpecialFolder.CommonDesktopDirectory,
+                    Environment.SpecialFolder.StartMenu,
+                    Environment.SpecialFolder.CommonStartMenu,
+                    Environment.SpecialFolder.Startup,
+                    Environment.SpecialFolder.CommonStartup,
+                    Environment.SpecialFolder.Recent,
+                    Environment.SpecialFolder.SendTo,
+                    Environment.SpecialFolder.UserProfile,
+                    Environment.SpecialFolder.Favorites,
+                    Environment.SpecialFolder.InternetCache,
+                    Environment.SpecialFolder.Cookies,
+                    Environment.SpecialFolder.History,
+                };
+
+                if (_systemFolders == null)
+                {
+                    _systemFolders = new List<SystemFolderViewModel>();
+
+                    // Add temp path
+                    _systemFolders.Add(new SystemFolderViewModel { Name = "Temp", Path = Path.GetTempPath() });
+
+                    // List folders of interest
+                    foreach (Environment.SpecialFolder folder in foldersOfInterest)
+                    {
+                        string path = Environment.GetFolderPath(folder);
+                        if (!string.IsNullOrEmpty(path))
+                            _systemFolders.Add(new SystemFolderViewModel { Name = folder.ToString(), Path = path });
+                    }
+                }
+                return _systemFolders;
+            }
+        }
+
+        /// <summary>
+        /// Gets the command which opens the Explorer in a given special folder.
+        /// </summary>
+        public ICommand GotoSystemFolderCommand { get; private set; }
+
+        private void GotoSystemFolder(SystemFolderViewModel systemFolder)
+        {
+            string arguments = string.Format("/root,\"{0}\"", systemFolder.Path);
+            Process.Start("explorer.exe", arguments);
+        }
+
         /// <summary>
         /// Gets a list of filenames, passed by the context menu.
         /// </summary>
@@ -360,11 +432,11 @@ namespace ExplorerGenieShared.ViewModels
         }
 
         /// <summary>
-        /// Gets the command which copies the hash to the clipboard/>.
+        /// Gets the command which copies the hash to the clipboard.
         /// </summary>
         public ICommand CopyHashToClipboardCommand { get; private set; }
 
-        public void CopyHashToClipboard(HashResultViewModel hashResult)
+        private void CopyHashToClipboard(HashResultViewModel hashResult)
         {
             Clipboard.SetText(hashResult.HashValue);
         }
@@ -374,7 +446,7 @@ namespace ExplorerGenieShared.ViewModels
         /// </summary>
         public ICommand PasteHashFromClipboardCommand { get; private set; }
 
-        public void PasteHashFromClipboard(object obj)
+        private void PasteHashFromClipboard(object obj)
         {
             string textFromClipboard = Clipboard.GetText();
             if (textFromClipboard != null)

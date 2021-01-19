@@ -25,7 +25,8 @@ guiAsOutlook Outlook syntax
 guiAsThunderbird Thunderbird and others
 guiUnc Get network path (UNC) for mapped drives
 guiOnlyFile Only filename without path
-guiApplications Tools
+guiVisibleMenus Visible menu entries
+guiSystemFolders Open system folder in Explorer
 guiHashValues Hash values
 guiHashValue Hash value
 guiAlgorithm Algorithm

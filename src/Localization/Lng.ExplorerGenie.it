@@ -25,7 +25,8 @@ guiAsOutlook Sintassi Outlook
 guiAsThunderbird Thunderbird e altri
 guiUnc Ottieni percorso di rete (UNC) per le unita' mappate
 guiOnlyFile Solo il nome del file senza percorso
-guiApplications Strumenti
+guiVisibleMenus Visible menu entries
+guiSystemFolders Open system folder in Explorer
 guiHashValues Valori Hash
 guiHashValue Valore Hash
 guiAlgorithm Algoritmo

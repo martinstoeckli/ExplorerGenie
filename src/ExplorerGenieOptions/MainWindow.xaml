@@ -12,8 +12,21 @@
         Icon="Resources/options.ico" ResizeMode="CanResizeWithGrip" Loaded="MainWindow_Loaded">
 
     <Window.Resources>
+        <Color x:Key="GridHighlightBackgroundColor">#cce7ff</Color>
+        <SolidColorBrush x:Key="GridHighlightBackgroundBrush" Color="{StaticResource GridHighlightBackgroundColor}" />
+        <Color x:Key="GridAlternatingBackgroundColor">AliceBlue</Color>
+        <SolidColorBrush x:Key="GridAlternatingBackgroundBrush" Color="{StaticResource GridAlternatingBackgroundColor}" />
         <BooleanToVisibilityConverter x:Key="BoolToVisibility" />
         <ImageSource x:Key="imgsrcLogo">/Resources/explorergenie.png</ImageSource>
+        <DrawingImage x:Key="imgsrcOpenInExplorer">
+            <DrawingImage.Drawing>
+                <DrawingGroup>
+                    <DrawingGroup.Children>
+                        <GeometryDrawing Brush="#007fff" Geometry="M14,3V5H17.59L7.76,14.83L9.17,16.24L19,6.41V10H21V3M19,19H5V5H12V3H5C3.89,3 3,3.9 3,5V19A2,2 0 0,0 5,21H19A2,2 0 0,0 21,19V12H19V19Z" />
+                    </DrawingGroup.Children>
+                </DrawingGroup>
+            </DrawingImage.Drawing>
+        </DrawingImage>
         <DrawingImage x:Key="imgsrcCopy">
             <DrawingImage.Drawing>
                 <DrawingGroup>
@@ -48,7 +61,7 @@
 
     <Grid Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}">
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="140"/>
+            <ColumnDefinition Width="132"/>
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
 
@@ -98,16 +111,60 @@
 
             <!-- Goto -->
             <TabItem Header="{Binding Language[menuGoto]}">
-                <StackPanel Orientation="Vertical" Margin="12,15,12,15">
-                    <CheckBox IsChecked="{Binding GotoShowMenu}" Content="{Binding Language[guiShowMenu]}" VerticalAlignment="Center"/>
-                    <GroupBox Header="{Binding Language[guiApplications]}" Margin="0,6,0,0" Padding="6">
+                <Grid Margin="12,15,12,15">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                    <CheckBox Grid.Row="0" IsChecked="{Binding GotoShowMenu}" Content="{Binding Language[guiShowMenu]}" VerticalAlignment="Center"/>
+                    <GroupBox Grid.Row="1" Header="{Binding Language[guiVisibleMenus]}" Margin="0,6,0,0" Padding="6">
                         <StackPanel Orientation="Vertical">
                             <CheckBox IsChecked="{Binding GotoCommandPrompt}" Content="Command Prompt" VerticalAlignment="Center" Margin="0,6,0,0" />
                             <CheckBox IsChecked="{Binding GotoPowerShell}" Content="Power Shell" VerticalAlignment="Center" Margin="0,6,0,0" />
                             <CheckBox IsChecked="{Binding GotoExplorer}" Content="Explorer" VerticalAlignment="Center" Margin="0,6,0,0" />
                         </StackPanel>
                     </GroupBox>
-                </StackPanel>
+                    <GroupBox Grid.Row="2" Header="{Binding Language[guiSystemFolders]}" Margin="0,6,0,0" Padding="6">
+                        <DataGrid
+                            x:Name="systemFolderDataGrid"
+                            ItemsSource="{Binding SystemFolders}"
+                            Margin="0,10,0,10.5"
+                            GridLinesVisibility="None"
+                            IsReadOnly="True"
+                            VerticalContentAlignment="Bottom"
+                            AlternatingRowBackground="{StaticResource GridAlternatingBackgroundBrush}"
+                            AutoGenerateColumns="False" HeadersVisibility="None" IsTabStop="False" CanUserReorderColumns="False" CanUserResizeRows="False" CanUserSortColumns="False" SelectionMode="Single" MouseDoubleClick="SystemFolderDataGrid_MouseDoubleClick">
+                            <DataGrid.Resources>
+                                <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="Transparent" />
+                                <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightBrushKey}" Color="Transparent" />
+                                <SolidColorBrush x:Key="{x:Static SystemColors.HighlightTextBrushKey}" Color="Black" />
+                            </DataGrid.Resources>
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Binding="{Binding Name}" Width="auto"/>
+                                <DataGridTextColumn Binding="{Binding Path}" Width="*"/>
+                                <DataGridTemplateColumn Width="32">
+                                    <DataGridTemplateColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <Button Command="{Binding Path=DataContext.GotoSystemFolderCommand, RelativeSource={RelativeSource AncestorType={x:Type DataGrid}}}" CommandParameter="{Binding}" Margin="4,0,4,0" BorderThickness="0" Background="Transparent">
+                                                <Image Source="{StaticResource imgsrcOpenInExplorer}" Width="12" Height="16"/>
+                                            </Button>
+                                        </DataTemplate>
+                                    </DataGridTemplateColumn.CellTemplate>
+                                </DataGridTemplateColumn>
+                            </DataGrid.Columns>
+                            <DataGrid.CellStyle>
+                                <Style TargetType="DataGridCell">
+                                    <Style.Triggers>
+                                        <Trigger Property="IsSelected" Value="True">
+                                            <Setter Property="BorderBrush" Value="{StaticResource GridHighlightBackgroundBrush}" />
+                                        </Trigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </DataGrid.CellStyle>
+                        </DataGrid>
+                    </GroupBox>
+                </Grid>
             </TabItem>
 
             <!-- Hashes -->
@@ -140,9 +197,11 @@
                                 GridLinesVisibility="None"
                                 IsReadOnly="True"
                                 VerticalContentAlignment="Bottom"
-                                AutoGenerateColumns="False" HeadersVisibility="Column" IsTabStop="False" CanUserReorderColumns="False" CanUserResizeRows="False" CanUserSortColumns="False">
+                                AutoGenerateColumns="False" HeadersVisibility="Column" IsTabStop="False" CanUserReorderColumns="False" CanUserResizeRows="False" CanUserSortColumns="False" MouseDoubleClick="HashDataGrid_MouseDoubleClick">
                                 <DataGrid.Resources>
-                                    <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightBrushKey}" Color="Transparent"/>
+                                    <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="Transparent" />
+                                    <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightBrushKey}" Color="Transparent" />
+                                    <SolidColorBrush x:Key="{x:Static SystemColors.HighlightTextBrushKey}" Color="Black" />
                                 </DataGrid.Resources>
                                 <DataGrid.Columns>
                                     <DataGridTextColumn Binding="{Binding HashAlgorithm}" Width="auto"/>
@@ -150,13 +209,19 @@
                                     <DataGridTemplateColumn Width="32">
                                         <DataGridTemplateColumn.CellTemplate>
                                             <DataTemplate>
-                                                <Button Command="{Binding Path=DataContext.CopyHashToClipboardCommand, RelativeSource={RelativeSource AncestorType={x:Type DataGrid}}}" CommandParameter="{Binding}" Margin="4,0,4,0">
-                                                    <Image Source="{StaticResource imgsrcCopy}" Width="12" Height="16"/>
+                                                <Button Command="{Binding Path=DataContext.CopyHashToClipboardCommand, RelativeSource={RelativeSource AncestorType={x:Type DataGrid}}}" CommandParameter="{Binding}" Margin="4,0,4,0" BorderThickness="0" Background="Transparent">
+                                                    <Image Source="{StaticResource imgsrcCopy}" Width="12" Height="18"/>
                                                 </Button>
                                             </DataTemplate>
                                         </DataGridTemplateColumn.CellTemplate>
                                     </DataGridTemplateColumn>
                                 </DataGrid.Columns>
+                                <DataGrid.Style>
+                                    <Style TargetType="DataGrid">
+                                        <!-- We apply AlternatingRowBackground in a separate style instead of the grid attribute, so it can be overwritten with green if verified -->
+                                        <Setter Property="AlternatingRowBackground" Value="{StaticResource GridAlternatingBackgroundBrush}"/>
+                                    </Style>
+                                </DataGrid.Style>
                                 <DataGrid.RowStyle>
                                     <Style TargetType="DataGridRow">
                                         <Style.Triggers>
@@ -164,12 +229,17 @@
                                                 <Setter Property="Background" Value="#dafbda"/>
                                             </DataTrigger>
                                         </Style.Triggers>
-                                        <Style.Resources>
-                                            <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="Transparent" />
-                                            <SolidColorBrush x:Key="{x:Static SystemColors.HighlightTextBrushKey}" Color="Black" />
-                                        </Style.Resources>
                                     </Style>
                                 </DataGrid.RowStyle>
+                                <DataGrid.CellStyle>
+                                    <Style TargetType="DataGridCell">
+                                        <Style.Triggers>
+                                            <Trigger Property="IsSelected" Value="True">
+                                                <Setter Property="BorderBrush" Value="{StaticResource GridHighlightBackgroundBrush}" />
+                                            </Trigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </DataGrid.CellStyle>
                             </DataGrid>
                             <Label Grid.Row="2" Content="{Binding Language[guiHashVerification]}" Target="{Binding hashVerification}"/>
                             <Grid Grid.Row="3">

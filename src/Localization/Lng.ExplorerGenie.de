@@ -25,7 +25,8 @@ guiAsOutlook Outlook Syntax
 guiAsThunderbird Thunderbird und andere
 guiUnc Für verbundene Laufwerke den Netzwerkpfad (UNC) einsetzen
 guiOnlyFile Nur Dateiname ohne Pfad
-guiApplications Anwendungen
+guiVisibleMenus Sichtbare Menueinträge
+guiSystemFolders Öffne Systemverzeichnis im Explorer
 guiHashValues Hashwerte
 guiHashValue Hashwert
 guiAlgorithm Algorithmus

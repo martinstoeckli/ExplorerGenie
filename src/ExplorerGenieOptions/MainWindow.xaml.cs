@@ -47,5 +47,23 @@ namespace ExplorerGenieOptions
         {
             return (SettingsViewModel)DataContext;
         }
+
+        private void SystemFolderDataGrid_MouseDoubleClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            DataGrid grid = sender as DataGrid;
+            if (grid.SelectedItem is SystemFolderViewModel selectedViewModel)
+            {
+                GetViewModel().GotoSystemFolderCommand.Execute(selectedViewModel);
+            }
+        }
+
+        private void HashDataGrid_MouseDoubleClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            DataGrid grid = sender as DataGrid;
+            if (grid.SelectedItem is HashResultViewModel selectedViewModel)
+            {
+                GetViewModel().CopyHashToClipboardCommand.Execute(selectedViewModel);
+            }
+        }
     }
 }
