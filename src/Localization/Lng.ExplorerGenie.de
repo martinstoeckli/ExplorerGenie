@@ -14,9 +14,10 @@ menuHash Hash berechnen
 guiCopy Kopieren
 guiPaste Einfügen
 guiClose Schliessen
-guiInfo Information
 guiShowMenu Kontextmenu anzeigen
-guiExample Beispiel
+guiPreview Vorschau
+guiInfo Information
+
 guiAsOriginalPath Original Pfad
 guiAsUri Als URI (Uniform Resource Identifier)
 guiAsHtml Als Html Pfad
@@ -25,12 +26,21 @@ guiAsOutlook Outlook Syntax
 guiAsThunderbird Thunderbird und andere
 guiUnc Für verbundene Laufwerke den Netzwerkpfad (UNC) einsetzen
 guiOnlyFile Nur Dateiname ohne Pfad
+
 guiVisibleMenus Sichtbare Menueinträge
-guiSystemFolders Öffne Systemverzeichnis im Explorer
+guiUserDefinedMenus Benutzerdefinierte Menueinträge
+guiGotoMenuTitle Menu title
+guiGotoMenuCommand Command line
+guiGotoMenuAdmin Admin
+
 guiHashValues Hashwerte
 guiHashValue Hashwert
 guiAlgorithm Algorithmus
 guiHashVerification Verifiziere Hashwert durch Eintippen oder Einfügen in die Textbox.
+
+guiSystemFolders Systemverzeichnisse
+guiGotoSystemFolder Gehe zu Systemverzeichnis
+
 guiVersion Version
 guiCopyright Copyright
 guiWebsite Webseite

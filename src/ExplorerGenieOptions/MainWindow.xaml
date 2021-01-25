@@ -45,6 +45,42 @@
                 </DrawingGroup>
             </DrawingImage.Drawing>
         </DrawingImage>
+        <DrawingImage x:Key="imgsrcDelete">
+            <DrawingImage.Drawing>
+                <DrawingGroup>
+                    <DrawingGroup.Children>
+                        <GeometryDrawing Brush="#990000" Geometry="M19,4H15.5L14.5,3H9.5L8.5,4H5V6H19M6,19A2,2 0 0,0 8,21H16A2,2 0 0,0 18,19V7H6V19Z" />
+                    </DrawingGroup.Children>
+                </DrawingGroup>
+            </DrawingImage.Drawing>
+        </DrawingImage>
+        <DrawingImage x:Key="imgsrcArrowUp">
+            <DrawingImage.Drawing>
+                <DrawingGroup>
+                    <DrawingGroup.Children>
+                        <GeometryDrawing Brush="#007fff" Geometry="M15,20H9V12H4.16L12,4.16L19.84,12H15V20Z" />
+                    </DrawingGroup.Children>
+                </DrawingGroup>
+            </DrawingImage.Drawing>
+        </DrawingImage>
+        <DrawingImage x:Key="imgsrcArrowDown">
+            <DrawingImage.Drawing>
+                <DrawingGroup>
+                    <DrawingGroup.Children>
+                        <GeometryDrawing Brush="#007fff" Geometry="M9,4H15V12H19.84L12,19.84L4.16,12H9V4Z" />
+                    </DrawingGroup.Children>
+                </DrawingGroup>
+            </DrawingImage.Drawing>
+        </DrawingImage>
+        <DrawingImage x:Key="imgsrcInfo">
+            <DrawingImage.Drawing>
+                <DrawingGroup>
+                    <DrawingGroup.Children>
+                        <GeometryDrawing Brush="#009900" Geometry="M13,9H11V7H13M13,17H11V11H13M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2Z" />
+                    </DrawingGroup.Children>
+                </DrawingGroup>
+            </DrawingImage.Drawing>
+        </DrawingImage>
         <vm:RadioEnumConverter x:Key="radioEnumConverter" />
         <Style TargetType="TextBlock" x:Key="InfoGridHeader">
             <Setter Property="Margin" Value="0,0,10,6"/>
@@ -52,6 +88,10 @@
         </Style>
         <Style TargetType="TabItem">
             <Setter Property="Height" Value="42"/>
+        </Style>
+        <Style TargetType="Button" x:Key="ToolButton">
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Background" Value="Transparent"/>
         </Style>
     </Window.Resources>
 
@@ -61,7 +101,7 @@
 
     <Grid Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}">
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="132"/>
+            <ColumnDefinition Width="128"/>
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
 
@@ -77,94 +117,132 @@
 
             <!-- Copy file -->
             <TabItem Header="{Binding Language[menuCopyFile]}">
-                <StackPanel Orientation="Vertical" Margin="12,15,12,15">
-                    <CheckBox IsChecked="{Binding CopyFileShowMenu}" Content="{Binding Language[guiShowMenu]}" VerticalAlignment="Center"/>
-                    <GroupBox Header="{Binding Language[submenuCopyFile]}" Margin="0,6,0,0" Padding="6">
-                        <StackPanel Orientation="Vertical">
-                            <RadioButton IsChecked="{Binding Path=CopyFileFormat, Converter={StaticResource radioEnumConverter}, ConverterParameter=OriginalPath}" Content="{Binding Language[guiAsOriginalPath]}"/>
-                            <RadioButton IsChecked="{Binding Path=CopyFileFormat, Converter={StaticResource radioEnumConverter}, ConverterParameter=Uri}" Content="{Binding Language[guiAsUri]}"/>
-                            <RadioButton IsChecked="{Binding Path=CopyFileFormat, Converter={StaticResource radioEnumConverter}, ConverterParameter=Html}" Content="{Binding Language[guiAsHtml]}"/>
-                            <RadioButton IsChecked="{Binding Path=CopyFileFormat, Converter={StaticResource radioEnumConverter}, ConverterParameter=C}" Content="{Binding Language[guiAsC]}"/>
+                <ScrollViewer VerticalScrollBarVisibility="Auto">
+                    <Grid Margin="12,15,12,15">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="auto"/>
+                            <RowDefinition Height="auto"/>
+                            <RowDefinition Height="auto"/>
+                        </Grid.RowDefinitions>
+                    
+                        <CheckBox Grid.Row="0" IsChecked="{Binding CopyFileShowMenu}" Content="{Binding Language[guiShowMenu]}" VerticalAlignment="Center"/>
 
-                            <CheckBox IsChecked="{Binding CopyFileOnlyFilename}" Content="{Binding Language[guiOnlyFile]}" VerticalAlignment="Center" Margin="0,6,0,0" />
-                            <CheckBox IsChecked="{Binding CopyFileConvertToUnc}" Content="{Binding Language[guiUnc]}" VerticalAlignment="Center"/>
-                            <StackPanel Orientation="Horizontal" Margin="0,6,0,0" >
-                                <Label Content="{Binding Language[guiExample]}" Target="{Binding CopyFileExample}" VerticalAlignment="Center"/>
-                                <TextBlock x:Name="CopyFileExample" Text="{Binding CopyFileExample}" VerticalAlignment="Center" Background="AliceBlue" Padding="4"/>
-                            </StackPanel>
-                        </StackPanel>
-                    </GroupBox>
-                    <GroupBox Header="{Binding Language[submenuCopyEmail]}" Margin="0,6,0,0" Padding="6">
-                        <StackPanel Orientation="Vertical">
-                            <RadioButton IsChecked="{Binding Path=CopyEmailFormat, Converter={StaticResource radioEnumConverter}, ConverterParameter=Outlook}" Content="{Binding Language[guiAsOutlook]}"/>
-                            <RadioButton IsChecked="{Binding Path=CopyEmailFormat, Converter={StaticResource radioEnumConverter}, ConverterParameter=Thunderbird}" Content="{Binding Language[guiAsThunderbird]}"/>
+                        <GroupBox Grid.Row="1" Header="{Binding Language[submenuCopyFile]}" Margin="0,6,0,0" Padding="6">
+                            <StackPanel Orientation="Vertical">
+                                <RadioButton IsChecked="{Binding Path=CopyFileFormat, Converter={StaticResource radioEnumConverter}, ConverterParameter=OriginalPath}" Content="{Binding Language[guiAsOriginalPath]}"/>
+                                <RadioButton IsChecked="{Binding Path=CopyFileFormat, Converter={StaticResource radioEnumConverter}, ConverterParameter=Uri}" Content="{Binding Language[guiAsUri]}"/>
+                                <RadioButton IsChecked="{Binding Path=CopyFileFormat, Converter={StaticResource radioEnumConverter}, ConverterParameter=Html}" Content="{Binding Language[guiAsHtml]}"/>
+                                <RadioButton IsChecked="{Binding Path=CopyFileFormat, Converter={StaticResource radioEnumConverter}, ConverterParameter=C}" Content="{Binding Language[guiAsC]}"/>
 
-                            <CheckBox IsChecked="{Binding CopyEmailConvertToUnc}" Content="{Binding Language[guiUnc]}" VerticalAlignment="Center" Margin="0,6,0,0" />
-                            <StackPanel Orientation="Horizontal" Margin="0,6,0,0" >
-                                <Label Content="{Binding Language[guiExample]}" Target="{Binding CopyEmailExample}" VerticalAlignment="Center"/>
-                                <TextBlock x:Name="CopyEmailExample" Text="{Binding CopyEmailExample}" VerticalAlignment="Center" Background="AliceBlue" Padding="4"/>
+                                <CheckBox IsChecked="{Binding CopyFileOnlyFilename}" Content="{Binding Language[guiOnlyFile]}" VerticalAlignment="Center" Margin="0,6,0,0" />
+                                <CheckBox IsChecked="{Binding CopyFileConvertToUnc}" Content="{Binding Language[guiUnc]}" VerticalAlignment="Center"/>
+                                <Grid Margin="0,6,0,0">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="auto"/>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="30"/>
+                                    </Grid.ColumnDefinitions>
+
+                                    <Label Grid.Column="0" Content="{Binding Language[guiPreview]}" Target="{Binding CopyFileExample}" VerticalAlignment="Center"/>
+                                    <TextBlock Grid.Column="1" x:Name="CopyFileExample" Text="{Binding CopyFileExample}" VerticalAlignment="Center" Background="AliceBlue" Padding="4"/>
+                                    <Button Grid.Column="2" Command="{Binding CopyTextToClipboardCommand}" CommandParameter="{Binding CopyFileExample}" Margin="4,0,0,0" Style="{StaticResource ToolButton}" ToolTip="{Binding Language[guiCopy]}">
+                                        <Image Source="{StaticResource imgsrcCopy}" Height="18"/>
+                                    </Button>
+                                </Grid>
                             </StackPanel>
-                        </StackPanel>
-                    </GroupBox>
-                </StackPanel>
+                        </GroupBox>
+                        <GroupBox Grid.Row="2" Header="{Binding Language[submenuCopyEmail]}" Margin="0,6,0,0" Padding="6">
+                            <StackPanel Orientation="Vertical">
+                                <RadioButton IsChecked="{Binding Path=CopyEmailFormat, Converter={StaticResource radioEnumConverter}, ConverterParameter=Outlook}" Content="{Binding Language[guiAsOutlook]}"/>
+                                <RadioButton IsChecked="{Binding Path=CopyEmailFormat, Converter={StaticResource radioEnumConverter}, ConverterParameter=Thunderbird}" Content="{Binding Language[guiAsThunderbird]}"/>
+
+                                <CheckBox IsChecked="{Binding CopyEmailConvertToUnc}" Content="{Binding Language[guiUnc]}" VerticalAlignment="Center" Margin="0,6,0,0" />
+                                <Grid Margin="0,6,0,0">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="auto"/>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="30"/>
+                                    </Grid.ColumnDefinitions>
+
+                                    <Label Grid.Column="0" Content="{Binding Language[guiPreview]}" Target="{Binding CopyEmailExample}" VerticalAlignment="Center"/>
+                                    <TextBlock Grid.Column="1" x:Name="CopyEmailExample" Text="{Binding CopyEmailExample}" VerticalAlignment="Center" Background="AliceBlue" Padding="4"/>
+                                    <Button Grid.Column="2" Command="{Binding CopyTextToClipboardCommand}" CommandParameter="{Binding CopyEmailExample}" Margin="4,0,0,0" Style="{StaticResource ToolButton}" ToolTip="{Binding Language[guiCopy]}">
+                                        <Image Source="{StaticResource imgsrcCopy}" Height="18"/>
+                                    </Button>
+                                </Grid>
+                            </StackPanel>
+                        </GroupBox>
+                    </Grid>
+                </ScrollViewer>
             </TabItem>
 
             <!-- Goto -->
-            <TabItem Header="{Binding Language[menuGoto]}">
-                <Grid Margin="12,15,12,15">
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="auto"/>
-                        <RowDefinition Height="auto"/>
-                        <RowDefinition Height="*"/>
-                    </Grid.RowDefinitions>
-                    <CheckBox Grid.Row="0" IsChecked="{Binding GotoShowMenu}" Content="{Binding Language[guiShowMenu]}" VerticalAlignment="Center"/>
-                    <GroupBox Grid.Row="1" Header="{Binding Language[guiVisibleMenus]}" Margin="0,6,0,0" Padding="6">
-                        <StackPanel Orientation="Vertical">
-                            <CheckBox IsChecked="{Binding GotoCommandPrompt}" Content="Command Prompt" VerticalAlignment="Center" Margin="0,6,0,0" />
-                            <CheckBox IsChecked="{Binding GotoPowerShell}" Content="Power Shell" VerticalAlignment="Center" Margin="0,6,0,0" />
-                            <CheckBox IsChecked="{Binding GotoExplorer}" Content="Explorer" VerticalAlignment="Center" Margin="0,6,0,0" />
-                        </StackPanel>
-                    </GroupBox>
-                    <GroupBox Grid.Row="2" Header="{Binding Language[guiSystemFolders]}" Margin="0,6,0,0" Padding="6">
-                        <DataGrid
-                            x:Name="systemFolderDataGrid"
-                            ItemsSource="{Binding SystemFolders}"
-                            Margin="0,10,0,10.5"
-                            GridLinesVisibility="None"
-                            IsReadOnly="True"
-                            VerticalContentAlignment="Bottom"
-                            AlternatingRowBackground="{StaticResource GridAlternatingBackgroundBrush}"
-                            AutoGenerateColumns="False" HeadersVisibility="None" IsTabStop="False" CanUserReorderColumns="False" CanUserResizeRows="False" CanUserSortColumns="False" SelectionMode="Single" MouseDoubleClick="SystemFolderDataGrid_MouseDoubleClick">
-                            <DataGrid.Resources>
-                                <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="Transparent" />
-                                <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightBrushKey}" Color="Transparent" />
-                                <SolidColorBrush x:Key="{x:Static SystemColors.HighlightTextBrushKey}" Color="Black" />
-                            </DataGrid.Resources>
-                            <DataGrid.Columns>
-                                <DataGridTextColumn Binding="{Binding Name}" Width="auto"/>
-                                <DataGridTextColumn Binding="{Binding Path}" Width="*"/>
-                                <DataGridTemplateColumn Width="32">
-                                    <DataGridTemplateColumn.CellTemplate>
-                                        <DataTemplate>
-                                            <Button Command="{Binding Path=DataContext.GotoSystemFolderCommand, RelativeSource={RelativeSource AncestorType={x:Type DataGrid}}}" CommandParameter="{Binding}" Margin="4,0,4,0" BorderThickness="0" Background="Transparent">
-                                                <Image Source="{StaticResource imgsrcOpenInExplorer}" Width="12" Height="16"/>
-                                            </Button>
-                                        </DataTemplate>
-                                    </DataGridTemplateColumn.CellTemplate>
-                                </DataGridTemplateColumn>
-                            </DataGrid.Columns>
-                            <DataGrid.CellStyle>
-                                <Style TargetType="DataGridCell">
-                                    <Style.Triggers>
-                                        <Trigger Property="IsSelected" Value="True">
-                                            <Setter Property="BorderBrush" Value="{StaticResource GridHighlightBackgroundBrush}" />
-                                        </Trigger>
-                                    </Style.Triggers>
-                                </Style>
-                            </DataGrid.CellStyle>
-                        </DataGrid>
-                    </GroupBox>
-                </Grid>
+            <TabItem DataContext="{Binding GotoToolPageViewModel}" Header="{Binding Language[menuGoto]}">
+                <ScrollViewer VerticalScrollBarVisibility="Auto">
+                    <Grid Margin="12,15,12,15">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="auto"/>
+                            <RowDefinition Height="auto"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+                        <CheckBox Grid.Row="0" IsChecked="{Binding GotoShowMenu}" Content="{Binding Language[guiShowMenu]}" VerticalAlignment="Center"/>
+                        <GroupBox Grid.Row="1" Header="{Binding Language[guiVisibleMenus]}" Margin="0,6,0,0" Padding="6">
+                            <StackPanel Orientation="Vertical">
+                                <CheckBox IsChecked="{Binding GotoCommandPrompt}" Content="Command Prompt" VerticalAlignment="Center" Margin="0,6,0,0" />
+                                <CheckBox IsChecked="{Binding GotoPowerShell}" Content="Power Shell" VerticalAlignment="Center" Margin="0,6,0,0" />
+                                <CheckBox IsChecked="{Binding GotoExplorer}" Content="Explorer" VerticalAlignment="Center" Margin="0,6,0,0" />
+                            </StackPanel>
+                        </GroupBox>
+                        <GroupBox Grid.Row="2" Header="{Binding Language[guiUserDefinedMenus]}" Margin="0,6,0,0" Padding="6">
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="auto"/>
+                                    <RowDefinition Height="*"/>
+                                    <RowDefinition Height="auto"/>
+                                </Grid.RowDefinitions>
+
+                                <StackPanel Grid.Row="0" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,0,0,2">
+                                    <Button Command="{Binding MoveUpCommand}" CommandParameter="{Binding ElementName=gridCustomGotoTools, Path=SelectedCells}" Width="20" Margin="1,0,0,0" Style="{StaticResource ToolButton}">
+                                        <Image Source="{StaticResource imgsrcArrowUp}" Margin="1" Width="12" Height="14"/>
+                                    </Button>
+                                    <Button Command="{Binding MoveDownCommand}" CommandParameter="{Binding ElementName=gridCustomGotoTools, Path=SelectedCells}" Width="20" Margin="1,0,0,0" Style="{StaticResource ToolButton}">
+                                        <Image Source="{StaticResource imgsrcArrowDown}" Margin="1" Width="12" Height="14"/>
+                                    </Button>
+                                </StackPanel>
+                                
+                                <DataGrid
+                                    x:Name="gridCustomGotoTools"
+                                    Grid.Row="1"
+                                    ItemsSource="{Binding CustomGotoTools}"
+                                    GridLinesVisibility="None"
+                                    AlternatingRowBackground="AliceBlue"
+                                    AutoGenerateColumns="False" HeadersVisibility="Column" CanUserAddRows="True" CanUserReorderColumns="False" CanUserSortColumns="False" CanUserResizeRows="False"
+                                    SelectionMode="Single" SelectionUnit="Cell"
+                                    >
+                                    <DataGrid.Resources>
+                                        <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="{StaticResource GridHighlightBackgroundColor}" />
+                                        <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightBrushKey}" Color="{StaticResource GridHighlightBackgroundColor}" />
+                                        <SolidColorBrush x:Key="{x:Static SystemColors.HighlightTextBrushKey}" Color="Black" />
+                                    </DataGrid.Resources>
+                                    <DataGrid.Columns>
+                                        <DataGridTextColumn Binding="{Binding MenuTitle, UpdateSourceTrigger=LostFocus}" Width="2*"/>
+                                        <DataGridTextColumn Binding="{Binding CommandLine, UpdateSourceTrigger=LostFocus}" Width="3*"/>
+                                        <DataGridCheckBoxColumn Binding="{Binding AsAdmin, UpdateSourceTrigger=PropertyChanged}" Width="auto"/>
+                                        <DataGridTemplateColumn Width="32" CanUserSort="False">
+                                            <DataGridTemplateColumn.CellTemplate>
+                                                <DataTemplate>
+                                                    <Button Command="{Binding Path=DataContext.DeleteCustomGotoToolCommand, RelativeSource={RelativeSource AncestorType={x:Type DataGrid}}}" CommandParameter="{Binding}" Margin="4,0,4,0" Style="{StaticResource ToolButton}">
+                                                        <Image Source="{StaticResource imgsrcDelete}" Margin="1" Width="12" Height="14"/>
+                                                    </Button>
+                                                </DataTemplate>
+                                            </DataGridTemplateColumn.CellTemplate>
+                                        </DataGridTemplateColumn>
+                                    </DataGrid.Columns>
+                                </DataGrid>
+                            </Grid>
+                        </GroupBox>
+                    </Grid>
+                </ScrollViewer>
             </TabItem>
 
             <!-- Hashes -->
@@ -197,6 +275,7 @@
                                 GridLinesVisibility="None"
                                 IsReadOnly="True"
                                 VerticalContentAlignment="Bottom"
+                                SelectionMode="Single" SelectionUnit="FullRow"
                                 AutoGenerateColumns="False" HeadersVisibility="Column" IsTabStop="False" CanUserReorderColumns="False" CanUserResizeRows="False" CanUserSortColumns="False" MouseDoubleClick="HashDataGrid_MouseDoubleClick">
                                 <DataGrid.Resources>
                                     <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="Transparent" />
@@ -209,7 +288,7 @@
                                     <DataGridTemplateColumn Width="32">
                                         <DataGridTemplateColumn.CellTemplate>
                                             <DataTemplate>
-                                                <Button Command="{Binding Path=DataContext.CopyHashToClipboardCommand, RelativeSource={RelativeSource AncestorType={x:Type DataGrid}}}" CommandParameter="{Binding}" Margin="4,0,4,0" BorderThickness="0" Background="Transparent">
+                                                <Button Command="{Binding Path=DataContext.CopyHashToClipboardCommand, RelativeSource={RelativeSource AncestorType={x:Type DataGrid}}}" CommandParameter="{Binding}" Margin="4,0,4,0" Style="{StaticResource ToolButton}">
                                                     <Image Source="{StaticResource imgsrcCopy}" Width="12" Height="18"/>
                                                 </Button>
                                             </DataTemplate>
@@ -261,11 +340,60 @@
                                         </Style>
                                     </TextBox.Style>
                                 </TextBox>
-                                <Button Grid.Column="1" Command="{Binding PasteHashFromClipboardCommand}" Margin="4,0,0,0" ToolTip="{Binding Language[guiPaste]}">
+                                <Button Grid.Column="1" Command="{Binding PasteHashFromClipboardCommand}" Margin="4,0,0,0" Style="{StaticResource ToolButton}" ToolTip="{Binding Language[guiPaste]}">
                                     <Image Source="{StaticResource imgsrcPaste}" Width="18" Height="18"/>
                                 </Button>
                             </Grid>
                         </Grid>
+                    </GroupBox>
+                </Grid>
+            </TabItem>
+
+            <!-- System folders -->
+            <TabItem Header="{Binding Language[guiSystemFolders]}">
+                <Grid Margin="12,15,12,15">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                    <GroupBox Grid.Row="0" Header="{Binding Language[guiGotoSystemFolder]}" Margin="0,6,0,0" Padding="6">
+                        <DataGrid
+                            x:Name="systemFolderDataGrid"
+                            ItemsSource="{Binding SystemFolders}"
+                            Margin="0,10,0,10.5"
+                            GridLinesVisibility="None"
+                            IsReadOnly="True"
+                            VerticalContentAlignment="Bottom"
+                            AlternatingRowBackground="{StaticResource GridAlternatingBackgroundBrush}"
+                            SelectionMode="Single" SelectionUnit="FullRow"
+                            AutoGenerateColumns="False" HeadersVisibility="None" IsTabStop="False" CanUserReorderColumns="False" CanUserResizeRows="False" CanUserSortColumns="False" MouseDoubleClick="SystemFolderDataGrid_MouseDoubleClick">
+                            <DataGrid.Resources>
+                                <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="Transparent" />
+                                <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightBrushKey}" Color="Transparent" />
+                                <SolidColorBrush x:Key="{x:Static SystemColors.HighlightTextBrushKey}" Color="Black" />
+                            </DataGrid.Resources>
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Binding="{Binding Name}" Width="auto"/>
+                                <DataGridTextColumn Binding="{Binding Path}" Width="*"/>
+                                <DataGridTemplateColumn Width="32">
+                                    <DataGridTemplateColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <Button Command="{Binding Path=DataContext.GotoSystemFolderCommand, RelativeSource={RelativeSource AncestorType={x:Type DataGrid}}}" CommandParameter="{Binding}" Margin="4,0,4,0" Style="{StaticResource ToolButton}">
+                                                <Image Source="{StaticResource imgsrcOpenInExplorer}" Width="12" Height="16"/>
+                                            </Button>
+                                        </DataTemplate>
+                                    </DataGridTemplateColumn.CellTemplate>
+                                </DataGridTemplateColumn>
+                            </DataGrid.Columns>
+                            <DataGrid.CellStyle>
+                                <Style TargetType="DataGridCell">
+                                    <Style.Triggers>
+                                        <Trigger Property="IsSelected" Value="True">
+                                            <Setter Property="BorderBrush" Value="{StaticResource GridHighlightBackgroundBrush}" />
+                                        </Trigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </DataGrid.CellStyle>
+                        </DataGrid>
                     </GroupBox>
                 </Grid>
             </TabItem>

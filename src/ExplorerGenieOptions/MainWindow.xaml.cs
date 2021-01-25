@@ -4,6 +4,7 @@
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 using System;
+using System.Data;
 using System.Windows;
 using System.Windows.Controls;
 using ExplorerGenieShared;
@@ -41,6 +42,9 @@ namespace ExplorerGenieOptions
             DataGrid hashDataGrid = FindName("hashDataGrid") as DataGrid;
             hashDataGrid.Columns[0].Header = GetViewModel().Language["guiAlgorithm"];
             hashDataGrid.Columns[1].Header = GetViewModel().Language["guiHashValue"];
+            gridCustomGotoTools.Columns[0].Header = GetViewModel().Language["guiGotoMenuTitle"];
+            gridCustomGotoTools.Columns[1].Header = GetViewModel().Language["guiGotoMenuCommand"];
+            gridCustomGotoTools.Columns[2].Header = GetViewModel().Language["guiGotoMenuAdmin"];
         }
 
         private SettingsViewModel GetViewModel()

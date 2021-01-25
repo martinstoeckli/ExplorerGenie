@@ -10,17 +10,17 @@ namespace ExplorerGenieShared.ViewModels
     /// <summary>
     /// ViewModel for a file path, which contains a full path but only displays the file name.
     /// </summary>
-    public class FilepathViewModel
+    public class FilenameOnlyViewModel
     {
         /// <summary>
         /// Gets or sets the full file path.
         /// </summary>
-        public string Filepath { get; set; }
+        public string FullPath { get; set; }
 
         /// <inheritdoc/>
         public override string ToString()
         {
-            return Path.GetFileName(Filepath);
+            return Path.GetFileName(FullPath);
         }
     }
 }

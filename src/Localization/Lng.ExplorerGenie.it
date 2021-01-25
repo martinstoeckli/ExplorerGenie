@@ -14,9 +14,10 @@ menuHash Calcola hash
 guiCopy Copia
 guiPaste Incolla
 guiClose Chiudi
-guiInfo Informazioni
 guiShowMenu Visualizza Menu contestuale
-guiExample Esempio
+guiPreview Preview
+guiInfo Informazioni
+
 guiAsOriginalPath Percorso Originale
 guiAsUri Come URI (Uniform Resource Identifier)
 guiAsHtml Come percorso Html
@@ -25,12 +26,21 @@ guiAsOutlook Sintassi Outlook
 guiAsThunderbird Thunderbird e altri
 guiUnc Ottieni percorso di rete (UNC) per le unita' mappate
 guiOnlyFile Solo il nome del file senza percorso
+
 guiVisibleMenus Visible menu entries
-guiSystemFolders Open system folder in Explorer
+guiUserDefinedMenus User defined menu entries
+guiGotoMenuTitle Menu title
+guiGotoMenuCommand Command line
+guiGotoMenuAdmin Admin
+
 guiHashValues Valori Hash
 guiHashValue Valore Hash
 guiAlgorithm Algoritmo
 guiHashVerification Verifica un hash digitandolo o incollandolo nella casella di testo.
+
+guiSystemFolders System folders
+guiGotoSystemFolder Go to system folder
+
 guiVersion Versione
 guiCopyright Copyright
 guiWebsite Sito Web
