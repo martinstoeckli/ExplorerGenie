@@ -178,71 +178,74 @@
 
             <!-- Goto -->
             <TabItem DataContext="{Binding GotoToolPageViewModel}" Header="{Binding Language[menuGoto]}">
-                <ScrollViewer VerticalScrollBarVisibility="Auto">
-                    <Grid Margin="12,15,12,15">
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="auto"/>
-                            <RowDefinition Height="auto"/>
-                            <RowDefinition Height="*"/>
-                        </Grid.RowDefinitions>
-                        <CheckBox Grid.Row="0" IsChecked="{Binding GotoShowMenu}" Content="{Binding Language[guiShowMenu]}" VerticalAlignment="Center"/>
-                        <GroupBox Grid.Row="1" Header="{Binding Language[guiVisibleMenus]}" Margin="0,6,0,0" Padding="6">
-                            <StackPanel Orientation="Vertical">
-                                <CheckBox IsChecked="{Binding GotoCommandPrompt}" Content="Command Prompt" VerticalAlignment="Center" Margin="0,6,0,0" />
-                                <CheckBox IsChecked="{Binding GotoPowerShell}" Content="Power Shell" VerticalAlignment="Center" Margin="0,6,0,0" />
-                                <CheckBox IsChecked="{Binding GotoExplorer}" Content="Explorer" VerticalAlignment="Center" Margin="0,6,0,0" />
-                            </StackPanel>
-                        </GroupBox>
-                        <GroupBox Grid.Row="2" Header="{Binding Language[guiUserDefinedMenus]}" Margin="0,6,0,0" Padding="6">
-                            <Grid>
-                                <Grid.RowDefinitions>
-                                    <RowDefinition Height="auto"/>
-                                    <RowDefinition Height="*"/>
-                                    <RowDefinition Height="auto"/>
-                                </Grid.RowDefinitions>
+                <Grid Margin="12,15,12,15">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                    <CheckBox Grid.Row="0" IsChecked="{Binding GotoShowMenu}" Content="{Binding Language[guiShowMenu]}" VerticalAlignment="Center"/>
+                    <GroupBox Grid.Row="1" Header="{Binding Language[guiVisibleMenus]}" Margin="0,6,0,0" Padding="6">
+                        <StackPanel Orientation="Vertical">
+                            <CheckBox IsChecked="{Binding GotoCommandPrompt}" Content="Command Prompt" VerticalAlignment="Center" Margin="0,6,0,0" />
+                            <CheckBox IsChecked="{Binding GotoPowerShell}" Content="Power Shell" VerticalAlignment="Center" Margin="0,6,0,0" />
+                            <CheckBox IsChecked="{Binding GotoExplorer}" Content="Explorer" VerticalAlignment="Center" Margin="0,6,0,0" />
+                        </StackPanel>
+                    </GroupBox>
+                    <GroupBox Grid.Row="2" Header="{Binding Language[guiUserDefinedMenus]}" Margin="0,6,0,0" Padding="6">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="auto"/>
+                                <RowDefinition Height="*"/>
+                                <RowDefinition Height="auto"/>
+                            </Grid.RowDefinitions>
 
-                                <StackPanel Grid.Row="0" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,0,0,2">
-                                    <Button Command="{Binding MoveUpCommand}" CommandParameter="{Binding ElementName=gridCustomGotoTools, Path=SelectedCells}" Width="20" Margin="1,0,0,0" Style="{StaticResource ToolButton}">
-                                        <Image Source="{StaticResource imgsrcArrowUp}" Margin="1" Width="12" Height="14"/>
-                                    </Button>
-                                    <Button Command="{Binding MoveDownCommand}" CommandParameter="{Binding ElementName=gridCustomGotoTools, Path=SelectedCells}" Width="20" Margin="1,0,0,0" Style="{StaticResource ToolButton}">
-                                        <Image Source="{StaticResource imgsrcArrowDown}" Margin="1" Width="12" Height="14"/>
-                                    </Button>
-                                </StackPanel>
+                            <StackPanel Grid.Row="0" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,0,0,2">
+                                <Button Command="{Binding MoveUpCommand}" CommandParameter="{Binding ElementName=gridCustomGotoTools, Path=SelectedCells}" Width="20" Margin="1,0,0,0" Style="{StaticResource ToolButton}">
+                                    <Image Source="{StaticResource imgsrcArrowUp}" Margin="1" Width="12" Height="14"/>
+                                </Button>
+                                <Button Command="{Binding MoveDownCommand}" CommandParameter="{Binding ElementName=gridCustomGotoTools, Path=SelectedCells}" Width="20" Margin="1,0,0,0" Style="{StaticResource ToolButton}">
+                                    <Image Source="{StaticResource imgsrcArrowDown}" Margin="1" Width="12" Height="14"/>
+                                </Button>
+                            </StackPanel>
                                 
-                                <DataGrid
-                                    x:Name="gridCustomGotoTools"
-                                    Grid.Row="1"
-                                    ItemsSource="{Binding CustomGotoTools}"
-                                    GridLinesVisibility="None"
-                                    AlternatingRowBackground="AliceBlue"
-                                    AutoGenerateColumns="False" HeadersVisibility="Column" CanUserAddRows="True" CanUserReorderColumns="False" CanUserSortColumns="False" CanUserResizeRows="False"
-                                    SelectionMode="Single" SelectionUnit="Cell"
-                                    >
-                                    <DataGrid.Resources>
-                                        <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="{StaticResource GridHighlightBackgroundColor}" />
-                                        <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightBrushKey}" Color="{StaticResource GridHighlightBackgroundColor}" />
-                                        <SolidColorBrush x:Key="{x:Static SystemColors.HighlightTextBrushKey}" Color="Black" />
-                                    </DataGrid.Resources>
-                                    <DataGrid.Columns>
-                                        <DataGridTextColumn Binding="{Binding MenuTitle, UpdateSourceTrigger=LostFocus}" Width="2*"/>
-                                        <DataGridTextColumn Binding="{Binding CommandLine, UpdateSourceTrigger=LostFocus}" Width="3*"/>
-                                        <DataGridCheckBoxColumn Binding="{Binding AsAdmin, UpdateSourceTrigger=PropertyChanged}" Width="auto"/>
-                                        <DataGridTemplateColumn Width="32" CanUserSort="False">
-                                            <DataGridTemplateColumn.CellTemplate>
-                                                <DataTemplate>
-                                                    <Button Command="{Binding Path=DataContext.DeleteCustomGotoToolCommand, RelativeSource={RelativeSource AncestorType={x:Type DataGrid}}}" CommandParameter="{Binding}" Margin="4,0,4,0" Style="{StaticResource ToolButton}">
-                                                        <Image Source="{StaticResource imgsrcDelete}" Margin="1" Width="12" Height="14"/>
-                                                    </Button>
-                                                </DataTemplate>
-                                            </DataGridTemplateColumn.CellTemplate>
-                                        </DataGridTemplateColumn>
-                                    </DataGrid.Columns>
-                                </DataGrid>
-                            </Grid>
-                        </GroupBox>
-                    </Grid>
-                </ScrollViewer>
+                            <DataGrid
+                                x:Name="gridCustomGotoTools"
+                                Grid.Row="1"
+                                ItemsSource="{Binding CustomGotoTools}"
+                                GridLinesVisibility="None"
+                                AlternatingRowBackground="AliceBlue"
+                                AutoGenerateColumns="False" HeadersVisibility="Column" CanUserAddRows="True" CanUserReorderColumns="False" CanUserSortColumns="False" CanUserResizeRows="False"
+                                SelectionMode="Single" SelectionUnit="Cell"
+                                >
+                                <DataGrid.Resources>
+                                    <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="{StaticResource GridHighlightBackgroundColor}" />
+                                    <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightBrushKey}" Color="{StaticResource GridHighlightBackgroundColor}" />
+                                    <SolidColorBrush x:Key="{x:Static SystemColors.HighlightTextBrushKey}" Color="Black" />
+                                </DataGrid.Resources>
+                                <DataGrid.Columns>
+                                    <DataGridTextColumn Binding="{Binding MenuTitle, UpdateSourceTrigger=LostFocus}" Width="120"/>
+                                    <DataGridTextColumn Binding="{Binding CommandLine, UpdateSourceTrigger=LostFocus}" Width="*"/>
+                                    <DataGridCheckBoxColumn Binding="{Binding AsAdmin, UpdateSourceTrigger=PropertyChanged}" Width="auto"/>
+                                    <DataGridTemplateColumn Width="32" CanUserSort="False">
+                                        <DataGridTemplateColumn.CellTemplate>
+                                            <DataTemplate>
+                                                <Button Command="{Binding Path=DataContext.DeleteCustomGotoToolCommand, RelativeSource={RelativeSource AncestorType={x:Type DataGrid}}}" CommandParameter="{Binding}" Margin="4,0,4,0" Style="{StaticResource ToolButton}">
+                                                    <Image Source="{StaticResource imgsrcDelete}" Margin="1" Width="12" Height="14"/>
+                                                </Button>
+                                            </DataTemplate>
+                                        </DataGridTemplateColumn.CellTemplate>
+                                    </DataGridTemplateColumn>
+                                </DataGrid.Columns>
+                            </DataGrid>
+                                
+                            <StackPanel Grid.Row="2" Orientation="Horizontal" Margin="0,6,0,0">
+                                <Image Source="{StaticResource imgsrcInfo}" Margin="0,4,6,0" Height="14" VerticalAlignment="Top"/>
+                                <TextBlock Text="{Binding Language[guiGotoInfo]}" />
+                            </StackPanel>
+                        </Grid>
+                    </GroupBox>
+                </Grid>
             </TabItem>
 
             <!-- Hashes -->

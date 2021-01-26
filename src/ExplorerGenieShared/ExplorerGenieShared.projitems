@@ -38,5 +38,6 @@
     <Compile Include="$(MSBuildThisFileDirectory)Services\ISettingsService.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Services\SettingsService.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Win32ApiClipboard.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)XmlUtils.cs" />
   </ItemGroup>
 </Project>

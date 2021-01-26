@@ -7,41 +7,33 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics.CodeAnalysis;
+using System.Xml.Serialization;
 
 namespace ExplorerGenieShared.Models
 {
     /// <summary>
     /// Model for a user defined goto tool menu.
     /// </summary>
+    [XmlType("custom_goto_tools")]
     public class CustomGotoToolModel : IEquatable<CustomGotoToolModel>
     {
         /// <summary>
         /// Gets or sets the title of the menu.
         /// </summary>
+        [XmlAttribute("title")]
         public string MenuTitle { get; set; }
 
         /// <summary>
         /// Gets or sets the command line string.
         /// </summary>
+        [XmlAttribute("command")]
         public string CommandLine { get; set; }
 
         /// <summary>
         /// Gets or sets a value indicating whether the tool should be started as admin or normal.
         /// </summary>
+        [XmlAttribute("admin")]
         public bool AsAdmin { get; set; }
-
-        /// <summary>
-        /// Creates a deep copy of this instance.
-        /// </summary>
-        /// <returns>Copy of this instance.</returns>
-        public CustomGotoToolModel Clone()
-        {
-            CustomGotoToolModel result = new CustomGotoToolModel();
-            result.MenuTitle = MenuTitle;
-            result.CommandLine = CommandLine;
-            result.AsAdmin = AsAdmin;
-            return result;
-        }
 
         /// <inheritdoc/>
         public override bool Equals(object other)
@@ -78,20 +70,26 @@ namespace ExplorerGenieShared.Models
     /// List of <see cref="CustomGotoToolModel"/> items.
     /// </summary>
     [SuppressMessage("StyleCop.CSharp.MaintainabilityRules", "SA1402:FileMayOnlyContainASingleClass", Justification = "List belonging to class.")]
+    [XmlType("custom_goto_tools")]
+    [XmlRoot("custom_goto_tools")]
     public class CustomGotoToolModelList : ObservableCollection<CustomGotoToolModel>, IEquatable<CustomGotoToolModelList>
     {
         /// <summary>
-        /// Creates a deep copy of this instance.
+        /// Initializes a new instance of the <see cref="CustomGotoToolModelList"/> class.
         /// </summary>
-        /// <returns>Copy of this instance.</returns>
-        public CustomGotoToolModelList Clone()
+        public CustomGotoToolModelList()
+            : base()
         {
-            CustomGotoToolModelList result = new CustomGotoToolModelList();
-            foreach (CustomGotoToolModel item in this)
-            {
-                result.Add(item.Clone());
-            }
-            return result;
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="CustomGotoToolModelList"/> class
+        /// that contains elements copied from the specified collection.
+        /// </summary>
+        /// <param name="collection">The collection from which the elements are copied.</param>
+        public CustomGotoToolModelList(IEnumerable<CustomGotoToolModel> collection)
+            : base(collection)
+        {
         }
 
         /// <inheritdoc/>

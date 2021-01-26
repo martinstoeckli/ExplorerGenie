@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
+using System.Linq;
 using System.Windows.Controls;
 using System.Windows.Input;
 using ExplorerGenieShared.Models;
@@ -31,10 +32,6 @@ namespace ExplorerGenieShared.ViewModels
             _model = model;
             Language = language;
             _settingsService = settingsService;
-
-            // todo:
-            _model.CustomGotoTools.Add(new CustomGotoToolModel { MenuTitle = "Sugus", CommandLine = "C:/" });
-            _model.CustomGotoTools.Add(new CustomGotoToolModel { MenuTitle = "Caramel", CommandLine = "D:/" });
 
             // Create custom tools list
             CustomGotoTools = new ObservableCollection<CustomGotoToolViewModel>();
@@ -145,6 +142,10 @@ namespace ExplorerGenieShared.ViewModels
         /// </summary>
         public void UpdateCustomGotoToolModels()
         {
+            // Update model and save it
+            _model.CustomGotoTools = new CustomGotoToolModelList(
+                CustomGotoTools.Select(item => item.Model));
+            _settingsService?.TrySaveSettingsToLocalDevice(_model);
         }
 
         /// <summary>

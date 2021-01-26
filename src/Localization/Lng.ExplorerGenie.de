@@ -29,9 +29,10 @@ guiOnlyFile Nur Dateiname ohne Pfad
 
 guiVisibleMenus Sichtbare Menueinträge
 guiUserDefinedMenus Benutzerdefinierte Menueinträge
-guiGotoMenuTitle Menu title
-guiGotoMenuCommand Command line
+guiGotoMenuTitle Menutitel
+guiGotoMenuCommand Kommandozeile
 guiGotoMenuAdmin Admin
+guiGotoInfo Beispiel: "C:\Programs\Microsoft VS Code\Code.exe" "{D}"\n{P} Vollständiger Pfad zu selektierter Datei/Verzeichnis\n{D} Nur Verzeichnis\n{F} Nur Dateiname
 
 guiHashValues Hashwerte
 guiHashValue Hashwert

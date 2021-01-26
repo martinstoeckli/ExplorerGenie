@@ -4,6 +4,9 @@
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 using System;
+using System.Collections.ObjectModel;
+using System.IO;
+using System.Xml.Linq;
 using ExplorerGenieShared.Models;
 using Microsoft.Win32;
 
@@ -53,6 +56,13 @@ namespace ExplorerGenieShared.Services
             model.GotoPowerShell = registry.GetValueAsBool(nameof(model.GotoPowerShell), model.GotoPowerShell);
             model.GotoExplorer = registry.GetValueAsBool(nameof(model.GotoExplorer), model.GotoExplorer);
             model.HashShowMenu = registry.GetValueAsBool(nameof(model.HashShowMenu), model.HashShowMenu);
+
+            string xmlCustomTools = registry.GetValueAsString(nameof(model.CustomGotoTools), string.Empty);
+            if (!string.IsNullOrEmpty(xmlCustomTools))
+            {
+                XDocument xml = XmlUtils.LoadFromString(xmlCustomTools);
+                model.CustomGotoTools = XmlUtils.DeserializeFromXmlDocument<CustomGotoToolModelList>(xml);
+            }
             return model;
         }
 
@@ -73,6 +83,9 @@ namespace ExplorerGenieShared.Services
                 registry.SetValue(nameof(model.GotoPowerShell), model.GotoPowerShell);
                 registry.SetValue(nameof(model.GotoExplorer), model.GotoExplorer);
                 registry.SetValue(nameof(model.HashShowMenu), model.HashShowMenu);
+
+                string xmlCustomTools = XmlUtils.SerializeToString(model.CustomGotoTools, true);
+                registry.SetValue(nameof(model.CustomGotoTools), xmlCustomTools);
                 return true;
             }
             catch (Exception)

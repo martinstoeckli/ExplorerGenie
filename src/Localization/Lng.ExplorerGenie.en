@@ -32,6 +32,7 @@ guiUserDefinedMenus User defined menu entries
 guiGotoMenuTitle Menu title
 guiGotoMenuCommand Command line
 guiGotoMenuAdmin Admin
+guiGotoInfo Example: "C:\Programs\Microsoft VS Code\Code.exe" "{D}"\n{P} Full path of selected file/directory\n{D} Only directory\n{F} Only file name
 
 guiHashValues Hash values
 guiHashValue Hash value
