@@ -59,6 +59,7 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CmdActionOpenTool.cs" />
     <Compile Include="ICmdAction.cs" />
     <Compile Include="CmdActionCopyEmail.cs" />
     <Compile Include="CmdActionCopyFile.cs" />

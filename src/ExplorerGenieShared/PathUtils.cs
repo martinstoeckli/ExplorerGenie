@@ -187,5 +187,19 @@ namespace ExplorerGenieShared
             }
             return result;
         }
+
+        /// <summary>
+        /// Ensures a trailing backslash "\" at the end of the url, to mark a directory.
+        /// </summary>
+        /// <param name="url">Url with or without a trailing slash.</param>
+        /// <returns>Returns the url with trailing slash, or the original url in case or null or empty.</returns>
+        public static string IncludeTrailingBackslash(string url)
+        {
+            if (!string.IsNullOrEmpty(url) && !url.EndsWith(@"\"))
+            {
+                return url + @"\";
+            }
+            return url;
+        }
     }
 }

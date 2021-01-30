@@ -4,7 +4,6 @@
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 using System;
-using System.Data;
 using System.Windows;
 using System.Windows.Controls;
 using ExplorerGenieShared;
@@ -26,11 +25,11 @@ namespace ExplorerGenieOptions
             CommandLineArgs arguments = CommandLineInterpreter.ParseCommandLine(Environment.CommandLine);
 
             TabControl tabControl = this.FindName("tab") as TabControl;
-            if ("-OpenedFromCopy".Equals(arguments.Option))
+            if ("-OpenedFromCopy".Equals(arguments.Action))
                 tabControl.SelectedIndex = 0;
-            else if ("-OpenedFromGoto".Equals(arguments.Option))
+            else if ("-OpenedFromGoto".Equals(arguments.Action))
                 tabControl.SelectedIndex = 1;
-            else if ("-OpenedFromHash".Equals(arguments.Option))
+            else if ("-OpenedFromHash".Equals(arguments.Action))
                 tabControl.SelectedIndex = 2;
             else
                 tabControl.SelectedIndex = 0;

@@ -27,18 +27,22 @@ namespace ExplorerGenieCmd
         /// <summary>
         /// Creates a command action given by the option parameter in the command line.
         /// </summary>
-        /// <param name="commandLineOption">The option parameter passed from ExplorerGenieExt menu
+        /// <param name="commandLineAction">The action parameter passed from ExplorerGenieExt menu
         /// extension, this sould be a parameter with a leading "-" like "-CopyFile".</param>
         /// <returns>A new instance of the found action, or null if no such action could be found.</returns>
-        public ICmdAction CreateAction(string commandLineOption)
+        public ICmdAction CreateAction(string commandLineAction)
         {
-            if ("-CopyFile".Equals(commandLineOption, StringComparison.OrdinalIgnoreCase))
+            if ("-CopyFile".Equals(commandLineAction, StringComparison.OrdinalIgnoreCase))
             {
                 return new CmdActionCopyFile(_settingsService);
             }
-            else if ("-CopyEmail".Equals(commandLineOption, StringComparison.OrdinalIgnoreCase))
+            else if ("-CopyEmail".Equals(commandLineAction, StringComparison.OrdinalIgnoreCase))
             {
                 return new CmdActionCopyEmail(_settingsService);
+            }
+            else if (commandLineAction.StartsWith("-OpenTool", StringComparison.OrdinalIgnoreCase))
+            {
+                return new CmdActionOpenTool(_settingsService, commandLineAction);
             }
             else
             {
