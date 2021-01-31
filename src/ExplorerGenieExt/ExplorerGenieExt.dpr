@@ -13,9 +13,10 @@ uses
   UnitActions in 'UnitActions.pas',
   UnitSettingsModel in 'UnitSettingsModel.pas',
   UnitSettingsService in 'UnitSettingsService.pas',
-  UnitLanguageService in 'UnitLanguageService.pas';
+  UnitLanguageService in 'UnitLanguageService.pas',
+  UnitSettingsGotoToolModel in 'UnitSettingsGotoToolModel.pas';
 
-  /// <summary>
+/// <summary>
   /// "Overrides" the base function DllRegisterServer.
   /// </summary>
   function CustomDllRegisterServer: HResult; stdcall;

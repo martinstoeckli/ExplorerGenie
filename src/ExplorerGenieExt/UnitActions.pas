@@ -11,8 +11,8 @@ uses
   Classes,
   SysUtils,
   StrUtils,
-  ShellApi,
-  IOUtils;
+  IOUtils,
+  UnitSettingsGotoToolModel;
 
 type
   TActions = class(TObject)
@@ -22,26 +22,10 @@ type
     /// root directory is stripped away and passed as the first parameter, to reduce the length
     /// of the command line.
     /// </summary>
-    /// <param name="option">An option beginning with "-".</param>
+    /// <param name="action">An option beginning with "-".</param>
     /// <param name="filenames">List of absolute paths to files.</param>
     /// <returns>Formatted parameter with files.</returns>
-    class function BuildCommandLine(option: String; filenames: TStrings): String;
-
-    /// <summary>
-    /// Gets the first file/directory if the list contains only one item, otherwise it determines
-    /// the common directory of the items.
-    /// </summary>
-    /// <param name="filenames">List of absolute paths to files.</param>
-    /// <returns>Common directory.</returns>
-    class function GetCommonDirectory(filenames: TStrings): String;
-
-    /// <summary>
-    /// Gets the operation verb for calling ShellExecute(), this is either 'open' or 'runas'
-    /// depending on whether the file/folder should be opened as normal or admin user.
-    /// </summary>
-    /// <param name="asAdmin">SEt to true if it should run as admin.</param>
-    /// <returns>Operation verb.</returns>
-    class function GetShellExecuteOperation(asAdmin: Boolean): String;
+    class function BuildCommandLine(action: String; filenames: TStrings): String;
 
     /// <summary>
     /// Starts a new application/process with the given parameters.
@@ -56,7 +40,6 @@ type
 
     class function FindExplorerGenieCmdPath: String;
     class function FindExplorerGenieOptionsPath: String;
-    class function ContainsFiles(filenames: TStrings): Boolean;
   public
     /// <summary>
     /// Action for menu item "copy file"
@@ -77,22 +60,11 @@ type
     class procedure OnCopyOptionsClicked(filenames: TStrings);
 
     /// <summary>
-    /// Action for menu item "open cmd"
+    /// Action for menu item "open tool ..."
     /// </summary>
     /// <param name="filenames">List with paths of selected files.</param>
-    class procedure OnGotoCmdClicked(filenames: TStrings; asAdmin: Boolean);
-
-    /// <summary>
-    /// Action for menu item "open powershell"
-    /// </summary>
-    /// <param name="filenames">List with paths of selected files.</param>
-    class procedure OnGotoPowershellClicked(filenames: TStrings; asAdmin: Boolean);
-
-    /// <summary>
-    /// Action for menu item "open in explorer"
-    /// </summary>
-    /// <param name="filenames">List with paths of selected files.</param>
-    class procedure OnGotoExplorerClicked(filenames: TStrings; asAdmin: Boolean);
+    /// <param name="gotoTool">Model of the tool to open.</param>
+    class procedure OnGotoToolClicked(filenames: TStrings; gotoTool: TSettingsGotoToolModel);
 
     /// <summary>
     /// Action for menu item "Go to options"
@@ -139,52 +111,21 @@ begin
   ExecuteCommand(exePath, params, true);
 end;
 
-class procedure TActions.OnGotoCmdClicked(filenames: TStrings; asAdmin: Boolean);
+class procedure TActions.OnGotoToolClicked(filenames: TStrings; gotoTool: TSettingsGotoToolModel);
 var
-  commonDirectory: String;
-  operation: String;
+  exePath: String;
+  customOrPredefinedTool: String;
+  action: String;
   params: String;
 begin
-  commonDirectory := GetCommonDirectory(filenames);
-  if (commonDirectory <> '') then
-  begin
-    operation := GetShellExecuteOperation(asAdmin);
-    params := Format('/k "cd /d %s"', [commonDirectory]);
-    ShellExecute(0, PChar(operation), PChar('cmd.exe'), PChar(params), PChar(params), SW_SHOWNORMAL);
-  end;
-end;
-
-class procedure TActions.OnGotoPowershellClicked(filenames: TStrings; asAdmin: Boolean);
-var
-  commonDirectory: String;
-  operation: String;
-  params: String;
-begin
-  commonDirectory := GetCommonDirectory(filenames);
-  if (commonDirectory <> '') then
-  begin
-    operation := GetShellExecuteOperation(asAdmin);
-    params := Format('-noexit -command "& {Set-Location -Path ''%s''}"', [commonDirectory]);
-    ShellExecute(0, PChar(operation), PChar('powershell.exe'), PChar(params), PChar(params), SW_SHOWNORMAL);
-  end;
-end;
-
-class procedure TActions.OnGotoExplorerClicked(filenames: TStrings; asAdmin: Boolean);
-var
-  commonDirectory: String;
-  operation: String;
-  params: String;
-begin
-  if (filenames.Count = 0) then
-    Exit;
-  commonDirectory := filenames[0]; // Can be a file or a directory
-
-  if (commonDirectory <> '') then
-  begin
-    operation := GetShellExecuteOperation(asAdmin);
-    params := Format('/select,"%s"', [commonDirectory]);
-    ShellExecute(0, PChar(operation), PChar('explorer.exe'), PChar(params), PChar(params), SW_SHOWNORMAL);
-  end;
+  exePath := FindExplorerGenieCmdPath();
+  if (gotoTool.IsCustomTool) then
+    customOrPredefinedTool := 'U'
+  else
+    customOrPredefinedTool := 'P';
+  action := Format('-OpenTool-%s-%d', [customOrPredefinedTool, gotoTool.ToolIndex]);
+  params := BuildCommandLine(action, filenames);
+  ExecuteCommand(exePath, params, false);
 end;
 
 class procedure TActions.OnGotoOptionsClicked(filenames: TStrings);
@@ -223,27 +164,7 @@ begin
   Result := TPath.Combine(ExtractFilePath(dllPath), 'ExplorerGenieOptions.exe');
 end;
 
-class function TActions.GetCommonDirectory(filenames: TStrings): String;
-var
-  firstFilePath: String;
-begin
-  if (filenames.Count = 0) then
-    Exit;
-
-  firstFilePath := filenames[0];
-  if (filenames.Count = 1) and (TDirectory.Exists(firstFilePath)) then
-  begin
-    // User selected a directory
-    Result := firstFilePath;
-  end
-  else
-  begin
-    // User selected one or more files/directories
-    Result := ExtractFileDir(firstFilePath);
-  end;
-end;
-
-class function TActions.BuildCommandLine(option: String; filenames: TStrings): String;
+class function TActions.BuildCommandLine(action: String; filenames: TStrings): String;
 var
   sb: TSTringBuilder;
   rootDir: String;
@@ -255,8 +176,8 @@ begin
 
   sb := TStringBuilder.Create();
   try
-    option := StringReplace(option, '"', '', [rfReplaceAll]);
-    sb.Append(option);
+    action := StringReplace(action, '"', '', [rfReplaceAll]);
+    sb.Append(action);
 
     if (filenames <> nil) and (filenames.Count > 0) then
     begin
@@ -280,27 +201,6 @@ begin
     Result := sb.ToString();
   finally
     sb.Free;
-  end;
-end;
-
-class function TActions.GetShellExecuteOperation(asAdmin: Boolean): String;
-begin
-  if (asAdmin) then
-    Result := 'runas'
-  else
-    Result := 'open';
-end;
-
-class function TActions.ContainsFiles(filenames: TStrings): Boolean;
-var
-  index: Integer;
-begin
-  Result := false;
-  index := 0;
-  while (not Result) and (index < filenames.Count) do
-  begin
-    Result := TFile.Exists(filenames[index]);
-    Inc(index);
   end;
 end;
 

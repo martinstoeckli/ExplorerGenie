@@ -10,7 +10,9 @@ uses
   Registry,
   System.SysUtils,
   Winapi.Windows,
-  UnitSettingsModel;
+  UnitLanguageService,
+  UnitSettingsModel,
+  UnitSettingsGotoToolModel;
 
 type
   /// <summary>
@@ -18,7 +20,15 @@ type
   /// </summary>
   TSettingsService = class(TObject)
   private
+    FLanguage: ILanguageService;
+    procedure AddPredefinedGotoTools(settings: TSettingsModel);
   public
+    /// <summary>
+    /// Initializes a new instance of the TSettingsService class.
+    /// </summary>
+    /// <param name="language">Language service.</param>
+    constructor Create(language: ILanguageService);
+
     /// <summary>
     /// Loads the settings from the locale device. If no settings exists, new empty
     /// settings are returned.
@@ -34,11 +44,18 @@ const
 
 { TSettingsService }
 
+constructor TSettingsService.Create(language: ILanguageService);
+begin
+  FLanguage := language;
+end;
+
 procedure TSettingsService.LoadSettingsOrDefault(settings: TSettingsModel);
 var
   registry: TRegistry;
+  isVisible: Boolean;
 begin
   settings.SetToDefault();
+  AddPredefinedGotoTools(settings);
 
   registry := TRegistry.Create;
   try
@@ -50,11 +67,23 @@ begin
       if (registry.ValueExists('GotoShowMenu')) then
         settings.GotoShowMenu := StrToBoolDef(registry.ReadString('GotoShowMenu'), settings.GotoShowMenu);
       if (registry.ValueExists('GotoCommandPrompt')) then
-        settings.GotoCommandPrompt := StrToBoolDef(registry.ReadString('GotoCommandPrompt'), settings.GotoCommandPrompt);
+      begin
+        isVisible := StrToBoolDef(registry.ReadString('GotoCommandPrompt'), true);
+        settings.GotoTools[0].Visible := isVisible;
+        settings.GotoTools[1].Visible := isVisible;
+      end;
       if (registry.ValueExists('GotoPowerShell')) then
-        settings.GotoPowerShell := StrToBoolDef(registry.ReadString('GotoPowerShell'), settings.GotoPowerShell);
+      begin
+        isVisible := StrToBoolDef(registry.ReadString('GotoPowerShell'), true);
+        settings.GotoTools[2].Visible := isVisible;
+        settings.GotoTools[3].Visible := isVisible;
+      end;
       if (registry.ValueExists('GotoExplorer')) then
-        settings.GotoExplorer := StrToBoolDef(registry.ReadString('GotoExplorer'), settings.GotoExplorer);
+      begin
+        isVisible := StrToBoolDef(registry.ReadString('GotoExplorer'), true);
+        settings.GotoTools[4].Visible := isVisible;
+        settings.GotoTools[5].Visible := isVisible;
+      end;
       if (registry.ValueExists('HashShowMenu')) then
         settings.HashShowMenu := StrToBoolDef(registry.ReadString('HashShowMenu'), settings.HashShowMenu);
     end;
@@ -62,6 +91,53 @@ begin
     // keep default values
   end;
   registry.Free;
+end;
+
+procedure TSettingsService.AddPredefinedGotoTools(settings: TSettingsModel);
+var
+  gotoTool: TSettingsGotoToolModel;
+begin
+  gotoTool := TSettingsGotoToolModel.Create();
+  gotoTool.ToolIndex := 0;
+  gotoTool.Title := FLanguage.LoadText('submenuGotoCmd', 'Open in Command Prompt');
+  gotoTool.IconName := 'icoCmd';
+  gotoTool.IsCustomTool := false;
+  settings.GotoTools.Add(gotoTool);
+
+  gotoTool := TSettingsGotoToolModel.Create();
+  gotoTool.ToolIndex := 1;
+  gotoTool.Title := FLanguage.LoadText('submenuGotoCmdAdmin', 'Open in Command Prompt as admin');
+  gotoTool.IconName := 'icoCmd';
+  gotoTool.IsCustomTool := false;
+  settings.GotoTools.Add(gotoTool);
+
+  gotoTool := TSettingsGotoToolModel.Create();
+  gotoTool.ToolIndex := 2;
+  gotoTool.Title := FLanguage.LoadText('submenuGotoPowershell', 'Open in Power Shell');
+  gotoTool.IconName := 'icoPowershell';
+  gotoTool.IsCustomTool := false;
+  settings.GotoTools.Add(gotoTool);
+
+  gotoTool := TSettingsGotoToolModel.Create();
+  gotoTool.ToolIndex := 3;
+  gotoTool.Title := FLanguage.LoadText('submenuGotoPowershellAdmin', 'Open in Power Shell as admin');
+  gotoTool.IconName := 'icoPowershell';
+  gotoTool.IsCustomTool := false;
+  settings.GotoTools.Add(gotoTool);
+
+  gotoTool := TSettingsGotoToolModel.Create();
+  gotoTool.ToolIndex := 4;
+  gotoTool.Title := FLanguage.LoadText('submenuGotoExplorer', 'Open in Explorer');
+  gotoTool.IconName := 'icoExplorer';
+  gotoTool.IsCustomTool := false;
+  settings.GotoTools.Add(gotoTool);
+
+  gotoTool := TSettingsGotoToolModel.Create();
+  gotoTool.ToolIndex := 5;
+  gotoTool.Title := FLanguage.LoadText('submenuGotoExplorerAdmin', 'Open in Explorer as admin');
+  gotoTool.IconName := 'icoExplorer';
+  gotoTool.IsCustomTool := false;
+  settings.GotoTools.Add(gotoTool);
 end;
 
 end.

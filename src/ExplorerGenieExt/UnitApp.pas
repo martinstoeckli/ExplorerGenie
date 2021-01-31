@@ -24,7 +24,8 @@ uses
   UnitActions,
   UnitLanguageService,
   UnitSettingsModel,
-  UnitSettingsService;
+  UnitSettingsService,
+  UnitSettingsGotoToolModel;
 
 type
   /// <summary>
@@ -68,23 +69,22 @@ const
 
 procedure TApp.Initialize;
 var
-  settingsService: TSettingsService;
   languageService: ILanguageService;
+  settingsService: TSettingsService;
 begin
   inherited Initialize;
   FFilenames := TStringList.Create;
 
-  settingsService := TSettingsService.Create();
   languageService := TLanguageServiceFactory.CreateLanguageService('ExplorerGenie');
 {$IFDEF DEBUG}
   // development: Here we can force loading of a specific language.
   languageService := TLanguageServiceFactory.CreateLanguageService('ExplorerGenie', 'en');
 {$ENDIF}
 
+  settingsService := TSettingsService.Create(languageService);
   try
     FMenus := CreateMenuModels(settingsService, languageService);
   finally
-    languageService := nil;
     settingsService.Free;
   end;
 end;
@@ -110,12 +110,8 @@ var
   submenuCopyEmail: TMenuModel;
   submenuCopyOptions: TMenuModel;
   menuGoto: TMenuModel;
-  submenuGotoCmd: TMenuModel;
-  submenuGotoCmdAdmin: TMenuModel;
-  submenuGotoPowershell: TMenuModel;
-  submenuGotoPowershellAdmin: TMenuModel;
-  submenuGotoExplorer: TMenuModel;
-  submenuGotoExplorerAdmin: TMenuModel;
+  gotoTool: TSettingsGotoToolModel;
+  submenuGotoTool: TMenuModel;
   submenuGotoOptions: TMenuModel;
   menuHash: TMenuModel;
 begin
@@ -137,7 +133,7 @@ begin
     submenuCopyFilename.Title := languageService.LoadText('submenuCopyFile', 'Copy filename(s)');
     submenuCopyFilename.Icon := TMenuIcon.Create('icoCopy', iconSize);
     submenuCopyFilename.OnClicked :=
-      procedure
+      procedure (caller: TMenuModel)
       begin
         TActions.OnCopyFileClicked(FFilenames);
       end;
@@ -147,7 +143,7 @@ begin
     submenuCopyEmail.Title := languageService.LoadText('submenuCopyEmail', 'Copy as email link');
     submenuCopyEmail.Icon := TMenuIcon.Create('icoMail', iconSize);
     submenuCopyEmail.OnClicked :=
-      procedure
+      procedure (caller: TMenuModel)
       begin
         TActions.OnCopyEmailClicked(FFilenames);
       end;
@@ -157,7 +153,7 @@ begin
     submenuCopyOptions.Title := languageService.LoadText('submenuOptions', 'Options');
     submenuCopyOptions.Icon := TMenuIcon.Create('icoOptions', iconSize);
     submenuCopyOptions.OnClicked :=
-      procedure
+      procedure (caller: TMenuModel)
       begin
         TActions.OnCopyOptionsClicked(FFilenames);
       end;
@@ -171,80 +167,28 @@ begin
     menuGoto.Icon := TMenuIcon.Create('icoCmd', iconSize);
     Result.Add(menuGoto);
 
-    if (settings.GotoCommandPrompt) then
+    for gotoTool in settings.GotoTools do
     begin
-      submenuGotoCmd := TMenuModel.Create;
-      submenuGotoCmd.Title := languageService.LoadText('submenuGotoCmd', 'Open in Command Prompt');
-      submenuGotoCmd.Icon := TMenuIcon.Create('icoCmd', iconSize);
-      submenuGotoCmd.OnClicked :=
-        procedure
-        begin
-          TActions.OnGotoCmdClicked(FFilenames, false);
-        end;
-      menuGoto.Children.Add(submenuGotoCmd);
-
-      submenuGotoCmdAdmin := TMenuModel.Create;
-      submenuGotoCmdAdmin.Title := languageService.LoadText('submenuGotoCmdAdmin', 'Open in Command Prompt as admin');
-      submenuGotoCmdAdmin.Icon := TMenuIcon.Create('icoCmd', iconSize);
-      submenuGotoCmdAdmin.OnClicked :=
-        procedure
-        begin
-          TActions.OnGotoCmdClicked(FFilenames, true);
-        end;
-      menuGoto.Children.Add(submenuGotoCmdAdmin);
-    end;
-
-    if (settings.GotoPowerShell) then
-    begin
-      submenuGotoPowershell := TMenuModel.Create;
-      submenuGotoPowershell.Title := languageService.LoadText('submenuGotoPowershell', 'Open in Power Shell');
-      submenuGotoPowershell.Icon := TMenuIcon.Create('icoPowershell', iconSize);
-      submenuGotoPowershell.OnClicked :=
-        procedure
-        begin
-          TActions.OnGotoPowershellClicked(FFilenames, false);
-        end;
-      menuGoto.Children.Add(submenuGotoPowershell);
-
-      submenuGotoPowershellAdmin := TMenuModel.Create;
-      submenuGotoPowershellAdmin.Title := languageService.LoadText('submenuGotoPowershellAdmin', 'Open in Power Shell as admin');
-      submenuGotoPowershellAdmin.Icon := TMenuIcon.Create('icoPowershell', iconSize);
-      submenuGotoPowershellAdmin.OnClicked :=
-        procedure
-        begin
-          TActions.OnGotoPowershellClicked(FFilenames, true);
-        end;
-      menuGoto.Children.Add(submenuGotoPowershellAdmin);
-    end;
-
-    if (settings.GotoExplorer) then
-    begin
-      submenuGotoExplorer := TMenuModel.Create;
-      submenuGotoExplorer.Title := languageService.LoadText('submenuGotoExplorer', 'Open in Explorer');
-      submenuGotoExplorer.Icon := TMenuIcon.Create('icoExplorer', iconSize);
-      submenuGotoExplorer.OnClicked :=
-        procedure
-        begin
-          TActions.OnGotoExplorerClicked(FFilenames, false);
-        end;
-      menuGoto.Children.Add(submenuGotoExplorer);
-
-      submenuGotoExplorerAdmin := TMenuModel.Create;
-      submenuGotoExplorerAdmin.Title := languageService.LoadText('submenuGotoExplorerAdmin', 'Open in Explorer as admin');
-      submenuGotoExplorerAdmin.Icon := TMenuIcon.Create('icoExplorer', iconSize);
-      submenuGotoExplorerAdmin.OnClicked :=
-        procedure
-        begin
-          TActions.OnGotoExplorerClicked(FFilenames, true);
-        end;
-      menuGoto.Children.Add(submenuGotoExplorerAdmin);
+      if (gotoTool.Visible) then
+      begin
+        submenuGotoTool := TMenuModel.Create();
+        submenuGotoTool.Title := gotoTool.Title;
+        submenuGotoTool.Icon := TMenuIcon.Create(gotoTool.IconName, iconSize);
+        submenuGotoTool.Context := gotoTool;
+        submenuGotoTool.OnClicked :=
+          procedure (caller: TMenuModel)
+          begin
+            TActions.OnGotoToolClicked(FFilenames, caller.Context as TSettingsGotoToolModel);
+          end;
+        menuGoto.Children.Add(submenuGotoTool);
+      end;
     end;
 
     submenuGotoOptions := TMenuModel.Create;
     submenuGotoOptions.Title := languageService.LoadText('submenuOptions', 'Options');
     submenuGotoOptions.Icon := TMenuIcon.Create('icoOptions', iconSize);
     submenuGotoOptions.OnClicked :=
-      procedure
+      procedure (caller: TMenuModel)
       begin
         TActions.OnGotoOptionsClicked(FFilenames);
       end;
@@ -257,7 +201,7 @@ begin
     menuHash.Title := languageService.LoadText('menuHash', 'Calculate hash');
     menuHash.Icon := TMenuIcon.Create('icoHash', iconSize);
     menuHash.OnClicked :=
-      procedure
+      procedure (caller: TMenuModel)
       begin
         TActions.OnHashClicked(FFilenames);
       end;
@@ -346,7 +290,7 @@ begin
       relativeCmdId := LoWord(DWORD(lpici.lpVerb));
       menuModel := FMenus.FindByRelativeCmdId(relativeCmdId);
       if (menuModel <> nil) and Assigned(menuModel.OnClicked) then
-        menuModel.OnClicked();
+        menuModel.OnClicked(menuModel);
     except
       Result := E_FAIL; // Don't let an exception escape to the explorer process
     end;
