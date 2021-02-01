@@ -25,11 +25,11 @@ namespace ExplorerGenieOptions
             CommandLineArgs arguments = CommandLineInterpreter.ParseCommandLine(Environment.CommandLine);
 
             TabControl tabControl = this.FindName("tab") as TabControl;
-            if ("-OpenedFromCopy".Equals(arguments.Option))
+            if ("-OpenedFromCopy".Equals(arguments.Action))
                 tabControl.SelectedIndex = 0;
-            else if ("-OpenedFromGoto".Equals(arguments.Option))
+            else if ("-OpenedFromGoto".Equals(arguments.Action))
                 tabControl.SelectedIndex = 1;
-            else if ("-OpenedFromHash".Equals(arguments.Option))
+            else if ("-OpenedFromHash".Equals(arguments.Action))
                 tabControl.SelectedIndex = 2;
             else
                 tabControl.SelectedIndex = 0;
@@ -41,6 +41,9 @@ namespace ExplorerGenieOptions
             DataGrid hashDataGrid = FindName("hashDataGrid") as DataGrid;
             hashDataGrid.Columns[0].Header = GetViewModel().Language["guiAlgorithm"];
             hashDataGrid.Columns[1].Header = GetViewModel().Language["guiHashValue"];
+            gridCustomGotoTools.Columns[0].Header = GetViewModel().Language["guiGotoMenuTitle"];
+            gridCustomGotoTools.Columns[1].Header = GetViewModel().Language["guiGotoMenuCommand"];
+            gridCustomGotoTools.Columns[2].Header = GetViewModel().Language["guiGotoMenuAdmin"];
         }
 
         private SettingsViewModel GetViewModel()

@@ -15,9 +15,9 @@ namespace ExplorerGenieShared
         private List<string> _filenames;
 
         /// <summary>
-        /// Gets or sets the option, which always starts with an "-".
+        /// Gets or sets the action, which always starts with an "-".
         /// </summary>
-        public string Option { get; set; }
+        public string Action { get; set; }
 
         /// <summary>
         /// Gets or sets a a list of filenames.

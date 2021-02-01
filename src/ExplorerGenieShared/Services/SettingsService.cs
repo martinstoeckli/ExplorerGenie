@@ -6,6 +6,7 @@
 using System;
 using ExplorerGenieShared.Models;
 using Microsoft.Win32;
+using Newtonsoft.Json;
 
 namespace ExplorerGenieShared.Services
 {
@@ -53,6 +54,20 @@ namespace ExplorerGenieShared.Services
             model.GotoPowerShell = registry.GetValueAsBool(nameof(model.GotoPowerShell), model.GotoPowerShell);
             model.GotoExplorer = registry.GetValueAsBool(nameof(model.GotoExplorer), model.GotoExplorer);
             model.HashShowMenu = registry.GetValueAsBool(nameof(model.HashShowMenu), model.HashShowMenu);
+
+            string jsonCustomTools = registry.GetValueAsString(nameof(model.CustomGotoTools), string.Empty);
+            if (!string.IsNullOrEmpty(jsonCustomTools))
+            {
+                try
+                {
+                    CustomGotoToolModelList tools = JsonConvert.DeserializeObject<CustomGotoToolModelList>(jsonCustomTools);
+                    model.CustomGotoTools = tools;
+                }
+                catch (Exception)
+                {
+                    // Don't endanger loading of other settings.
+                }
+            }
             return model;
         }
 
@@ -73,6 +88,9 @@ namespace ExplorerGenieShared.Services
                 registry.SetValue(nameof(model.GotoPowerShell), model.GotoPowerShell);
                 registry.SetValue(nameof(model.GotoExplorer), model.GotoExplorer);
                 registry.SetValue(nameof(model.HashShowMenu), model.HashShowMenu);
+
+                string jsonCustomTools = JsonConvert.SerializeObject(model.CustomGotoTools);
+                registry.SetValue(nameof(model.CustomGotoTools), jsonCustomTools);
                 return true;
             }
             catch (Exception)

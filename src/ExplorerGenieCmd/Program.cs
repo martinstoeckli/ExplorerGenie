@@ -24,7 +24,7 @@ namespace ExplorerGenieCmd
         public static void Main()
         {
             CommandLineArgs args = CommandLineInterpreter.ParseCommandLine(Environment.CommandLine);
-            if (string.IsNullOrEmpty(args.Option) || (args.Filenames.Count == 0))
+            if (string.IsNullOrEmpty(args.Action) || (args.Filenames.Count == 0))
                 return;
 
             // Make sure there are no short file formats in the list.
@@ -32,7 +32,7 @@ namespace ExplorerGenieCmd
 
             // Create and execute action.
             CmdActionFactory factory = new CmdActionFactory(new SettingsService());
-            ICmdAction cmdAction = factory.CreateAction(args.Option);
+            ICmdAction cmdAction = factory.CreateAction(args.Action);
             cmdAction?.Execute(args.Filenames);
         }
     }

@@ -12,6 +12,8 @@ namespace ExplorerGenieShared.Models
     /// </summary>
     public class SettingsModel : IEquatable<SettingsModel>
     {
+        private CustomGotoToolModelList _customGotoTools;
+
         /// <summary>
         /// Initializes a new instance of the <see cref="SettingsModel"/> class.
         /// </summary>
@@ -82,6 +84,15 @@ namespace ExplorerGenieShared.Models
         public bool GotoExplorer { get; set; }
 
         /// <summary>
+        /// Gets or sets a list of custom goto tools.
+        /// </summary>
+        public CustomGotoToolModelList CustomGotoTools
+        {
+            get { return _customGotoTools ?? (_customGotoTools = new CustomGotoToolModelList()); }
+            set { _customGotoTools = value; }
+        }
+
+        /// <summary>
         /// Gets or sets a value indicating whether the menu tree "hash" should be loaded in the
         /// context menu.
         /// </summary>
@@ -109,7 +120,8 @@ namespace ExplorerGenieShared.Models
                 && (GotoCommandPrompt == other.GotoCommandPrompt)
                 && (GotoPowerShell == other.GotoPowerShell)
                 && (GotoExplorer == other.GotoExplorer)
-                && (HashShowMenu == other.HashShowMenu);
+                && (HashShowMenu == other.HashShowMenu)
+                && (CustomGotoTools.Equals(other.CustomGotoTools));
         }
 
         /// <inheritdoc/>
@@ -129,6 +141,7 @@ namespace ExplorerGenieShared.Models
                 result = (result * 397) ^ GotoPowerShell.GetHashCode();
                 result = (result * 397) ^ GotoExplorer.GetHashCode();
                 result = (result * 397) ^ HashShowMenu.GetHashCode();
+                result = (result * 397) ^ CustomGotoTools.GetHashCode();
                 return result;
             }
         }

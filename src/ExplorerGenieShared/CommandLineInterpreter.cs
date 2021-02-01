@@ -28,9 +28,9 @@ namespace ExplorerGenieShared
             List<string> parts = SplitCommandLine(commandLine);
             RemoveOwnExeName(parts);
 
-            if (ArgumentIsOption(parts, 0))
+            if (ArgumentIsAction(parts, 0))
             {
-                result.Option = parts[0];
+                result.Action = parts[0];
                 parts.RemoveAt(0);
             }
 
@@ -54,7 +54,7 @@ namespace ExplorerGenieShared
                 parts.RemoveAt(0);
         }
 
-        private static bool ArgumentIsOption(List<string> parts, int index)
+        private static bool ArgumentIsAction(List<string> parts, int index)
         {
             return (parts.Count > index) && parts[index].StartsWith("-");
         }

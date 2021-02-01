@@ -20,7 +20,7 @@ namespace ExplorerGenieShared.ViewModels
     /// <summary>
     /// View model for the settings of ExplorerGenie.
     /// </summary>
-    internal class SettingsViewModel : ViewModelBaseWithLanguage
+    internal class SettingsViewModel : ViewModelBaseWithLanguage, IDisposable
     {
         private readonly SettingsModel _model;
         private readonly ISettingsService _settingsService;
@@ -28,8 +28,8 @@ namespace ExplorerGenieShared.ViewModels
         private string _copyFileExample;
         private string _copyEmailExample;
         private List<SystemFolderViewModel> _systemFolders;
-        private List<FilepathViewModel> _filenamesForHash;
-        private FilepathViewModel _selectedFilenameForHash;
+        private List<FilenameOnlyViewModel> _filenamesForHash;
+        private FilenameOnlyViewModel _selectedFilenameForHash;
         private string _hashCandidate;
         private bool? _hashVerified;
 
@@ -52,8 +52,11 @@ namespace ExplorerGenieShared.ViewModels
             _filenames = filenames;
             new FilenameSorter().Sort(_filenames);
             _model = _settingsService.LoadSettingsOrDefault();
+
+            GotoToolPageViewModel = new GotoToolPageViewModel(_model, Language, _settingsService);
             OpenHomepageCommand = new RelayCommand(OpenHomepage);
             CloseCommand = new RelayCommand<Window>(CloseWindow);
+            CopyTextToClipboardCommand = new RelayCommand<string>(CopyTextToClipboard);
             GotoSystemFolderCommand = new RelayCommand<SystemFolderViewModel>(GotoSystemFolder);
             CopyHashToClipboardCommand = new RelayCommand<HashResultViewModel>(CopyHashToClipboard);
             PasteHashFromClipboardCommand = new RelayCommand(PasteHashFromClipboard);
@@ -62,6 +65,21 @@ namespace ExplorerGenieShared.ViewModels
             UpdateCopyFileExample();
             UpdateCopyEmailExample();
         }
+
+        /// <summary>
+        /// Finalizes an instance of the <see cref="SettingsViewModel"/> class.
+        /// </summary>
+        ~SettingsViewModel()
+        {
+            Dispose();
+        }
+
+        public void Dispose()
+        {
+            GotoToolPageViewModel.Dispose();
+        }
+
+        public GotoToolPageViewModel GotoToolPageViewModel { get; private set; }
 
         /// <summary>
         /// Gets the command which opens the homepage.
@@ -86,6 +104,16 @@ namespace ExplorerGenieShared.ViewModels
         private void CloseWindow(Window callerWindow)
         {
             callerWindow.Close();
+        }
+
+        /// <summary>
+        /// Gets the command which copies a text to the clipboard.
+        /// </summary>
+        public ICommand CopyTextToClipboardCommand { get; private set; }
+
+        private void CopyTextToClipboard(string text)
+        {
+            Clipboard.SetText(text);
         }
 
         public bool CopyFileShowMenu
@@ -201,59 +229,14 @@ namespace ExplorerGenieShared.ViewModels
 
         private string GenerateExamplePath()
         {
-            string documentDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
-            return Path.Combine(documentDirectory, "My Document.txt");
-        }
-
-        public bool GotoShowMenu
-        {
-            get { return _model.GotoShowMenu; }
-
-            set
+            if (_filenames.Count > 0)
             {
-                if (SetPropertyIndirect(() => _model.GotoShowMenu, (v) => _model.GotoShowMenu = v, value, false))
-                {
-                    _settingsService?.TrySaveSettingsToLocalDevice(_model);
-                }
+                return _filenames[0];
             }
-        }
-
-        public bool GotoCommandPrompt
-        {
-            get { return _model.GotoCommandPrompt; }
-
-            set
+            else
             {
-                if (SetPropertyIndirect(() => _model.GotoCommandPrompt, (v) => _model.GotoCommandPrompt = v, value, false))
-                {
-                    _settingsService?.TrySaveSettingsToLocalDevice(_model);
-                }
-            }
-        }
-
-        public bool GotoPowerShell
-        {
-            get { return _model.GotoPowerShell; }
-
-            set
-            {
-                if (SetPropertyIndirect(() => _model.GotoPowerShell, (v) => _model.GotoPowerShell = v, value, false))
-                {
-                    _settingsService?.TrySaveSettingsToLocalDevice(_model);
-                }
-            }
-        }
-
-        public bool GotoExplorer
-        {
-            get { return _model.GotoExplorer; }
-
-            set
-            {
-                if (SetPropertyIndirect(() => _model.GotoExplorer, (v) => _model.GotoExplorer = v, value, false))
-                {
-                    _settingsService?.TrySaveSettingsToLocalDevice(_model);
-                }
+                string documentDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+                return Path.Combine(documentDirectory, "My Document.txt");
             }
         }
 
@@ -314,9 +297,6 @@ namespace ExplorerGenieShared.ViewModels
                 {
                     _systemFolders = new List<SystemFolderViewModel>();
 
-                    // Add temp path
-                    _systemFolders.Add(new SystemFolderViewModel { Name = "Temp", Path = Path.GetTempPath() });
-
                     // List folders of interest
                     foreach (Environment.SpecialFolder folder in foldersOfInterest)
                     {
@@ -324,6 +304,9 @@ namespace ExplorerGenieShared.ViewModels
                         if (!string.IsNullOrEmpty(path))
                             _systemFolders.Add(new SystemFolderViewModel { Name = folder.ToString(), Path = path });
                     }
+
+                    // Add temp path
+                    _systemFolders.Insert(4, new SystemFolderViewModel { Name = "Temp", Path = Path.GetTempPath() });
                 }
                 return _systemFolders;
             }
@@ -343,17 +326,17 @@ namespace ExplorerGenieShared.ViewModels
         /// <summary>
         /// Gets a list of filenames, passed by the context menu.
         /// </summary>
-        public List<FilepathViewModel> FilenamesForHash
+        public List<FilenameOnlyViewModel> FilenamesForHash
         {
             get
             {
                 if (_filenamesForHash == null)
                 {
-                    _filenamesForHash = new List<FilepathViewModel>();
+                    _filenamesForHash = new List<FilenameOnlyViewModel>();
                     foreach (string filename in _filenames)
                     {
                         if (File.Exists(filename))
-                            _filenamesForHash.Add(new FilepathViewModel { Filepath = filename });
+                            _filenamesForHash.Add(new FilenameOnlyViewModel { FullPath = filename });
                     }
                     SelectedFilenameForHash = FilenamesForHash.FirstOrDefault();
                 }
@@ -364,7 +347,7 @@ namespace ExplorerGenieShared.ViewModels
         /// <summary>
         /// Gets or sets the user selected filename.
         /// </summary>
-        public FilepathViewModel SelectedFilenameForHash
+        public FilenameOnlyViewModel SelectedFilenameForHash
         {
             get { return _selectedFilenameForHash; }
             set 
@@ -372,7 +355,7 @@ namespace ExplorerGenieShared.ViewModels
                 if (SetProperty(ref _selectedFilenameForHash, value, false))
                 {
                     HashResults.Clear();
-                    var hashes = HashCalculator.CalculateHashes(SelectedFilenameForHash.Filepath);
+                    var hashes = HashCalculator.CalculateHashes(SelectedFilenameForHash.FullPath);
                     foreach (HashCalculator.HashResult hash in hashes)
                         HashResults.Add(new HashResultViewModel { HashAlgorithm = hash.HashAlgorithm, HashValue = hash.HashValue });
                     UpdateHashHighlighting();

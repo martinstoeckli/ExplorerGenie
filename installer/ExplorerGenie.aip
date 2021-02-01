@@ -44,6 +44,7 @@
     <ROW Component="ExplorerGenieExt.64.dll" ComponentId="{7A1603C1-899F-42E9-9A82-7E897CA41D51}" Directory_="APPDIR" Attributes="256" KeyPath="ExplorerGenieExt.64.dll"/>
     <ROW Component="ExplorerGenieOptions.exe" ComponentId="{7DCCC918-A224-4BC9-A14D-6C8B8DBD23B0}" Directory_="APPDIR" Attributes="0" KeyPath="ExplorerGenieOptions.exe"/>
     <ROW Component="Lng.ExplorerGenie.de" ComponentId="{CBDEE290-8ABE-4BB7-B75D-ED54BB069AB0}" Directory_="APPDIR" Attributes="0" KeyPath="Lng.ExplorerGenie.de" Type="0"/>
+    <ROW Component="Newtonsoft.Json.dll" ComponentId="{D94B47D8-6FED-4B50-9AEB-EBB3A7A029EB}" Directory_="APPDIR" Attributes="0" KeyPath="Newtonsoft.Json.dll"/>
     <ROW Component="ProductInformation" ComponentId="{C24E88F7-3BC8-4BD9-B06F-33172F08AADF}" Directory_="APPDIR" Attributes="4" KeyPath="Version"/>
     <ROW Component="SHORTCUTDIR" ComponentId="{37C0FBA9-DAFC-4D8F-A017-75FE71701CEF}" Directory_="SHORTCUTDIR" Attributes="0"/>
   </COMPONENT>
@@ -59,6 +60,7 @@
     <ROW File="Lng.ExplorerGenie.de" Component_="Lng.ExplorerGenie.de" FileName="LNGEXP~1.DE|Lng.ExplorerGenie.de" Attributes="0" SourcePath="..\bin\Lng.ExplorerGenie.de" SelfReg="false"/>
     <ROW File="Lng.ExplorerGenie.en" Component_="Lng.ExplorerGenie.de" FileName="LNGEXP~1.EN|Lng.ExplorerGenie.en" Attributes="0" SourcePath="..\bin\Lng.ExplorerGenie.en" SelfReg="false"/>
     <ROW File="Lng.ExplorerGenie.it" Component_="Lng.ExplorerGenie.de" FileName="LNGEXP~1.IT|Lng.ExplorerGenie.it" Attributes="0" SourcePath="..\bin\Lng.ExplorerGenie.it" SelfReg="false"/>
+    <ROW File="Newtonsoft.Json.dll" Component_="Newtonsoft.Json.dll" FileName="NEWTON~1.DLL|Newtonsoft.Json.dll" Attributes="0" SourcePath="..\bin\Newtonsoft.Json.dll" SelfReg="false"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.BootstrOptComponent">
     <ROW BootstrOptKey="GlobalOptions" DownloadFolder="[AppDataFolder][|Manufacturer]\[|ProductName]\prerequisites" Options="2"/>
@@ -156,6 +158,7 @@
     <ROW Feature_="MainFeature" Component_="ExplorerGenieOptions.exe"/>
     <ROW Feature_="MainFeature" Component_="Lng.ExplorerGenie.de"/>
     <ROW Feature_="MainFeature" Component_="SHORTCUTDIR"/>
+    <ROW Feature_="MainFeature" Component_="Newtonsoft.Json.dll"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiInstExSeqComponent">
     <ROW Action="AI_DOWNGRADE" Condition="AI_NEWERPRODUCTFOUND AND (UILevel &lt;&gt; 5)" Sequence="210"/>

@@ -12,22 +12,10 @@ namespace ExplorerGenieShared.ViewModels
     /// </summary>
     public class ViewModelBaseWithLanguage : ViewModelBase
     {
-        /// <summary>
-        /// Initializes a new instance of the <see cref="ViewModelBaseWithLanguage"/> class.
-        /// </summary>
-        public ViewModelBaseWithLanguage()
-        {
-            var languageResourceReader = new LanguageServiceFileResourceReader { Domain = "ExplorerGenie" };
-            Language = new LanguageService(languageResourceReader);
-
-#if DEBUG
-            // development: Here we can force loading of a specific language.
-            Language = new LanguageService(languageResourceReader, "en");
-#endif
-        }
+        private ILanguageService _language;
 
         /// <summary>
-        /// Gets a bindable indexed property to load localized text resources.
+        /// Gets or sets a bindable indexed property to load localized text resources.
         /// In Xaml one can use it like this:
         /// <code>
         /// Text="{Binding Language[TextResourceName]}"
@@ -37,6 +25,24 @@ namespace ExplorerGenieShared.ViewModels
         /// @Model.Language["TextResourceName"]
         /// </code>
         /// </summary>
-        public ILanguageService Language { get; private set; }
+        public ILanguageService Language 
+        {
+            get
+            {
+                if (_language == null)
+                {
+                    var languageResourceReader = new LanguageServiceFileResourceReader { Domain = "ExplorerGenie" };
+#if DEBUG
+                    // development: Here we can force loading of a specific language.
+                    _language = new LanguageService(languageResourceReader, "en");
+#else
+                    _language = new LanguageService(languageResourceReader);
+#endif
+                }
+                return _language;
+            }
+
+            protected set { _language = value; }
+        }
     }
 }

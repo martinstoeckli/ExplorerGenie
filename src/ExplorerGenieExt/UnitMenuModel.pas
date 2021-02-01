@@ -25,7 +25,8 @@ type
     FChildren: TMenuModelList;
     FTitle: String;
     FIcon: TMenuIcon;
-    FOnClicked: TProc;
+    FOnClicked: TProc<TMenuModel>;
+    FContext: TObject;
     function GetOrCreateChildren(): TMenuModelList;
     function GetHasChildren(): Boolean;
   public
@@ -60,7 +61,7 @@ type
     /// <summary>
     /// Gets or sets a delgate which should be executed when the user clicked the menu item.
     /// </summary>
-    property OnClicked: TProc read FOnClicked write FOnClicked;
+    property OnClicked: TProc<TMenuModel> read FOnClicked write FOnClicked;
 
     /// <summary>
     /// Gets a lazy created list of sub menu items.
@@ -71,6 +72,11 @@ type
     /// Gets a value indicating whether there are sub menu items.
     /// </summary>
     property HasChildren: Boolean read GetHasChildren;
+
+    /// <summary>
+    /// Gets or sets an optional reference to a context object.
+    /// </summary>
+    property Context: TObject read FContext write FContext;
   end;
 
   /// <summary>
@@ -94,6 +100,7 @@ constructor TMenuModel.Create;
 begin
   FChildren := nil;
   FIcon := nil;
+  FContext := nil;
 end;
 
 destructor TMenuModel.Destroy;

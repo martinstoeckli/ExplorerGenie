@@ -14,9 +14,10 @@ menuHash Calculate hash
 guiCopy Copy
 guiPaste Paste
 guiClose Close
-guiInfo Information
 guiShowMenu Show context menu
-guiExample Example
+guiPreview Preview
+guiInfo Information
+
 guiAsOriginalPath Original path
 guiAsUri As URI (Uniform Resource Identifier)
 guiAsHtml As Html path
@@ -25,12 +26,22 @@ guiAsOutlook Outlook syntax
 guiAsThunderbird Thunderbird and others
 guiUnc Get network path (UNC) for mapped drives
 guiOnlyFile Only filename without path
+
 guiVisibleMenus Visible menu entries
-guiSystemFolders Open system folder in Explorer
+guiUserDefinedMenus User defined menu entries
+guiGotoMenuTitle Menu title
+guiGotoMenuCommand Command line
+guiGotoMenuAdmin Admin
+guiGotoInfo Example: "C:\Programs\Microsoft VS Code\Code.exe" "{D}"\n{P} Full path of selected file/directory\n{D} Only directory\n{F} Only file name
+
 guiHashValues Hash values
 guiHashValue Hash value
 guiAlgorithm Algorithm
 guiHashVerification Verify a hash by typing or pasting it to the text box.
+
+guiSystemFolders System folders
+guiGotoSystemFolder Go to system folder
+
 guiVersion Version
 guiCopyright Copyright
 guiWebsite Website

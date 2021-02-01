@@ -51,5 +51,25 @@ namespace ExplorerGenieShared
             }
             return defaultValue;
         }
+
+        /// <summary>
+        /// Reads a value from the registry as type string.
+        /// </summary>
+        /// <param name="registry">The registry key which reads the key.</param>
+        /// <param name="name">The name of the value.</param>
+        /// <param name="defaultValue">A default value if no matching value can be found.</param>
+        /// <returns>The read value or the default value.</returns>
+        public static string GetValueAsString(this RegistryKey registry, string name, string defaultValue)
+        {
+            object value = registry.GetValue(name, defaultValue, RegistryValueOptions.DoNotExpandEnvironmentNames);
+            try
+            {
+                return value.ToString();
+            }
+            catch (Exception)
+            {
+                return defaultValue;
+            }
+        }
     }
 }

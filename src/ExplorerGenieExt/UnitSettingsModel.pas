@@ -6,6 +6,10 @@
 unit UnitSettingsModel;
 
 interface
+uses
+  Generics.Collections,
+  UnitSettingsGotoToolModel;
+
 type
   /// <summary>
   /// Model of the applications settings.
@@ -14,36 +18,38 @@ type
   private
     FCopyFileShowMenu: Boolean;
     FGotoShowMenu: Boolean;
-    FGotoCommandPrompt: Boolean;
-    FGotoPowerShell: Boolean;
-    FGotoExplorer: Boolean;
     FHashShowMenu: Boolean;
+    FGotoTools: TObjectList<TSettingsGotoToolModel>;
   public
     constructor Create();
+    destructor Destroy(); override;
     procedure SetToDefault();
     property CopyFileShowMenu: Boolean read FCopyFileShowMenu write FCopyFileShowMenu;
     property GotoShowMenu: Boolean read FGotoShowMenu write FGotoShowMenu;
-    property GotoCommandPrompt: Boolean read FGotoCommandPrompt write FGotoCommandPrompt;
-    property GotoPowerShell: Boolean read FGotoPowerShell write FGotoPowerShell;
-    property GotoExplorer: Boolean read FGotoExplorer write FGotoExplorer;
     property HashShowMenu: Boolean read FHashShowMenu write FHashShowMenu;
+    property GotoTools: TObjectList<TSettingsGotoToolModel> read FGotoTools;
   end;
 
 implementation
 
 constructor TSettingsModel.Create;
 begin
+  FGotoTools := TObjectList<TSettingsGotoToolModel>.Create(true);
   SetToDefault();
+end;
+
+destructor TSettingsModel.Destroy;
+begin
+  FGotoTools.Free;
+  inherited Destroy;
 end;
 
 procedure TSettingsModel.SetToDefault;
 begin
   CopyFileShowMenu := true;
   GotoShowMenu := true;
-  GotoCommandPrompt := true;
-  GotoPowerShell := true;
-  GotoExplorer := true;
   HashShowMenu := true;
+  FGotoTools.Clear();
 end;
 
 end.
