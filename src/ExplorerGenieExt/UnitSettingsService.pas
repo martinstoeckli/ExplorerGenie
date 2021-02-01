@@ -188,7 +188,7 @@ begin
               gotoTool := TSettingsGotoToolModel.Create();
               gotoTool.ToolIndex := gotoToolIndex;
               gotoTool.Title := jsonReader.Value.AsString();
-              gotoTool.IconName := '';
+              gotoTool.IconName := 'icoCustomTool';
               gotoTool.IsCustomTool := true;
               gotoTool.Visible := false; // check later in commandline property
               settings.GotoTools.Add(gotoTool);

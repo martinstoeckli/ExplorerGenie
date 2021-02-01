@@ -123,7 +123,7 @@ begin
     customOrPredefinedTool := 'U'
   else
     customOrPredefinedTool := 'P';
-  action := Format('-OpenTool-%s-%d', [customOrPredefinedTool, gotoTool.ToolIndex]);
+  action := Format('-GotoTool-%s-%d', [customOrPredefinedTool, gotoTool.ToolIndex]);
   params := BuildCommandLine(action, filenames);
   ExecuteCommand(exePath, params, false);
 end;

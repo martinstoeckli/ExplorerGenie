@@ -40,7 +40,7 @@ namespace ExplorerGenieCmd
             {
                 return new CmdActionCopyEmail(_settingsService);
             }
-            else if (commandLineAction.StartsWith("-OpenTool", StringComparison.OrdinalIgnoreCase))
+            else if (commandLineAction.StartsWith("-GotoTool", StringComparison.OrdinalIgnoreCase))
             {
                 return new CmdActionOpenTool(_settingsService, commandLineAction);
             }
