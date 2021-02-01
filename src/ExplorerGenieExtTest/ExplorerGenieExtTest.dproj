@@ -94,6 +94,10 @@
         </DelphiCompile>
         <DCCReference Include="UnitLanguageServiceTest.pas"/>
         <DCCReference Include="..\ExplorerGenieExt\UnitLanguageService.pas"/>
+        <DCCReference Include="UnitSettingsServiceTest.pas"/>
+        <DCCReference Include="..\ExplorerGenieExt\UnitSettingsService.pas"/>
+        <DCCReference Include="..\ExplorerGenieExt\UnitSettingsGotoToolModel.pas"/>
+        <DCCReference Include="..\ExplorerGenieExt\UnitSettingsModel.pas"/>
         <BuildConfiguration Include="Release">
             <Key>Cfg_2</Key>
             <CfgParent>Base</CfgParent>
@@ -138,6 +142,18 @@
                 <DeployFile LocalName="Win32\Debug\ExplorerGenieExtTest.exe" Configuration="Debug" Class="ProjectOutput">
                     <Platform Name="Win32">
                         <RemoteName>ExplorerGenieExtTest.exe</RemoteName>
+                        <Overwrite>true</Overwrite>
+                    </Platform>
+                </DeployFile>
+                <DeployFile LocalName="Win64\Debug\ExplorerGenieExtTest.exe" Configuration="Debug" Class="ProjectOutput">
+                    <Platform Name="Win64">
+                        <RemoteName>ExplorerGenieExtTest.exe</RemoteName>
+                        <Overwrite>true</Overwrite>
+                    </Platform>
+                </DeployFile>
+                <DeployFile LocalName="Win64\Debug\ExplorerGenieExtTest.rsm" Configuration="Debug" Class="DebugSymbols">
+                    <Platform Name="Win64">
+                        <RemoteName>ExplorerGenieExtTest.rsm</RemoteName>
                         <Overwrite>true</Overwrite>
                     </Platform>
                 </DeployFile>

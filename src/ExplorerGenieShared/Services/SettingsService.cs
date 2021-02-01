@@ -4,11 +4,9 @@
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 using System;
-using System.Collections.ObjectModel;
-using System.IO;
-using System.Xml.Linq;
 using ExplorerGenieShared.Models;
 using Microsoft.Win32;
+using Newtonsoft.Json;
 
 namespace ExplorerGenieShared.Services
 {
@@ -57,11 +55,18 @@ namespace ExplorerGenieShared.Services
             model.GotoExplorer = registry.GetValueAsBool(nameof(model.GotoExplorer), model.GotoExplorer);
             model.HashShowMenu = registry.GetValueAsBool(nameof(model.HashShowMenu), model.HashShowMenu);
 
-            string xmlCustomTools = registry.GetValueAsString(nameof(model.CustomGotoTools), string.Empty);
-            if (!string.IsNullOrEmpty(xmlCustomTools))
+            string jsonCustomTools = registry.GetValueAsString(nameof(model.CustomGotoTools), string.Empty);
+            if (!string.IsNullOrEmpty(jsonCustomTools))
             {
-                XDocument xml = XmlUtils.LoadFromString(xmlCustomTools);
-                model.CustomGotoTools = XmlUtils.DeserializeFromXmlDocument<CustomGotoToolModelList>(xml);
+                try
+                {
+                    CustomGotoToolModelList tools = JsonConvert.DeserializeObject<CustomGotoToolModelList>(jsonCustomTools);
+                    model.CustomGotoTools = tools;
+                }
+                catch (Exception)
+                {
+                    // Don't endanger loading of other settings.
+                }
             }
             return model;
         }
@@ -84,8 +89,8 @@ namespace ExplorerGenieShared.Services
                 registry.SetValue(nameof(model.GotoExplorer), model.GotoExplorer);
                 registry.SetValue(nameof(model.HashShowMenu), model.HashShowMenu);
 
-                string xmlCustomTools = XmlUtils.SerializeToString(model.CustomGotoTools, true);
-                registry.SetValue(nameof(model.CustomGotoTools), xmlCustomTools);
+                string jsonCustomTools = JsonConvert.SerializeObject(model.CustomGotoTools);
+                registry.SetValue(nameof(model.CustomGotoTools), jsonCustomTools);
                 return true;
             }
             catch (Exception)

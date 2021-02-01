@@ -12,7 +12,11 @@ uses
   DUnitX.Loggers.Xml.NUnit,
   DUnitX.TestFramework,
   UnitLanguageServiceTest in 'UnitLanguageServiceTest.pas',
-  UnitLanguageService in '..\ExplorerGenieExt\UnitLanguageService.pas';
+  UnitLanguageService in '..\ExplorerGenieExt\UnitLanguageService.pas',
+  UnitSettingsServiceTest in 'UnitSettingsServiceTest.pas',
+  UnitSettingsService in '..\ExplorerGenieExt\UnitSettingsService.pas',
+  UnitSettingsGotoToolModel in '..\ExplorerGenieExt\UnitSettingsGotoToolModel.pas',
+  UnitSettingsModel in '..\ExplorerGenieExt\UnitSettingsModel.pas';
 
 var
   runner : ITestRunner;

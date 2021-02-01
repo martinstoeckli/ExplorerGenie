@@ -16,7 +16,7 @@ uses
   UnitLanguageService in 'UnitLanguageService.pas',
   UnitSettingsGotoToolModel in 'UnitSettingsGotoToolModel.pas';
 
-/// <summary>
+  /// <summary>
   /// "Overrides" the base function DllRegisterServer.
   /// </summary>
   function CustomDllRegisterServer: HResult; stdcall;
