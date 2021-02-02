@@ -201,5 +201,14 @@ namespace ExplorerGenieShared
             }
             return url;
         }
+
+        public static string ExcludeTrailingBackslash(string url)
+        {
+            if (!string.IsNullOrEmpty(url) && url.EndsWith(@"\"))
+            {
+                return url.Remove(url.Length - 1);
+            }
+            return url;
+        }
     }
 }

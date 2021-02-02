@@ -59,6 +59,10 @@ namespace ExplorerGenieShared
                 Verb = toolModel.AsAdmin ? "runas" : "open",
                 WindowStyle = ProcessWindowStyle.Normal,
             };
+
+            // Special handling of directories, they open only without trailing backslash
+            if (Directory.Exists(startInfo.FileName))
+                startInfo.FileName = PathUtils.ExcludeTrailingBackslash(startInfo.FileName);
             return startInfo;
         }
 

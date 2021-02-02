@@ -47,5 +47,27 @@ namespace ExplorerGenieSharedTest
             string res = PathUtils.ConvertToOutlook(path);
             Assert.AreEqual(@"<\\my-server\Temp\mit Leerschlag.txt>", res);
         }
+
+        [TestMethod]
+        public void ExcludeTrailingBackslash_WorksCorrectly()
+        {
+            string path;
+            string res;
+            path = @"\\my-server\Temp\";
+            res = PathUtils.ExcludeTrailingBackslash(path);
+            Assert.AreEqual(@"\\my-server\Temp", res);
+
+            path = @"\\my-server\Temp";
+            res = PathUtils.ExcludeTrailingBackslash(path);
+            Assert.AreEqual(@"\\my-server\Temp", res);
+
+            path = @"\\my-server\Temp\mit Leerschlag.txt";
+            res = PathUtils.ExcludeTrailingBackslash(path);
+            Assert.AreEqual(@"\\my-server\Temp\mit Leerschlag.txt", res);
+
+            path = string.Empty;
+            res = PathUtils.ExcludeTrailingBackslash(path);
+            Assert.AreEqual(string.Empty, res);
+        }
     }
 }
