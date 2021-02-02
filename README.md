@@ -14,7 +14,7 @@ This extension adds a context menu, which can copy the paths of the selected fil
 
 ## Go to tool
 
-This extension makes it easy to open tools like the Command Line or Power Shell.
+This extension makes it easy to open tools like the Command Line or Power Shell. It is possible to add user defined menu entries which can open other tools, or go to certain locations.
 
 ![ContextMenuGoto](screenshots/explorergenie_menu_goto.png)
 
