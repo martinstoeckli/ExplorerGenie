@@ -99,13 +99,12 @@ begin
         customGotoTools := registry.ReadString('CustomGotoTools');
       if (registry.ValueExists('HashShowMenu')) then
         settings.HashShowMenu := StrToBoolDef(registry.ReadString('HashShowMenu'), settings.HashShowMenu);
+      AddCustomGotoTools(settings, customGotoTools);
     end;
   except
     // keep default values
   end;
   registry.Free;
-
-  AddCustomGotoTools(settings, customGotoTools);
 end;
 
 procedure TSettingsService.AddPredefinedGotoTools(settings: TSettingsModel);
