@@ -19,10 +19,13 @@
     <Compile Include="$(MSBuildThisFileDirectory)Services\ILanguageServiceResourceReader.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Services\LanguageService.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Services\LanguageServiceFileResourceReader.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ViewModels\PageCalculateHashViewModel.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ViewModels\PageCopyPathViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewModels\CustomGotoToolViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewModels\FilenameOnlyViewModel.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)ViewModels\GotoToolPageViewModel.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ViewModels\PageGotoToolViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewModels\HashResultViewModel.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ViewModels\PageSystemFoldersViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewModels\RadioEnumConverter.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewModels\RelayCommand.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewModels\SettingsViewModel.cs" />

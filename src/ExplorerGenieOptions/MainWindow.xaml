@@ -116,7 +116,7 @@
         <TabControl Grid.Column="1" x:Name="tab" HorizontalAlignment="Stretch" Margin="0,10,10,10" VerticalAlignment="Stretch" TabStripPlacement="Left">
 
             <!-- Copy file -->
-            <TabItem Header="{Binding Language[menuCopyFile]}">
+            <TabItem DataContext="{Binding CopyPathPageViewModel}" Header="{Binding Language[menuCopyFile]}">
                 <ScrollViewer VerticalScrollBarVisibility="Auto">
                     <Grid Margin="12,15,12,15">
                         <Grid.RowDefinitions>
@@ -249,7 +249,7 @@
             </TabItem>
 
             <!-- Hashes -->
-            <TabItem Header="{Binding Language[menuHash]}">
+            <TabItem DataContext="{Binding CalculateHashPageViewModel}" Header="{Binding Language[menuHash]}">
                 <Grid Margin="12,15,12,15">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="auto"/>
@@ -353,7 +353,7 @@
             </TabItem>
 
             <!-- System folders -->
-            <TabItem Header="{Binding Language[guiSystemFolders]}">
+            <TabItem DataContext="{Binding SystemFoldersPageViewModel}" Header="{Binding Language[guiSystemFolders]}">
                 <Grid Margin="12,15,12,15">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="*"/>

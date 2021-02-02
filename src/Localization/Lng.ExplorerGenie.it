@@ -1,6 +1,6 @@
 menuCopyFile Copia come percorso
 submenuCopyFile Copia nomi dei file
-submenuCopyEmail Copia come collegamento email
+submenuCopyEmail Copia come collegamento e-mail
 submenuOptions Opzioni
 menuGoto Vai allo strumento
 submenuGotoCmd Apri nel Prompt dei comandi
@@ -15,7 +15,7 @@ guiCopy Copia
 guiPaste Incolla
 guiClose Chiudi
 guiShowMenu Visualizza Menu contestuale
-guiPreview Preview
+guiPreview Anteprima
 guiInfo Informazioni
 
 guiAsOriginalPath Percorso Originale
@@ -27,20 +27,20 @@ guiAsThunderbird Thunderbird e altri
 guiUnc Ottieni percorso di rete (UNC) per le unita' mappate
 guiOnlyFile Solo il nome del file senza percorso
 
-guiVisibleMenus Visible menu entries
-guiUserDefinedMenus User defined menu entries
-guiGotoMenuTitle Menu title
-guiGotoMenuCommand Command line
-guiGotoMenuAdmin Admin
-guiGotoInfo Example: "C:\Programs\Microsoft VS Code\Code.exe" "{D}"\n{P} Full path of selected file/directory\n{D} Only directory\n{F} Only file name
+guiVisibleMenus Voci del menu visibili
+guiUserDefinedMenus Voci del menu definite dall'utente
+guiGotoMenuTitle Titolo del menu
+guiGotoMenuCommand Riga di comando
+guiGotoMenuAdmin Amministratore
+guiGotoInfo Esempio: "C:\Programs\Microsoft VS Code\Code.exe" "{D}"\n{P} Percorso completo del file selezionato/della cartella\n{D} Solo la cartella\n{F} Solo il nome del file
 
 guiHashValues Valori Hash
 guiHashValue Valore Hash
 guiAlgorithm Algoritmo
 guiHashVerification Verifica un hash digitandolo o incollandolo nella casella di testo.
 
-guiSystemFolders System folders
-guiGotoSystemFolder Go to system folder
+guiSystemFolders Cartelle di sistema
+guiGotoSystemFolder Vai alle cartelle di sistema
 
 guiVersion Versione
 guiCopyright Copyright

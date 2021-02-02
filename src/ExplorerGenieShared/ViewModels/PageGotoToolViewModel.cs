@@ -16,18 +16,21 @@ using ExplorerGenieShared.Services;
 
 namespace ExplorerGenieShared.ViewModels
 {
-    internal class GotoToolPageViewModel : ViewModelBaseWithLanguage, IDisposable
+    /// <summary>
+    /// ViewModel for the "Goto tool" tab.
+    /// </summary>
+    internal class PageGotoToolViewModel : ViewModelBaseWithLanguage, IDisposable
     {
         private readonly SettingsModel _model;
         private readonly ISettingsService _settingsService;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="GotoToolPageViewModel"/> class.
+        /// Initializes a new instance of the <see cref="PageGotoToolViewModel"/> class.
         /// </summary>
         /// <param name="model">The shared model from <see cref="SettingsViewModel"/>.</param>
         /// <param name="language">The shared language service from <see cref="SettingsViewModel"/>.</param>
         /// <param name="settingsService">The shared settings service from <see cref="SettingsViewModel"/>.</param>
-        public GotoToolPageViewModel(SettingsModel model, ILanguageService language, ISettingsService settingsService)
+        public PageGotoToolViewModel(SettingsModel model, ILanguageService language, ISettingsService settingsService)
         {
             _model = model;
             Language = language;
@@ -50,15 +53,15 @@ namespace ExplorerGenieShared.ViewModels
         }
 
         /// <summary>
-        /// Finalizes an instance of the <see cref="GotoToolPageViewModel"/> class.
+        /// Finalizes an instance of the <see cref="PageGotoToolViewModel"/> class.
         /// </summary>
-        ~GotoToolPageViewModel()
+        ~PageGotoToolViewModel()
         {
             Dispose();
         }
 
         /// <summary>
-        /// Finalizes an instance of the <see cref="GotoToolPageViewModel"/> class.
+        /// Finalizes an instance of the <see cref="PageGotoToolViewModel"/> class.
         /// </summary>
         public void Dispose()
         {

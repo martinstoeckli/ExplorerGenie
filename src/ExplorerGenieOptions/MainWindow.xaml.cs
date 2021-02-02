@@ -56,7 +56,7 @@ namespace ExplorerGenieOptions
             DataGrid grid = sender as DataGrid;
             if (grid.SelectedItem is SystemFolderViewModel selectedViewModel)
             {
-                GetViewModel().GotoSystemFolderCommand.Execute(selectedViewModel);
+                GetViewModel().SystemFoldersPageViewModel.GotoSystemFolderCommand.Execute(selectedViewModel);
             }
         }
 
@@ -65,7 +65,7 @@ namespace ExplorerGenieOptions
             DataGrid grid = sender as DataGrid;
             if (grid.SelectedItem is HashResultViewModel selectedViewModel)
             {
-                GetViewModel().CopyHashToClipboardCommand.Execute(selectedViewModel);
+                GetViewModel().CalculateHashPageViewModel.CopyHashToClipboardCommand.Execute(selectedViewModel);
             }
         }
     }

@@ -5,10 +5,7 @@
 
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Diagnostics;
-using System.IO;
-using System.Linq;
 using System.Reflection;
 using System.Windows;
 using System.Windows.Input;
@@ -24,14 +21,6 @@ namespace ExplorerGenieShared.ViewModels
     {
         private readonly SettingsModel _model;
         private readonly ISettingsService _settingsService;
-        private List<string> _filenames;
-        private string _copyFileExample;
-        private string _copyEmailExample;
-        private List<SystemFolderViewModel> _systemFolders;
-        private List<FilenameOnlyViewModel> _filenamesForHash;
-        private FilenameOnlyViewModel _selectedFilenameForHash;
-        private string _hashCandidate;
-        private bool? _hashVerified;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="SettingsViewModel"/> class.
@@ -49,21 +38,16 @@ namespace ExplorerGenieShared.ViewModels
         public SettingsViewModel(ISettingsService settingsService, List<string> filenames)
         {
             _settingsService = settingsService;
-            _filenames = filenames;
-            new FilenameSorter().Sort(_filenames);
+            new FilenameSorter().Sort(filenames);
             _model = _settingsService.LoadSettingsOrDefault();
 
-            GotoToolPageViewModel = new GotoToolPageViewModel(_model, Language, _settingsService);
+            GotoToolPageViewModel = new PageGotoToolViewModel(_model, Language, _settingsService);
+            CopyPathPageViewModel = new PageCopyPathViewModel(_model, Language, _settingsService, filenames);
+            CalculateHashPageViewModel = new PageCalculateHashViewModel(_model, Language, _settingsService, filenames);
+            SystemFoldersPageViewModel = new PageSystemFoldersViewModel(Language);
+
             OpenHomepageCommand = new RelayCommand(OpenHomepage);
             CloseCommand = new RelayCommand<Window>(CloseWindow);
-            CopyTextToClipboardCommand = new RelayCommand<string>(CopyTextToClipboard);
-            GotoSystemFolderCommand = new RelayCommand<SystemFolderViewModel>(GotoSystemFolder);
-            CopyHashToClipboardCommand = new RelayCommand<HashResultViewModel>(CopyHashToClipboard);
-            PasteHashFromClipboardCommand = new RelayCommand(PasteHashFromClipboard);
-            HashResults = new ObservableCollection<HashResultViewModel>();
-
-            UpdateCopyFileExample();
-            UpdateCopyEmailExample();
         }
 
         /// <summary>
@@ -79,7 +63,28 @@ namespace ExplorerGenieShared.ViewModels
             GotoToolPageViewModel.Dispose();
         }
 
-        public GotoToolPageViewModel GotoToolPageViewModel { get; private set; }
+        public PageGotoToolViewModel GotoToolPageViewModel { get; private set; }
+
+        public PageCopyPathViewModel CopyPathPageViewModel { get; private set; }
+
+        public PageCalculateHashViewModel CalculateHashPageViewModel { get; private set; }
+
+        public PageSystemFoldersViewModel SystemFoldersPageViewModel { get; private set; }
+
+        /// <summary>
+        /// Gets the command to close the application.
+        /// </summary>
+        public ICommand CloseCommand { get; private set; }
+
+        private void CloseWindow(Window callerWindow)
+        {
+            callerWindow.Close();
+        }
+
+        public string Version
+        {
+            get { return Assembly.GetExecutingAssembly().GetName().Version.ToString(); }
+        }
 
         /// <summary>
         /// Gets the command which opens the homepage.
@@ -94,355 +99,6 @@ namespace ExplorerGenieShared.ViewModels
                 UseShellExecute = true,
             };
             Process.Start(startInfo);
-        }
-
-        /// <summary>
-        /// Gets the command to close the application.
-        /// </summary>
-        public ICommand CloseCommand { get; private set; }
-
-        private void CloseWindow(Window callerWindow)
-        {
-            callerWindow.Close();
-        }
-
-        /// <summary>
-        /// Gets the command which copies a text to the clipboard.
-        /// </summary>
-        public ICommand CopyTextToClipboardCommand { get; private set; }
-
-        private void CopyTextToClipboard(string text)
-        {
-            Clipboard.SetText(text);
-        }
-
-        public bool CopyFileShowMenu
-        {
-            get { return _model.CopyFileShowMenu; }
-
-            set 
-            {
-                if (SetPropertyIndirect(() => _model.CopyFileShowMenu, (v) => _model.CopyFileShowMenu = v, value, false))
-                {
-                    _settingsService?.TrySaveSettingsToLocalDevice(_model);
-                }
-            }
-        }
-
-        public CopyFileFormat CopyFileFormat
-        {
-            get { return _model.CopyFileFormat; }
-
-            set 
-            {
-                if (SetPropertyIndirect(() => _model.CopyFileFormat, (v) => _model.CopyFileFormat = v, value, false))
-                {
-                    _settingsService?.TrySaveSettingsToLocalDevice(_model);
-                    UpdateCopyFileExample();
-                }
-            }
-        }
-
-        public bool CopyFileOnlyFilename
-        {
-            get { return _model.CopyFileOnlyFilename; }
-
-            set 
-            {
-                if (SetPropertyIndirect(() => _model.CopyFileOnlyFilename, (v) => _model.CopyFileOnlyFilename = v, value, false))
-                {
-                    _settingsService?.TrySaveSettingsToLocalDevice(_model);
-                    UpdateCopyFileExample();
-                }
-            }
-        }
-
-        public bool CopyFileConvertToUnc
-        {
-            get { return _model.CopyFileConvertToUnc; }
-
-            set 
-            {
-                if (SetPropertyIndirect(() => _model.CopyFileConvertToUnc, (v) => _model.CopyFileConvertToUnc = v, value, false))
-                {
-                    _settingsService?.TrySaveSettingsToLocalDevice(_model);
-                    UpdateCopyFileExample();
-                }
-            }
-        }
-
-        public string CopyFileExample
-        {
-            get { return _copyFileExample; }
-
-            set { SetProperty(ref _copyFileExample, value, false); }
-        }
-
-        private void UpdateCopyFileExample()
-        {
-            List<string> examplePaths = new List<string>() { GenerateExamplePath() };
-            PathUtils.ConvertForCopyFileAction(examplePaths, _model);
-            CopyFileExample = examplePaths[0];
-        }
-
-        public CopyEmailFormat CopyEmailFormat
-        {
-            get { return _model.CopyEmailFormat; }
-
-            set 
-            {
-                if (SetPropertyIndirect(() => _model.CopyEmailFormat, (v) => _model.CopyEmailFormat = v, value, false))
-                {
-                    _settingsService?.TrySaveSettingsToLocalDevice(_model);
-                    UpdateCopyEmailExample();
-                }
-            }
-        }
-
-        public bool CopyEmailConvertToUnc
-        {
-            get { return _model.CopyEmailConvertToUnc; }
-
-            set 
-            {
-                if (SetPropertyIndirect(() => _model.CopyEmailConvertToUnc, (v) => _model.CopyEmailConvertToUnc = v, value, false))
-                {
-                    _settingsService?.TrySaveSettingsToLocalDevice(_model);
-                    UpdateCopyEmailExample();
-                }
-            }
-        }
-
-        public string CopyEmailExample
-        {
-            get { return _copyEmailExample; }
-
-            set { SetProperty(ref _copyEmailExample, value, false); }
-        }
-
-        private void UpdateCopyEmailExample()
-        {
-            List<string> examplePaths = new List<string>() { GenerateExamplePath() };
-            PathUtils.ConvertForCopyEmailAction(examplePaths, _model);
-            CopyEmailExample = examplePaths[0];
-        }
-
-        private string GenerateExamplePath()
-        {
-            if (_filenames.Count > 0)
-            {
-                return _filenames[0];
-            }
-            else
-            {
-                string documentDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
-                return Path.Combine(documentDirectory, "My Document.txt");
-            }
-        }
-
-        public bool HashShowMenu
-        {
-            get { return _model.HashShowMenu; }
-
-            set
-            {
-                if (SetPropertyIndirect(() => _model.HashShowMenu, (v) => _model.HashShowMenu = v, value, false))
-                {
-                    _settingsService?.TrySaveSettingsToLocalDevice(_model);
-                }
-            }
-        }
-
-        public List<SystemFolderViewModel> SystemFolders
-        {
-            get
-            {
-                var foldersOfInterest = new Environment.SpecialFolder[]
-                {
-                    Environment.SpecialFolder.ProgramFiles,
-                    Environment.SpecialFolder.ProgramFilesX86,
-                    Environment.SpecialFolder.CommonProgramFiles,
-                    Environment.SpecialFolder.CommonProgramFilesX86,
-                    Environment.SpecialFolder.ApplicationData,
-                    Environment.SpecialFolder.LocalApplicationData,
-                    Environment.SpecialFolder.CommonApplicationData,
-                    Environment.SpecialFolder.MyDocuments,
-                    Environment.SpecialFolder.MyMusic,
-                    Environment.SpecialFolder.MyPictures,
-                    Environment.SpecialFolder.MyVideos,
-                    Environment.SpecialFolder.CommonDocuments,
-                    Environment.SpecialFolder.CommonMusic,
-                    Environment.SpecialFolder.CommonPictures,
-                    Environment.SpecialFolder.CommonVideos,
-                    Environment.SpecialFolder.Windows,
-                    Environment.SpecialFolder.System,
-                    Environment.SpecialFolder.SystemX86,
-                    Environment.SpecialFolder.Desktop,
-                    Environment.SpecialFolder.DesktopDirectory,
-                    Environment.SpecialFolder.CommonDesktopDirectory,
-                    Environment.SpecialFolder.StartMenu,
-                    Environment.SpecialFolder.CommonStartMenu,
-                    Environment.SpecialFolder.Startup,
-                    Environment.SpecialFolder.CommonStartup,
-                    Environment.SpecialFolder.Recent,
-                    Environment.SpecialFolder.SendTo,
-                    Environment.SpecialFolder.UserProfile,
-                    Environment.SpecialFolder.Favorites,
-                    Environment.SpecialFolder.InternetCache,
-                    Environment.SpecialFolder.Cookies,
-                    Environment.SpecialFolder.History,
-                };
-
-                if (_systemFolders == null)
-                {
-                    _systemFolders = new List<SystemFolderViewModel>();
-
-                    // List folders of interest
-                    foreach (Environment.SpecialFolder folder in foldersOfInterest)
-                    {
-                        string path = Environment.GetFolderPath(folder);
-                        if (!string.IsNullOrEmpty(path))
-                            _systemFolders.Add(new SystemFolderViewModel { Name = folder.ToString(), Path = path });
-                    }
-
-                    // Add temp path
-                    _systemFolders.Insert(4, new SystemFolderViewModel { Name = "Temp", Path = Path.GetTempPath() });
-                }
-                return _systemFolders;
-            }
-        }
-
-        /// <summary>
-        /// Gets the command which opens the Explorer in a given special folder.
-        /// </summary>
-        public ICommand GotoSystemFolderCommand { get; private set; }
-
-        private void GotoSystemFolder(SystemFolderViewModel systemFolder)
-        {
-            string arguments = string.Format("/root,\"{0}\"", systemFolder.Path);
-            Process.Start("explorer.exe", arguments);
-        }
-
-        /// <summary>
-        /// Gets a list of filenames, passed by the context menu.
-        /// </summary>
-        public List<FilenameOnlyViewModel> FilenamesForHash
-        {
-            get
-            {
-                if (_filenamesForHash == null)
-                {
-                    _filenamesForHash = new List<FilenameOnlyViewModel>();
-                    foreach (string filename in _filenames)
-                    {
-                        if (File.Exists(filename))
-                            _filenamesForHash.Add(new FilenameOnlyViewModel { FullPath = filename });
-                    }
-                    SelectedFilenameForHash = FilenamesForHash.FirstOrDefault();
-                }
-                return _filenamesForHash; 
-            }
-        }
-
-        /// <summary>
-        /// Gets or sets the user selected filename.
-        /// </summary>
-        public FilenameOnlyViewModel SelectedFilenameForHash
-        {
-            get { return _selectedFilenameForHash; }
-            set 
-            {
-                if (SetProperty(ref _selectedFilenameForHash, value, false))
-                {
-                    HashResults.Clear();
-                    var hashes = HashCalculator.CalculateHashes(SelectedFilenameForHash.FullPath);
-                    foreach (HashCalculator.HashResult hash in hashes)
-                        HashResults.Add(new HashResultViewModel { HashAlgorithm = hash.HashAlgorithm, HashValue = hash.HashValue });
-                    UpdateHashHighlighting();
-                }
-            }
-        }
-
-        /// <summary>
-        /// Gets a list of calculated hash values.
-        /// </summary>
-        public ObservableCollection<HashResultViewModel> HashResults { get; private set; }
-
-        /// <summary>
-        /// Gets or sets the user entered hash value to verify.
-        /// </summary>
-        public string HashCandidate
-        {
-            get { return _hashCandidate; }
-
-            set 
-            {
-                if (SetProperty(ref _hashCandidate, value, false))
-                {
-                    UpdateHashHighlighting();
-                }
-            }
-        }
-
-        private void UpdateHashHighlighting()
-        {
-            string trimmedCandidate = HashCandidate?.Trim();
-
-            // Update candidate highlighting
-            if (string.IsNullOrEmpty(trimmedCandidate))
-                HashVerified = null;
-            else
-                HashVerified = HashResults.Any(item => string.Equals(item.HashValue, trimmedCandidate, StringComparison.OrdinalIgnoreCase));
-
-            // Update hash highlighting
-            foreach (HashResultViewModel hashResult in HashResults)
-            {
-                if (string.IsNullOrEmpty(trimmedCandidate))
-                    hashResult.Verified = null;
-                else
-                    hashResult.Verified = string.Equals(hashResult.HashValue, trimmedCandidate, StringComparison.OrdinalIgnoreCase);
-            }
-        }
-
-        /// <summary>
-        /// Gets or sets a value indicating whether the <see cref="HashCandidate"/> matches one of
-        /// the <see cref="HashResults"/>.
-        /// </summary>
-        public bool? HashVerified
-        {
-            get { return _hashVerified; }
-            set { SetProperty(ref _hashVerified, value, false); }
-        }
-
-        /// <summary>
-        /// Gets the command which copies the hash to the clipboard.
-        /// </summary>
-        public ICommand CopyHashToClipboardCommand { get; private set; }
-
-        private void CopyHashToClipboard(HashResultViewModel hashResult)
-        {
-            Clipboard.SetText(hashResult.HashValue);
-        }
-
-        /// <summary>
-        /// Gets the command which inserts the hash from the clipboard into the <see cref="HashCandidate"/>.
-        /// </summary>
-        public ICommand PasteHashFromClipboardCommand { get; private set; }
-
-        private void PasteHashFromClipboard(object obj)
-        {
-            string textFromClipboard = Clipboard.GetText();
-            if (textFromClipboard != null)
-            {
-                string[] lines = textFromClipboard.Split(new char[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
-                textFromClipboard = lines.FirstOrDefault();
-            }
-            HashCandidate = textFromClipboard;
-        }
-
-        public string Version
-        {
-            get { return Assembly.GetExecutingAssembly().GetName().Version.ToString(); }
         }
     }
 }
