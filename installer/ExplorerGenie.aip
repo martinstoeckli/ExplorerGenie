@@ -12,10 +12,10 @@
     <ROW Property="ARPURLINFOABOUT" Value="https://www.martinstoeckli.ch/explorergenie"/>
     <ROW Property="CTRLS" Value="2"/>
     <ROW Property="Manufacturer" Value="MartinStoeckli"/>
-    <ROW Property="ProductCode" Value="1031:{5ADB196A-043E-42FF-B5F0-39E553D6E02C} 1033:{5ADB196A-043E-42FF-B5F0-39E553D6E02C} " Type="16"/>
+    <ROW Property="ProductCode" Value="1031:{FA07FFEC-72B9-47D0-9765-080D2481C3FC} 1033:{FA07FFEC-72B9-47D0-9765-080D2481C3FC} " Type="16"/>
     <ROW Property="ProductLanguage" Value="1033"/>
     <ROW Property="ProductName" Value="ExplorerGenie"/>
-    <ROW Property="ProductVersion" Value="1.1.0" Type="32"/>
+    <ROW Property="ProductVersion" Value="2.0.1" Type="32"/>
     <ROW Property="RUNAPPLICATION" Value="1" Type="4"/>
     <ROW Property="SecureCustomProperties" Value="OLDPRODUCTS;AI_NEWERPRODUCTFOUND"/>
     <ROW Property="UpgradeCode" Value="{1FFB6672-4607-4D94-B23F-21C09B0FC732}"/>
