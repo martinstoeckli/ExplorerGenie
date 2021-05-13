@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<DOCUMENT Type="Advanced Installer" CreateVersion="17.6" version="17.8" Modules="professional" RootPath="." Language="en" Id="{CD82D10C-E752-4CA8-8E57-15CEF71EFFD5}">
+<DOCUMENT Type="Advanced Installer" CreateVersion="17.6" version="18.2" Modules="professional" RootPath="." Language="en" Id="{CD82D10C-E752-4CA8-8E57-15CEF71EFFD5}">
   <COMPONENT cid="caphyon.advinst.msicomp.MsiPropsComponent">
     <ROW Property="AI_BITMAP_DISPLAY_MODE" Value="0"/>
+    <ROW Property="AI_CURRENT_YEAR" Value="2021" ValueLocId="-"/>
     <ROW Property="AI_PREDEF_LCONDS_PROPS" Value="AI_DETECTED_DOTNET_VERSION"/>
     <ROW Property="AI_REQUIRED_DOTNET_DISPLAY" MultiBuildValue="DefaultBuild:4.5" ValueLocId="-"/>
     <ROW Property="AI_REQUIRED_DOTNET_VERSION" MultiBuildValue="DefaultBuild:4.5" ValueLocId="-"/>
@@ -61,6 +62,7 @@
     <ROW File="Lng.ExplorerGenie.en" Component_="Lng.ExplorerGenie.de" FileName="LNGEXP~1.EN|Lng.ExplorerGenie.en" Attributes="0" SourcePath="..\bin\Lng.ExplorerGenie.en" SelfReg="false"/>
     <ROW File="Lng.ExplorerGenie.it" Component_="Lng.ExplorerGenie.de" FileName="LNGEXP~1.IT|Lng.ExplorerGenie.it" Attributes="0" SourcePath="..\bin\Lng.ExplorerGenie.it" SelfReg="false"/>
     <ROW File="Newtonsoft.Json.dll" Component_="Newtonsoft.Json.dll" FileName="NEWTON~1.DLL|Newtonsoft.Json.dll" Attributes="0" SourcePath="..\bin\Newtonsoft.Json.dll" SelfReg="false"/>
+    <ROW File="Lng.ExplorerGenie.nl" Component_="Lng.ExplorerGenie.de" FileName="LNGEXP~1.NL|Lng.ExplorerGenie.nl" Attributes="0" SourcePath="..\bin\Lng.ExplorerGenie.nl" SelfReg="false"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.BootstrOptComponent">
     <ROW BootstrOptKey="GlobalOptions" DownloadFolder="[AppDataFolder][|Manufacturer]\[|ProductName]\prerequisites" Options="2"/>
@@ -69,7 +71,7 @@
     <ROW Action="AI_DetectSoftware" Sequence="151"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.BuildComponent">
-    <ROW BuildKey="DefaultBuild" BuildName="DefaultBuild" BuildOrder="1" BuildType="1" PackageFolder="Setup Files" PackageFileName="explorergenie" Languages="en;de" LangOpt="1" InstallationType="4" UseLargeSchema="true" Unicode="true"/>
+    <ROW BuildKey="DefaultBuild" BuildName="DefaultBuild" BuildOrder="1" BuildType="0" PackageFolder="Setup Files" PackageFileName="explorergenie" Languages="en;de" LangOpt="1" InstallationType="4" UseLargeSchema="true" Unicode="true"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.DictionaryComponent">
     <ROW Path="&lt;AI_DICTS&gt;ui.ail"/>
