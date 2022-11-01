@@ -19,6 +19,7 @@ uses
   ShellApi,
   ComServ,
   ExplorerGenieExt_TLB,
+  UnitExplorerCommand,
   UnitMenuModel,
   UnitMenuModelIcon,
   UnitActions,
@@ -31,23 +32,26 @@ type
   /// <summary>
   /// Main class of the shell extension, it implements the required interfaces.
   /// </summary>
-  TApp = class(TAutoObject, IApp, IContextMenu, IShellExtInit)
+  TApp = class(TAutoObject, IApp, IExplorerCommand, IShellExtInit)
   private
-    FMenus: TMenuModelList;
+    FMenus: TMenuModel;
+    FExplorerCommand: IExplorerCommand;
     FFilenames: TStringList;
-    function CreateMenuModels(settingsService: TSettingsService; languageService: ILanguageService): TMenuModelList;
-    procedure BuildContextMenus(
-      menus: TMenuModelList; parent: HMENU; startInsertingAt: UINT; firstFreeCmdId: UINT; var nextFreeCmdId: UINT);
+    function CreateMenuModels(settingsService: TSettingsService; languageService: ILanguageService): TMenuModel;
 
-    // IContextMenu
-    function QueryContextMenu(
-      Menu: HMENU; indexMenu, idCmdFirst, idCmdLast, uFlags: UINT): HResult; stdcall;
-    function InvokeCommand(var lpici: TCMInvokeCommandInfo): HResult; stdcall;
-    function GetCommandString(
-      idcmd: UINT_Ptr; uType: UINT; pwreserved: puint; pszName: LPStr; cchMax: uint): HResult; stdcall;
+    // IExplorerCommand
+    function GetTitle(const psiItemArray: IShellItemArray; var ppszName: LPWSTR): HRESULT; stdcall;
+    function GetIcon(const psiItemArray: IShellItemArray; var ppszIcon: LPWSTR): HRESULT; stdcall;
+    function GetToolTip(const psiItemArray: IShellItemArray; var ppszInfotip: LPWSTR): HRESULT; stdcall;
+    function GetCanonicalName(var pguidCommandName: TGUID): HRESULT; stdcall;
+    function GetState(const psiItemArray: IShellItemArray; fOkToBeSlow: BOOL; var pCmdState: TExpCmdState): HRESULT; stdcall;
+    function IExplorerCommand.Invoke = ExplorerCommandInvoke;
+    function ExplorerCommandInvoke(const psiItemArray: IShellItemArray; const pbc: IBindCtx): HRESULT; stdcall;
+    function GetFlags(var pFlags: TExpCmdFlags): HRESULT; stdcall;
+    function EnumSubCommands(out ppEnum: IEnumExplorerCommand): HRESULT; stdcall;
 
     // IShellExtInit
-    function IShellExtInit.Initialize = SEIInitialize; // avoid compiler warning
+    function IShellExtInit.Initialize = SEIInitialize;
     function SEIInitialize(
       pidlFolder: PItemIDList; lpdobj: IDataObject; hKeyProgID: HKEY): HRESULT; stdcall;
   public
@@ -84,6 +88,7 @@ begin
   settingsService := TSettingsService.Create(languageService);
   try
     FMenus := CreateMenuModels(settingsService, languageService);
+    FExplorerCommand := TExplorerCommand.Create(FMenus);
   finally
     settingsService.Free;
   end;
@@ -92,6 +97,7 @@ end;
 destructor TApp.Destroy;
 begin
   try
+    FExplorerCommand := nil;
     FMenus.Free;
     FFilenames.Free;
   except
@@ -101,7 +107,7 @@ begin
   inherited Destroy;
 end;
 
-function TApp.CreateMenuModels(settingsService: TSettingsService; languageService: ILanguageService): TMenuModelList;
+function TApp.CreateMenuModels(settingsService: TSettingsService; languageService: ILanguageService): TMenuModel;
 var
   settings: TSettingsModel;
   iconSize: TSize;
@@ -115,7 +121,9 @@ var
   submenuGotoOptions: TMenuModel;
   menuHash: TMenuModel;
 begin
-  Result := TMenuModelList.Create(true);
+  Result := TMenuModel.Create();
+  Result.Title := 'ExplorerGenie';
+
   settings := TSettingsModel.Create();
   try
   iconSize.Width := GetSystemMetrics(SM_CXMENUCHECK);
@@ -127,7 +135,7 @@ begin
     menuClipboard := TMenuModel.Create;
     menuClipboard.Title := languageService.LoadText('menuCopyFile', 'Copy as path');
     menuClipboard.Icon := TMenuIcon.Create('icoClipboard', iconSize);
-    Result.Add(menuClipboard);
+    Result.Children.Add(menuClipboard);
 
     submenuCopyFilename := TMenuModel.Create;
     submenuCopyFilename.Title := languageService.LoadText('submenuCopyFile', 'Copy filename(s)');
@@ -165,7 +173,7 @@ begin
     menuGoto := TMenuModel.Create;
     menuGoto.Title := languageService.LoadText('menuGoto', 'Go to tool');
     menuGoto.Icon := TMenuIcon.Create('icoCmd', iconSize);
-    Result.Add(menuGoto);
+    Result.Children.Add(menuGoto);
 
     for gotoTool in settings.GotoTools do
     begin
@@ -205,123 +213,51 @@ begin
       begin
         TActions.OnHashClicked(FFilenames);
       end;
-    Result.Add(menuHash);
+    Result.Children.Add(menuHash);
   end;
   finally
     settings.Free();
   end;
 end;
 
-function TApp.QueryContextMenu(
-  Menu: HMENU; indexMenu, idCmdFirst, idCmdLast, uFlags: UINT): HResult; stdcall;
-var
-  nextFreeCmdId: UINT;
-  offsetForNextIdCmdFirst: Integer;
+function TApp.EnumSubCommands(out ppEnum: IEnumExplorerCommand): HRESULT;
 begin
-  try
-  Result := 0;
-  if ((uFlags and $0000000F) = CMF_NORMAL) or ((uFlags and CMF_EXPLORE) <> 0) then
-  begin
-    nextFreeCmdId := idCmdFirst;
-    BuildContextMenus(FMenus, Menu, indexMenu, idCmdFirst, nextFreeCmdId);
-    offsetForNextIdCmdFirst := nextFreeCmdId - idCmdFirst; // Highest used id + 1 - first used id
-    Result := MakeResult(SEVERITY_SUCCESS, 0, offsetForNextIdCmdFirst);
-  end;
-  except
-    Result := 0; // Don't let an exception escape to the explorer process
-  end;
+  Result := FExplorerCommand.EnumSubCommands(ppEnum);
 end;
 
-procedure TApp.BuildContextMenus(
-  menus: TMenuModelList; parent: HMENU; startInsertingAt: UINT; firstFreeCmdId: UINT; var nextFreeCmdId: UINT);
-var
-  index: Integer;
-  menuModel: TMenuModel;
-  menuItemInfo: TMenuItemInfo;
-  popupMenu: HMENU;
+function TApp.GetCanonicalName(var pguidCommandName: TGUID): HRESULT;
 begin
-  for index := 0 to menus.Count - 1 do
-  begin
-    menuModel := menus[index];
-    menuModel.RelativeCmdId := nextFreeCmdId - firstFreeCmdId; // Later we need the relative id.
-    Inc(nextFreeCmdId);
-
-    ZeroMemory(@menuItemInfo, SizeOf(TMenuItemInfo));
-    menuItemInfo.cbSize := SizeOf(TMenuItemInfo);
-    if (menuModel.Icon <> nil) then
-      menuItemInfo.hbmpItem := menuModel.Icon.BitmapHandle;
-    menuItemInfo.dwTypeData := PChar(menuModel.Title);
-    menuItemInfo.wID := firstFreeCmdId + menuModel.RelativeCmdId; // This must be the absolute id.
-
-    if (menuModel.HasChildren) then
-    begin
-      // This is a group menu with sub items
-      popupMenu := CreatePopupMenu;
-      menuItemInfo.fMask := MIIM_ID or MIIM_STRING or MIIM_BITMAP or MIIM_SUBMENU;
-      menuItemInfo.hSubMenu := popupMenu;
-      InsertMenuItem(parent, startInsertingAt + UINT(index), True, menuItemInfo);
-
-      // Recursive call for children
-      BuildContextMenus(menuModel.Children, popupMenu, 0, firstFreeCmdId, nextFreeCmdId);
-    end
-    else
-    begin
-      // This is a normal menu item with an action
-      menuItemInfo.fMask := MIIM_ID or MIIM_STRING or MIIM_BITMAP;
-      InsertMenuItem(parent, startInsertingAt + UINT(index), True, menuItemInfo);
-    end;
-  end;
+  Result := FExplorerCommand.GetCanonicalName(pguidCommandName);
 end;
 
-function TApp.InvokeCommand(var lpici: TCMInvokeCommandInfo): HResult; stdcall;
-var
-  relativeCmdId: WORD;
-  menuModel: TMenuModel;
+function TApp.GetFlags(var pFlags: TExpCmdFlags): HRESULT;
 begin
-  Result := E_FAIL;
-
-  // Make sure we can handle the command
-  if (HiWord(DWORD(lpici.lpVerb)) = 0) then
-  begin
-    Result := S_OK;
-
-    // Find the clicked menu item
-    try
-      relativeCmdId := LoWord(DWORD(lpici.lpVerb));
-      menuModel := FMenus.FindByRelativeCmdId(relativeCmdId);
-      if (menuModel <> nil) and Assigned(menuModel.OnClicked) then
-        menuModel.OnClicked(menuModel);
-    except
-      Result := E_FAIL; // Don't let an exception escape to the explorer process
-    end;
-  end;
+  Result := FExplorerCommand.GetFlags(pFlags);
 end;
 
-function TApp.GetCommandString(
-  idcmd: UINT_Ptr; uType: UINT; pwreserved: puint; pszName: LPStr; cchMax: uint): HResult; stdcall;
-var
-  descriptionA: AnsiString;
-  descriptionW: WideString;
+function TApp.GetIcon(const psiItemArray: IShellItemArray; var ppszIcon: LPWSTR): HRESULT;
 begin
-  try
-  Result := S_OK;
-  case uType of
-  GCS_HELPTEXTA:
-    begin
-      descriptionA := APP_DESCRIPTION;
-      lstrcpynA(PAnsiChar(pszName), PAnsiChar(descriptionA), cchMax);
-    end;
-  GCS_HELPTEXTW:
-    begin
-      descriptionW := APP_DESCRIPTION;
-      lstrcpynW(PWideChar(pszName), PWideChar(descriptionW), cchMax);
-    end
-  else
-    Result := E_NOTIMPL;
-  end;
-  except
-    Result := E_FAIL; // Don't let an exception escape to the explorer process
-  end;
+  Result := FExplorerCommand.GetIcon(psiItemArray, ppszIcon);
+end;
+
+function TApp.GetState(const psiItemArray: IShellItemArray; fOkToBeSlow: BOOL; var pCmdState: TExpCmdState): HRESULT;
+begin
+  Result := FExplorerCommand.GetState(psiItemArray, fOkToBeSlow, pCmdState);
+end;
+
+function TApp.GetTitle(const psiItemArray: IShellItemArray; var ppszName: LPWSTR): HRESULT;
+begin
+  Result := FExplorerCommand.GetTitle(psiItemArray, ppszName);
+end;
+
+function TApp.GetToolTip(const psiItemArray: IShellItemArray; var ppszInfotip: LPWSTR): HRESULT;
+begin
+  Result := FExplorerCommand.GetToolTip(psiItemArray, ppszInfotip);
+end;
+
+function TApp.ExplorerCommandInvoke(const psiItemArray: IShellItemArray; const pbc: IBindCtx): HRESULT;
+begin
+  Result := FExplorerCommand.Invoke(psiItemArray, pbc);
 end;
 
 function TApp.SEIInitialize(

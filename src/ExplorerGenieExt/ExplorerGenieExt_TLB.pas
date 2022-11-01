@@ -11,12 +11,12 @@ unit ExplorerGenieExt_TLB;
 // alle manuell vorgenommenen Änderungen gehen verloren.
 // ************************************************************************ //
 
-// $Rev: 52393 $
-// Datei am 09.11.2020 09:31:29 erzeugt aus der unten beschriebenen Typbibliothek.
+// $Rev: 98336 $
+// Datei am 30.10.2022 21:59:35 erzeugt aus der unten beschriebenen Typbibliothek.
 
 // ************************************************************************  //
-// Typbib.: D:\Source\git\ExplorerGenie\GitHub\src\ExplorerGenieExt\ExplorerGenieExt (1)
-// LIBID: {A16065CA-D03A-4F74-B1BB-EC91C4C4E9D4}
+// Typbib.: D:\Source\ExplorerGenie\src\ExplorerGenieExt\ExplorerGenieExt (1)
+// LIBID: {551C9002-4521-471A-9542-F3D4CA752011}
 // LCID: 0
 // Hilfedatei:
 // Hilfe-String:
@@ -46,10 +46,10 @@ const
   ExplorerGenieExtMajorVersion = 1;
   ExplorerGenieExtMinorVersion = 0;
 
-  LIBID_ExplorerGenieExt: TGUID = '{A16065CA-D03A-4F74-B1BB-EC91C4C4E9D4}';
+  LIBID_ExplorerGenieExt: TGUID = '{551C9002-4521-471A-9542-F3D4CA752011}';
 
-  IID_IApp: TGUID = '{264D3051-7949-4D69-AD88-C8B04D4B4254}';
-  CLASS_App: TGUID = '{D7C1499F-25C0-4C6E-87F5-1C69EEBA6398}';
+  IID_IApp: TGUID = '{5F10B977-DBAE-4692-8652-0D8A89F85EFE}';
+  CLASS_App: TGUID = '{5C6755B8-615C-4212-88F3-4E254CAE46FA}';
 type
 
 // *********************************************************************//
@@ -68,19 +68,19 @@ type
 // *********************************************************************//
 // Interface: IApp
 // Flags:     (4416) Dual OleAutomation Dispatchable
-// GUID:      {264D3051-7949-4D69-AD88-C8B04D4B4254}
+// GUID:      {5F10B977-DBAE-4692-8652-0D8A89F85EFE}
 // *********************************************************************//
   IApp = interface(IDispatch)
-    ['{264D3051-7949-4D69-AD88-C8B04D4B4254}']
+    ['{5F10B977-DBAE-4692-8652-0D8A89F85EFE}']
   end;
 
 // *********************************************************************//
 // DispIntf:  IAppDisp
 // Flags:     (4416) Dual OleAutomation Dispatchable
-// GUID:      {264D3051-7949-4D69-AD88-C8B04D4B4254}
+// GUID:      {5F10B977-DBAE-4692-8652-0D8A89F85EFE}
 // *********************************************************************//
   IAppDisp = dispinterface
-    ['{264D3051-7949-4D69-AD88-C8B04D4B4254}']
+    ['{5F10B977-DBAE-4692-8652-0D8A89F85EFE}']
   end;
 
 // *********************************************************************//
