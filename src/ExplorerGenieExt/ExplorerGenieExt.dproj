@@ -5,7 +5,7 @@
         <FrameworkType>VCL</FrameworkType>
         <MainSource>ExplorerGenieExt.dpr</MainSource>
         <Base>True</Base>
-        <Config Condition="'$(Config)'==''">Release</Config>
+        <Config Condition="'$(Config)'==''">Debug</Config>
         <Platform Condition="'$(Platform)'==''">Win64</Platform>
         <TargetedPlatforms>3</TargetedPlatforms>
         <AppType>Library</AppType>
@@ -127,6 +127,7 @@
         <DCCReference Include="UnitApp.pas">
             <CoClasses>App</CoClasses>
         </DCCReference>
+        <DCCReference Include="UnitContextMenuRegistrar.pas"/>
         <DCCReference Include="UnitMenuModel.pas"/>
         <DCCReference Include="UnitMenuModelIcon.pas"/>
         <DCCReference Include="UnitActions.pas"/>
@@ -136,6 +137,7 @@
         <DCCReference Include="UnitSettingsGotoToolModel.pas"/>
         <DCCReference Include="UnitExplorerCommand.pas"/>
         <DCCReference Include="UnitEnumExplorerCommand.pas"/>
+        <DCCReference Include="UnitImports.pas"/>
         <RidlCompile Include="ExplorerGenieExt.ridl"/>
         <BuildConfiguration Include="Release">
             <Key>Cfg_2</Key>

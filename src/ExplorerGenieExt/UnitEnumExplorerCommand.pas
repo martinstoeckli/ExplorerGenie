@@ -1,3 +1,8 @@
+// Copyright © 2022 Martin Stoeckli.
+// This Source Code Form is subject to the terms of the Mozilla Public
+// License, v. 2.0. If a copy of the MPL was not distributed with this
+// file, You can obtain one at http://mozilla.org/MPL/2.0/.
+
 unit UnitEnumExplorerCommand;
 
 interface
@@ -5,6 +10,7 @@ uses
   ComObj,
   ShlObj,
   Windows,
+  UnitImports,
   UnitMenuModel;
 
 type
@@ -13,16 +19,16 @@ type
   /// IEnumExplorerCommand interface required by the explorer.
   /// Access instances of this class only via interface to get reference counting.
   /// </summary>
-  TEnumExplorerCommand = class(TComObject, IEnumExplorerCommand)
+  TEnumExplorerCommand = class(TInterfacedObject, IEnumExplorerCommand)
   private
     FModel: TMenuModelList;
-    FCursor: Integer;
+    FCursor: ULONG;
 
-    // IEnumExplorerCommand
-    function Next(celt: Cardinal; out pUICommand: IExplorerCommand; var pceltFetched: Cardinal): HRESULT; stdcall;
-    function Skip(celt: Cardinal): HRESULT; stdcall;
-    function Reset: HRESULT; stdcall;
-    function Clone(out ppenum: IEnumExplorerCommand): HRESULT; stdcall;
+    // UnitImport.IEnumExplorerCommand
+    function Next(celt: ULONG; out pUICommand: PIExplorerCommand; out pceltFetched: ULONG): HResult; stdcall;
+    function Skip(celt: ULONG): HResult; stdcall;
+    function Reset(): HResult; stdcall;
+    function Clone(out ppenum: IEnumExplorerCommand): HResult; stdcall;
   public
     constructor Create(model: TMenuModelList);
 
@@ -43,34 +49,28 @@ end;
 
 function TEnumExplorerCommand.Clone(out ppenum: IEnumExplorerCommand): HRESULT;
 begin
-  try
-    Result := S_OK;
-    ppenum := TEnumExplorerCommand.Create(TMenuModelList.Create(Model));
-  except
-    Result := E_FAIL; // Don't let an exception escape to the explorer process
-  end;
+  // According to the documentation (2022), this method is not currently implemented.
+  Result := E_NOTIMPL;
+  ppenum := nil;
 end;
 
-function TEnumExplorerCommand.Next(celt: Cardinal; out pUICommand: IExplorerCommand; var pceltFetched: Cardinal): HRESULT;
+function TEnumExplorerCommand.Next(celt: ULONG; out pUICommand: PIExplorerCommand; out pceltFetched: ULONG): HResult;
 type
   TIExplorerCommandArray = array of IExplorerCommand;
 var
+  commands: TIExplorerCommandArray;
   command: IExplorerCommand;
-  celtAsInt: Integer;
-  fetchedAsInt: Integer;
 begin
   try
-    celtAsInt := celt;
-    fetchedAsInt := 0;
-    pceltFetched := fetchedAsInt;
-    while (fetchedAsInt < celtAsInt) and (FCursor < Model.Count) do
+    commands := TIExplorerCommandArray(pUICommand);
+    pceltFetched := 0;
+    while (pceltFetched < celt) and (FCursor < ULONG(Model.Count)) do
     begin
       command := TExplorerCommand.Create(Model[FCursor]);
-      TIExplorerCommandArray(pUICommand)[fetchedAsInt] := command;
+      commands[pceltFetched] := command;
 
       Inc(FCursor);
-      Inc(fetchedAsInt);
-      pceltFetched := fetchedAsInt;
+      Inc(pceltFetched);
     end;
 
     if (pceltFetched = celt) then
@@ -82,6 +82,37 @@ begin
   end;
 end;
 
+//function TEnumExplorerCommand.Next(celt: ULONG; out pUICommand: PIExplorerCommand; out pceltFetched: ULONG): HResult;
+//type
+//  TIExplorerCommandArray = array of IExplorerCommand;
+//var
+//  command: IExplorerCommand;
+//  celtAsInt: Integer;
+//  fetchedAsInt: Integer;
+//begin
+//  try
+//    celtAsInt := celt;
+//    fetchedAsInt := 0;
+//    pceltFetched := fetchedAsInt;
+//    while (fetchedAsInt < celtAsInt) and (FCursor < Model.Count) do
+//    begin
+//      command := TExplorerCommand.Create(Model[FCursor]);
+//      TIExplorerCommandArray(pUICommand)[fetchedAsInt] := command;
+//
+//      Inc(FCursor);
+//      Inc(fetchedAsInt);
+//      pceltFetched := fetchedAsInt;
+//    end;
+//
+//    if (pceltFetched = celt) then
+//      Result := S_OK
+//    else
+//      Result := S_FALSE;
+//  except
+//    Result := E_FAIL; // Don't let an exception escape to the explorer process
+//  end;
+//end;
+
 function TEnumExplorerCommand.Reset: HRESULT;
 begin
 	Result := S_OK;
@@ -89,19 +120,9 @@ begin
 end;
 
 function TEnumExplorerCommand.Skip(celt: Cardinal): HRESULT;
-var
-  celtAsInt: Integer;
 begin
-  celtAsInt := celt;
-  if (FCursor + celtAsInt >= Model.Count) then
-  begin
-    Result := S_FALSE;
-  end
-  else
-  begin
-    Result := S_OK;
-    Inc(FCursor, celtAsInt);
-  end;
+  // According to the documentation (2022), this method is not currently implemented.
+  Result := E_NOTIMPL;
 end;
 
 end.

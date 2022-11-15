@@ -20,6 +20,7 @@ uses
   ComServ,
   ExplorerGenieExt_TLB,
   UnitExplorerCommand,
+  UnitImports,
   UnitMenuModel,
   UnitMenuModelIcon,
   UnitActions,
@@ -39,16 +40,16 @@ type
     FFilenames: TStringList;
     function CreateMenuModels(settingsService: TSettingsService; languageService: ILanguageService): TMenuModel;
 
-    // IExplorerCommand
-    function GetTitle(const psiItemArray: IShellItemArray; var ppszName: LPWSTR): HRESULT; stdcall;
-    function GetIcon(const psiItemArray: IShellItemArray; var ppszIcon: LPWSTR): HRESULT; stdcall;
-    function GetToolTip(const psiItemArray: IShellItemArray; var ppszInfotip: LPWSTR): HRESULT; stdcall;
-    function GetCanonicalName(var pguidCommandName: TGUID): HRESULT; stdcall;
-    function GetState(const psiItemArray: IShellItemArray; fOkToBeSlow: BOOL; var pCmdState: TExpCmdState): HRESULT; stdcall;
+    // UnitImports.IExplorerCommand
+    function GetTitle(psiItemArray: IShellItemArray; out ppszName: LPWSTR): HResult; stdcall;
+    function GetIcon(psiItemArray: IShellItemArray; out ppszIcon: LPWSTR): HResult; stdcall;
+    function GetToolTip(psiItemArray: IShellItemArray; out ppszInfotip: LPWSTR): HResult; stdcall;
+    function GetCanonicalName(out pguidCommandName: TGUID): HResult; stdcall;
+    function GetState(psiItemArray: IShellItemArray; fOkToBeSlow: boolean; out pCmdState: TEXPCMDSTATE): HResult; stdcall;
     function IExplorerCommand.Invoke = ExplorerCommandInvoke;
-    function ExplorerCommandInvoke(const psiItemArray: IShellItemArray; const pbc: IBindCtx): HRESULT; stdcall;
-    function GetFlags(var pFlags: TExpCmdFlags): HRESULT; stdcall;
-    function EnumSubCommands(out ppEnum: IEnumExplorerCommand): HRESULT; stdcall;
+    function ExplorerCommandInvoke(psiItemArray: IShellItemArray; pbc: IBindCtx): HResult; stdcall;
+    function GetFlags(out pFlags: TEXPCMDFLAGS): HResult; stdcall;
+    function EnumSubCommands(out ppEnum: IEnumExplorerCommand): HResult; stdcall;
 
     // IShellExtInit
     function IShellExtInit.Initialize = SEIInitialize;
@@ -88,7 +89,7 @@ begin
   settingsService := TSettingsService.Create(languageService);
   try
     FMenus := CreateMenuModels(settingsService, languageService);
-    FExplorerCommand := TExplorerCommand.Create(FMenus);
+    FExplorerCommand := TExplorerCommand.Create(FMenus) as IExplorerCommand;
   finally
     settingsService.Free;
   end;
@@ -220,107 +221,109 @@ begin
   end;
 end;
 
-function TApp.EnumSubCommands(out ppEnum: IEnumExplorerCommand): HRESULT;
-begin
-  Result := FExplorerCommand.EnumSubCommands(ppEnum);
-end;
-
-function TApp.GetCanonicalName(var pguidCommandName: TGUID): HRESULT;
-begin
-  Result := FExplorerCommand.GetCanonicalName(pguidCommandName);
-end;
-
-function TApp.GetFlags(var pFlags: TExpCmdFlags): HRESULT;
-begin
-  Result := FExplorerCommand.GetFlags(pFlags);
-end;
-
-function TApp.GetIcon(const psiItemArray: IShellItemArray; var ppszIcon: LPWSTR): HRESULT;
-begin
-  Result := FExplorerCommand.GetIcon(psiItemArray, ppszIcon);
-end;
-
-function TApp.GetState(const psiItemArray: IShellItemArray; fOkToBeSlow: BOOL; var pCmdState: TExpCmdState): HRESULT;
-begin
-  Result := FExplorerCommand.GetState(psiItemArray, fOkToBeSlow, pCmdState);
-end;
-
-function TApp.GetTitle(const psiItemArray: IShellItemArray; var ppszName: LPWSTR): HRESULT;
+function TApp.GetTitle(psiItemArray: IShellItemArray; out ppszName: LPWSTR): HResult;
 begin
   Result := FExplorerCommand.GetTitle(psiItemArray, ppszName);
 end;
 
-function TApp.GetToolTip(const psiItemArray: IShellItemArray; var ppszInfotip: LPWSTR): HRESULT;
+function TApp.GetIcon(psiItemArray: IShellItemArray; out ppszIcon: LPWSTR): HResult; stdcall;
+begin
+  Result := FExplorerCommand.GetIcon(psiItemArray, ppszIcon);
+end;
+
+function TApp.GetToolTip(psiItemArray: IShellItemArray; out ppszInfotip: LPWSTR): HResult; stdcall;
 begin
   Result := FExplorerCommand.GetToolTip(psiItemArray, ppszInfotip);
 end;
 
-function TApp.ExplorerCommandInvoke(const psiItemArray: IShellItemArray; const pbc: IBindCtx): HRESULT;
+function TApp.GetCanonicalName(out pguidCommandName: TGUID): HResult; stdcall;
+begin
+  Result := FExplorerCommand.GetCanonicalName(pguidCommandName);
+end;
+
+function TApp.GetState(psiItemArray: IShellItemArray; fOkToBeSlow: boolean; out pCmdState: TEXPCMDSTATE): HResult; stdcall;
+begin
+  Result := FExplorerCommand.GetState(psiItemArray, fOkToBeSlow, pCmdState);
+end;
+
+function TApp.ExplorerCommandInvoke(psiItemArray: IShellItemArray; pbc: IBindCtx): HResult; stdcall;
 begin
   Result := FExplorerCommand.Invoke(psiItemArray, pbc);
 end;
 
+function TApp.GetFlags(out pFlags: TEXPCMDFLAGS): HResult; stdcall;
+begin
+  Result := FExplorerCommand.GetFlags(pFlags);
+end;
+
+function TApp.EnumSubCommands(out ppEnum: IEnumExplorerCommand): HResult; stdcall;
+begin
+  Result := FExplorerCommand.EnumSubCommands(ppEnum);
+end;
+
 function TApp.SEIInitialize(
   pidlFolder: PItemIDList; lpdobj: IDataObject; hKeyProgID: HKEY): HRESULT; stdcall;
-var
-  formatEtc: TFormatEtc;
-  stgMedium: TStgMedium;
-  dropHandle: HDROP;
-  buffer: WideString;
-  count, index: integer;
-  length: integer;
-  filename: String;
+//var
+//  formatEtc: TFormatEtc;
+//  stgMedium: TStgMedium;
+//  dropHandle: HDROP;
+//  buffer: WideString;
+//  count, index: integer;
+//  length: integer;
+//  filename: String;
 begin
-  try
-  Result := E_INVALIDARG;
-  FFilenames.Clear;
+  Result := S_OK;
 
-  // Prepare format structure
-  ZeroMemory(@formatEtc, SizeOf(TFormatEtc));
-  formatEtc.cfFormat := CF_HDROP;
-  formatEtc.ptd := nil;
-  formatEtc.dwAspect := DVASPECT_CONTENT;
-  formatEtc.lindex := -1;
-  formatEtc.tymed := TYMED_HGLOBAL;
-  stgMedium.tymed := TYMED_HGLOBAL;
-
-  // get handle
-  if (lpdobj <> nil) and Succeeded(lpdobj.GetData(formatEtc, stgMedium)) then
-  begin
-    dropHandle := HDROP(GlobalLock(stgMedium.hGlobal));
-    try
-      if (dropHandle <> 0) then
-      begin
-        // Enumerate filenames.
-        // Data can contain WideString or AnsiString(Win95, 98, ME), we catch only WideString
-        if (PDropFiles(dropHandle).fWide) then
-        begin
-          count := DragQueryFileW(dropHandle, $FFFFFFFF, nil, 0);
-          for index := 0 to count - 1 do
-          begin
-            // Get length of filename
-            length := DragQueryFileW(dropHandle, index, nil, 0);
-
-            // Allocate the memory, the #0 is not included in "length"
-            SetLength(buffer, length + 1);
-
-            // Get filename
-            DragQueryFileW(dropHandle, index, PWideChar(buffer), length + 1);
-            SetLength(buffer, length);
-            filename := buffer;
-            FFilenames.Add(filename);
-          end;
-        end;
-        Result := S_OK;
-      end;
-    finally
-      GlobalUnlock(stgMedium.hGlobal);
-      ReleaseStgMedium(stgMedium);
-    end;
-  end;
-  except
-    Result := E_FAIL; // Don't let an exception escape to the explorer process
-  end;
+//  try
+//  Result := E_INVALIDARG;
+//  FFilenames.Clear;
+//
+//  // Prepare format structure
+//  ZeroMemory(@formatEtc, SizeOf(TFormatEtc));
+//  formatEtc.cfFormat := CF_HDROP;
+//  formatEtc.ptd := nil;
+//  formatEtc.dwAspect := DVASPECT_CONTENT;
+//  formatEtc.lindex := -1;
+//  formatEtc.tymed := TYMED_HGLOBAL;
+//  stgMedium.tymed := TYMED_HGLOBAL;
+//
+//  // get handle
+//  if (lpdobj <> nil) and Succeeded(lpdobj.GetData(formatEtc, stgMedium)) then
+//  begin
+//    dropHandle := HDROP(GlobalLock(stgMedium.hGlobal));
+//    try
+//      if (dropHandle <> 0) then
+//      begin
+//        // Enumerate filenames.
+//        // Data can contain WideString or AnsiString(Win95, 98, ME), we catch only WideString
+//        if (PDropFiles(dropHandle).fWide) then
+//        begin
+//          count := DragQueryFileW(dropHandle, $FFFFFFFF, nil, 0);
+//          for index := 0 to count - 1 do
+//          begin
+//            // Get length of filename
+//            length := DragQueryFileW(dropHandle, index, nil, 0);
+//
+//            // Allocate the memory, the #0 is not included in "length"
+//            SetLength(buffer, length + 1);
+//
+//            // Get filename
+//            DragQueryFileW(dropHandle, index, PWideChar(buffer), length + 1);
+//            SetLength(buffer, length);
+//            filename := buffer;
+//            FFilenames.Add(filename);
+//          end;
+//        end;
+//        Result := S_OK;
+//      end;
+//    finally
+//      GlobalUnlock(stgMedium.hGlobal);
+//      ReleaseStgMedium(stgMedium);
+//    end;
+//  end;
+//  except
+//    Result := E_FAIL; // Don't let an exception escape to the explorer process
+//  end;
 end;
 
 initialization
