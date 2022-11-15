@@ -20,7 +20,6 @@ uses
   ComServ,
   ExplorerGenieExt_TLB,
   UnitExplorerCommand,
-  UnitImports,
   UnitMenuModel,
   UnitMenuModelIcon,
   UnitActions,
@@ -40,16 +39,16 @@ type
     FFilenames: TStringList;
     function CreateMenuModels(settingsService: TSettingsService; languageService: ILanguageService): TMenuModel;
 
-    // UnitImports.IExplorerCommand
-    function GetTitle(psiItemArray: IShellItemArray; out ppszName: LPWSTR): HResult; stdcall;
-    function GetIcon(psiItemArray: IShellItemArray; out ppszIcon: LPWSTR): HResult; stdcall;
-    function GetToolTip(psiItemArray: IShellItemArray; out ppszInfotip: LPWSTR): HResult; stdcall;
-    function GetCanonicalName(out pguidCommandName: TGUID): HResult; stdcall;
-    function GetState(psiItemArray: IShellItemArray; fOkToBeSlow: boolean; out pCmdState: TEXPCMDSTATE): HResult; stdcall;
+    // IExplorerCommand
+    function GetTitle(const psiItemArray: IShellItemArray; var ppszName: LPWSTR): HRESULT; stdcall;
+    function GetIcon(const psiItemArray: IShellItemArray; var ppszIcon: LPWSTR): HRESULT; stdcall;
+    function GetToolTip(const psiItemArray: IShellItemArray; var ppszInfotip: LPWSTR): HRESULT; stdcall;
+    function GetCanonicalName(var pguidCommandName: TGUID): HRESULT; stdcall;
+    function GetState(const psiItemArray: IShellItemArray; fOkToBeSlow: BOOL; var pCmdState: TExpCmdState): HRESULT; stdcall;
     function IExplorerCommand.Invoke = ExplorerCommandInvoke;
-    function ExplorerCommandInvoke(psiItemArray: IShellItemArray; pbc: IBindCtx): HResult; stdcall;
-    function GetFlags(out pFlags: TEXPCMDFLAGS): HResult; stdcall;
-    function EnumSubCommands(out ppEnum: IEnumExplorerCommand): HResult; stdcall;
+    function ExplorerCommandInvoke(const psiItemArray: IShellItemArray; const pbc: IBindCtx): HRESULT; stdcall;
+    function GetFlags(var pFlags: TExpCmdFlags): HRESULT; stdcall;
+    function EnumSubCommands(out ppEnum: IEnumExplorerCommand): HRESULT; stdcall;
 
     // IShellExtInit
     function IShellExtInit.Initialize = SEIInitialize;
@@ -106,6 +105,46 @@ begin
       MessageBox(0, PChar(e.Message), '', MB_ICONERROR);
   end;
   inherited Destroy;
+end;
+
+function TApp.EnumSubCommands(out ppEnum: IEnumExplorerCommand): HRESULT;
+begin
+  Result := FExplorerCommand.EnumSubCommands(ppEnum);
+end;
+
+function TApp.ExplorerCommandInvoke(const psiItemArray: IShellItemArray; const pbc: IBindCtx): HRESULT;
+begin
+  Result := FExplorerCommand.Invoke(psiItemArray, pbc);
+end;
+
+function TApp.GetCanonicalName(var pguidCommandName: TGUID): HRESULT;
+begin
+  Result := FExplorerCommand.GetCanonicalName(pguidCommandName);
+end;
+
+function TApp.GetFlags(var pFlags: TExpCmdFlags): HRESULT;
+begin
+  Result := FExplorerCommand.GetFlags(pFlags);
+end;
+
+function TApp.GetIcon(const psiItemArray: IShellItemArray; var ppszIcon: LPWSTR): HRESULT;
+begin
+  Result := FExplorerCommand.GetIcon(psiItemArray, ppszIcon);
+end;
+
+function TApp.GetState(const psiItemArray: IShellItemArray; fOkToBeSlow: BOOL; var pCmdState: TExpCmdState): HRESULT;
+begin
+  Result := FExplorerCommand.GetState(psiItemArray, fOkToBeSlow, pCmdState);
+end;
+
+function TApp.GetTitle(const psiItemArray: IShellItemArray; var ppszName: LPWSTR): HRESULT;
+begin
+  Result := FExplorerCommand.GetTitle(psiItemArray, ppszName);
+end;
+
+function TApp.GetToolTip(const psiItemArray: IShellItemArray; var ppszInfotip: LPWSTR): HRESULT;
+begin
+  Result := FExplorerCommand.GetToolTip(psiItemArray, ppszInfotip);
 end;
 
 function TApp.CreateMenuModels(settingsService: TSettingsService; languageService: ILanguageService): TMenuModel;
@@ -219,46 +258,6 @@ begin
   finally
     settings.Free();
   end;
-end;
-
-function TApp.GetTitle(psiItemArray: IShellItemArray; out ppszName: LPWSTR): HResult;
-begin
-  Result := FExplorerCommand.GetTitle(psiItemArray, ppszName);
-end;
-
-function TApp.GetIcon(psiItemArray: IShellItemArray; out ppszIcon: LPWSTR): HResult; stdcall;
-begin
-  Result := FExplorerCommand.GetIcon(psiItemArray, ppszIcon);
-end;
-
-function TApp.GetToolTip(psiItemArray: IShellItemArray; out ppszInfotip: LPWSTR): HResult; stdcall;
-begin
-  Result := FExplorerCommand.GetToolTip(psiItemArray, ppszInfotip);
-end;
-
-function TApp.GetCanonicalName(out pguidCommandName: TGUID): HResult; stdcall;
-begin
-  Result := FExplorerCommand.GetCanonicalName(pguidCommandName);
-end;
-
-function TApp.GetState(psiItemArray: IShellItemArray; fOkToBeSlow: boolean; out pCmdState: TEXPCMDSTATE): HResult; stdcall;
-begin
-  Result := FExplorerCommand.GetState(psiItemArray, fOkToBeSlow, pCmdState);
-end;
-
-function TApp.ExplorerCommandInvoke(psiItemArray: IShellItemArray; pbc: IBindCtx): HResult; stdcall;
-begin
-  Result := FExplorerCommand.Invoke(psiItemArray, pbc);
-end;
-
-function TApp.GetFlags(out pFlags: TEXPCMDFLAGS): HResult; stdcall;
-begin
-  Result := FExplorerCommand.GetFlags(pFlags);
-end;
-
-function TApp.EnumSubCommands(out ppEnum: IEnumExplorerCommand): HResult; stdcall;
-begin
-  Result := FExplorerCommand.EnumSubCommands(ppEnum);
 end;
 
 function TApp.SEIInitialize(

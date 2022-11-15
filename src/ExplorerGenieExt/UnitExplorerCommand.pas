@@ -13,7 +13,6 @@ uses
   Generics.Collections,
   ShlObj,
   Windows,
-  UnitImports,
   UnitMenuModel;
 
 type
@@ -26,17 +25,17 @@ type
   private
     FModel: TMenuModel;
     function ReturnWideStringProperty(value: String; out ppszValue: LPWSTR): HRESULT;
-  protected
-    // UnitImports.IExplorerCommand
-    function GetTitle(psiItemArray: IShellItemArray; out ppszName: LPWSTR): HResult; stdcall;
-    function GetIcon(psiItemArray: IShellItemArray; out ppszIcon: LPWSTR): HResult; stdcall;
-    function GetToolTip(psiItemArray: IShellItemArray; out ppszInfotip: LPWSTR): HResult; stdcall;
-    function GetCanonicalName(out pguidCommandName: TGUID): HResult; stdcall;
-    function GetState(psiItemArray: IShellItemArray; fOkToBeSlow: boolean; out pCmdState: TEXPCMDSTATE): HResult; stdcall;
+
+    // IExplorerCommand
+    function GetTitle(const psiItemArray: IShellItemArray; var ppszName: LPWSTR): HRESULT; stdcall;
+    function GetIcon(const psiItemArray: IShellItemArray; var ppszIcon: LPWSTR): HRESULT; stdcall;
+    function GetToolTip(const psiItemArray: IShellItemArray; var ppszInfotip: LPWSTR): HRESULT; stdcall;
+    function GetCanonicalName(var pguidCommandName: TGUID): HRESULT; stdcall;
+    function GetState(const psiItemArray: IShellItemArray; fOkToBeSlow: BOOL; var pCmdState: TExpCmdState): HRESULT; stdcall;
     function IExplorerCommand.Invoke = ExplorerCommandInvoke;
-    function ExplorerCommandInvoke(psiItemArray: IShellItemArray; pbc: IBindCtx): HResult; stdcall;
-    function GetFlags(out pFlags: TEXPCMDFLAGS): HResult; stdcall;
-    function EnumSubCommands(out ppEnum: IEnumExplorerCommand): HResult; stdcall;
+    function ExplorerCommandInvoke(const psiItemArray: IShellItemArray; const pbc: IBindCtx): HRESULT; stdcall;
+    function GetFlags(var pFlags: TExpCmdFlags): HRESULT; stdcall;
+    function EnumSubCommands(out ppEnum: IEnumExplorerCommand): HRESULT; stdcall;
   public
     constructor Create(model: TMenuModel);
 
@@ -55,13 +54,13 @@ begin
   FModel := model;
 end;
 
-function TExplorerCommand.EnumSubCommands(out ppEnum: IEnumExplorerCommand): HResult;
+function TExplorerCommand.EnumSubCommands(out ppEnum: IEnumExplorerCommand): HRESULT;
 begin
   Result := S_OK;
   ppEnum := TEnumExplorerCommand.Create(Model.Children);
 end;
 
-function TExplorerCommand.ExplorerCommandInvoke(psiItemArray: IShellItemArray; pbc: IBindCtx): HResult;
+function TExplorerCommand.ExplorerCommandInvoke(const psiItemArray: IShellItemArray; const pbc: IBindCtx): HRESULT;
 begin
   Result := S_OK;
 //  try
@@ -75,13 +74,13 @@ begin
 //  end;
 end;
 
-function TExplorerCommand.GetCanonicalName(out pguidCommandName: TGUID): HResult;
+function TExplorerCommand.GetCanonicalName(var pguidCommandName: TGUID): HRESULT;
 begin
   Result := E_NOTIMPL;
   pguidCommandName := TGuid.Empty;
 end;
 
-function TExplorerCommand.GetFlags(out pFlags: TEXPCMDFLAGS): HResult;
+function TExplorerCommand.GetFlags(var pFlags: TExpCmdFlags): HRESULT;
 begin
   Result := S_OK;
   if (Model.Title = '-') then
@@ -92,23 +91,23 @@ begin
     pFlags := ECF_DEFAULT;
 end;
 
-function TExplorerCommand.GetIcon(psiItemArray: IShellItemArray; out ppszIcon: LPWSTR): HResult;
+function TExplorerCommand.GetIcon(const psiItemArray: IShellItemArray; var ppszIcon: LPWSTR): HRESULT;
 begin
   Result := ReturnWideStringProperty('', ppszIcon);
 end;
 
-function TExplorerCommand.GetState(psiItemArray: IShellItemArray; fOkToBeSlow: boolean; out pCmdState: TEXPCMDSTATE): HResult;
+function TExplorerCommand.GetState(const psiItemArray: IShellItemArray; fOkToBeSlow: BOOL; var pCmdState: TExpCmdState): HRESULT;
 begin
   Result := S_OK;
   pCmdState := ECS_ENABLED;
 end;
 
-function TExplorerCommand.GetTitle(psiItemArray: IShellItemArray; out ppszName: LPWSTR): HResult;
+function TExplorerCommand.GetTitle(const psiItemArray: IShellItemArray; var ppszName: LPWSTR): HRESULT;
 begin
   Result := ReturnWideStringProperty(Model.Title, ppszName);
 end;
 
-function TExplorerCommand.GetToolTip(psiItemArray: IShellItemArray; out ppszInfotip: LPWSTR): HResult;
+function TExplorerCommand.GetToolTip(const psiItemArray: IShellItemArray; var ppszInfotip: LPWSTR): HRESULT;
 begin
   Result := ReturnWideStringProperty('', ppszInfotip);
 end;
