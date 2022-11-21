@@ -13,6 +13,12 @@ uses
   Windows,
   UnitMenuModelIcon;
 
+const
+  /// <summary>
+  /// Use this constant  as the title of a TMenuModel to mark it as separator.
+  /// </summary>
+  MENU_SEPARATOR_TITLE = '-';
+
 type
   TMenuModelList = class;
 
@@ -25,7 +31,7 @@ type
     FChildren: TMenuModelList;
     FTitle: String;
     FIcon: TMenuIcon;
-    FOnClicked: TProc<TMenuModel>;
+    FOnClicked: TProc<TMenuModel, TStrings>;
     FContext: TObject;
     function GetOrCreateChildren(): TMenuModelList;
     function GetHasChildren(): Boolean;
@@ -61,7 +67,7 @@ type
     /// <summary>
     /// Gets or sets a delgate which should be executed when the user clicked the menu item.
     /// </summary>
-    property OnClicked: TProc<TMenuModel> read FOnClicked write FOnClicked;
+    property OnClicked: TProc<TMenuModel, TStrings> read FOnClicked write FOnClicked;
 
     /// <summary>
     /// Gets a lazy created list of sub menu items.

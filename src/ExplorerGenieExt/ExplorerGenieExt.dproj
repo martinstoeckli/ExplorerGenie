@@ -137,6 +137,7 @@
         <DCCReference Include="UnitSettingsGotoToolModel.pas"/>
         <DCCReference Include="UnitExplorerCommand.pas"/>
         <DCCReference Include="UnitEnumExplorerCommand.pas"/>
+        <DCCReference Include="UnitLogger.pas"/>
         <RidlCompile Include="ExplorerGenieExt.ridl"/>
         <BuildConfiguration Include="Release">
             <Key>Cfg_2</Key>

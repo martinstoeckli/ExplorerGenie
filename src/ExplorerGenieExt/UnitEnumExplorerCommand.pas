@@ -9,7 +9,9 @@ interface
 uses
   ComObj,
   ShlObj,
+  SysUtils,
   Windows,
+  UnitLogger,
   UnitMenuModel;
 
 type
@@ -30,6 +32,7 @@ type
     function Clone(out ppenum: IEnumExplorerCommand): HRESULT; stdcall;
   public
     constructor Create(model: TMenuModelList);
+    destructor Destroy(); override;
 
     property Model: TMenuModelList read FModel;
   end;
@@ -42,12 +45,21 @@ uses
 
 constructor TEnumExplorerCommand.Create(model: TMenuModelList);
 begin
+  Logger.Debug('TEnumExplorerCommand.Create');
   inherited Create();
   FModel := model;
 end;
 
+destructor TEnumExplorerCommand.Destroy;
+begin
+  Logger.Debug('TEnumExplorerCommand.Destroy');
+  inherited;
+end;
+
 function TEnumExplorerCommand.Clone(out ppenum: IEnumExplorerCommand): HRESULT;
 begin
+  Logger.Debug('TEnumExplorerCommand.Clone');
+
   // According to the documentation (2022), this method is not currently implemented.
   Result := E_NOTIMPL;
   ppenum := nil;
@@ -85,16 +97,21 @@ begin
   except
     Result := E_FAIL; // Don't let an exception escape to the explorer process
   end;
+  Logger.Debug('TEnumExplorerCommand.Next'#9'fetched/requested=' + IntToStr(pceltFetched) + '/' + IntToStr(celt));
 end;
 
 function TEnumExplorerCommand.Reset: HRESULT;
 begin
+  Logger.Debug('TEnumExplorerCommand.Reset');
+
 	Result := S_OK;
   FCursor := 0;
 end;
 
 function TEnumExplorerCommand.Skip(celt: Cardinal): HRESULT;
 begin
+  Logger.Debug('TEnumExplorerCommand.Skip');
+
   // According to the documentation (2022), this method is not currently implemented.
   Result := E_NOTIMPL;
 end;

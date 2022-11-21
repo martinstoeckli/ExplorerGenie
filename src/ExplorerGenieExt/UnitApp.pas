@@ -16,10 +16,10 @@ uses
   ComObj,
   ActiveX,
   ShlObj,
-  ShellApi,
   ComServ,
   ExplorerGenieExt_TLB,
   UnitExplorerCommand,
+  UnitLogger,
   UnitMenuModel,
   UnitMenuModelIcon,
   UnitActions,
@@ -32,11 +32,10 @@ type
   /// <summary>
   /// Main class of the shell extension, it implements the required interfaces.
   /// </summary>
-  TApp = class(TAutoObject, IApp, IExplorerCommand, IShellExtInit)
+  TApp = class(TAutoObject, IApp, IExplorerCommand)
   private
     FMenus: TMenuModel;
     FExplorerCommand: IExplorerCommand;
-    FFilenames: TStringList;
     function CreateMenuModels(settingsService: TSettingsService; languageService: ILanguageService): TMenuModel;
 
     // IExplorerCommand
@@ -49,11 +48,6 @@ type
     function ExplorerCommandInvoke(const psiItemArray: IShellItemArray; const pbc: IBindCtx): HRESULT; stdcall;
     function GetFlags(var pFlags: TExpCmdFlags): HRESULT; stdcall;
     function EnumSubCommands(out ppEnum: IEnumExplorerCommand): HRESULT; stdcall;
-
-    // IShellExtInit
-    function IShellExtInit.Initialize = SEIInitialize;
-    function SEIInitialize(
-      pidlFolder: PItemIDList; lpdobj: IDataObject; hKeyProgID: HKEY): HRESULT; stdcall;
   public
     /// <summary>
     /// Initializes a new instance of a TApp object.
@@ -76,8 +70,9 @@ var
   languageService: ILanguageService;
   settingsService: TSettingsService;
 begin
+  Logger.Debug('---');
+  Logger.Debug('TApp.Initialize');
   inherited Initialize;
-  FFilenames := TStringList.Create;
 
   languageService := TLanguageServiceFactory.CreateLanguageService('ExplorerGenie');
 {$IFDEF DEBUG}
@@ -96,10 +91,10 @@ end;
 
 destructor TApp.Destroy;
 begin
+  Logger.Debug('TApp.Destroy');
   try
     FExplorerCommand := nil;
     FMenus.Free;
-    FFilenames.Free;
   except
     on e: Exception do
       MessageBox(0, PChar(e.Message), '', MB_ICONERROR);
@@ -181,9 +176,9 @@ begin
     submenuCopyFilename.Title := languageService.LoadText('submenuCopyFile', 'Copy filename(s)');
     submenuCopyFilename.Icon := TMenuIcon.Create('icoCopy', iconSize);
     submenuCopyFilename.OnClicked :=
-      procedure (caller: TMenuModel)
+      procedure (caller: TMenuModel; filenames: TStrings)
       begin
-        TActions.OnCopyFileClicked(FFilenames);
+        TActions.OnCopyFileClicked(filenames);
       end;
     menuClipboard.Children.Add(submenuCopyFilename);
 
@@ -191,9 +186,9 @@ begin
     submenuCopyEmail.Title := languageService.LoadText('submenuCopyEmail', 'Copy as email link');
     submenuCopyEmail.Icon := TMenuIcon.Create('icoMail', iconSize);
     submenuCopyEmail.OnClicked :=
-      procedure (caller: TMenuModel)
+      procedure (caller: TMenuModel; filenames: TStrings)
       begin
-        TActions.OnCopyEmailClicked(FFilenames);
+        TActions.OnCopyEmailClicked(filenames);
       end;
     menuClipboard.Children.Add(submenuCopyEmail);
 
@@ -201,9 +196,9 @@ begin
     submenuCopyOptions.Title := languageService.LoadText('submenuOptions', 'Options');
     submenuCopyOptions.Icon := TMenuIcon.Create('icoOptions', iconSize);
     submenuCopyOptions.OnClicked :=
-      procedure (caller: TMenuModel)
+      procedure (caller: TMenuModel; filenames: TStrings)
       begin
-        TActions.OnCopyOptionsClicked(FFilenames);
+        TActions.OnCopyOptionsClicked(filenames);
       end;
     menuClipboard.Children.Add(submenuCopyOptions);
   end;
@@ -224,9 +219,9 @@ begin
         submenuGotoTool.Icon := TMenuIcon.Create(gotoTool.IconName, iconSize);
         submenuGotoTool.Context := gotoTool;
         submenuGotoTool.OnClicked :=
-          procedure (caller: TMenuModel)
+          procedure (caller: TMenuModel; filenames: TStrings)
           begin
-            TActions.OnGotoToolClicked(FFilenames, caller.Context as TSettingsGotoToolModel);
+            TActions.OnGotoToolClicked(filenames, caller.Context as TSettingsGotoToolModel);
           end;
         menuGoto.Children.Add(submenuGotoTool);
       end;
@@ -236,9 +231,9 @@ begin
     submenuGotoOptions.Title := languageService.LoadText('submenuOptions', 'Options');
     submenuGotoOptions.Icon := TMenuIcon.Create('icoOptions', iconSize);
     submenuGotoOptions.OnClicked :=
-      procedure (caller: TMenuModel)
+      procedure (caller: TMenuModel; filenames: TStrings)
       begin
-        TActions.OnGotoOptionsClicked(FFilenames);
+        TActions.OnGotoOptionsClicked(filenames);
       end;
     menuGoto.Children.Add(submenuGotoOptions);
   end;
@@ -249,9 +244,9 @@ begin
     menuHash.Title := languageService.LoadText('menuHash', 'Calculate hash');
     menuHash.Icon := TMenuIcon.Create('icoHash', iconSize);
     menuHash.OnClicked :=
-      procedure (caller: TMenuModel)
+      procedure (caller: TMenuModel; filenames: TStrings)
       begin
-        TActions.OnHashClicked(FFilenames);
+        TActions.OnHashClicked(filenames);
       end;
     Result.Children.Add(menuHash);
   end;
@@ -260,71 +255,15 @@ begin
   end;
 end;
 
-function TApp.SEIInitialize(
-  pidlFolder: PItemIDList; lpdobj: IDataObject; hKeyProgID: HKEY): HRESULT; stdcall;
-//var
-//  formatEtc: TFormatEtc;
-//  stgMedium: TStgMedium;
-//  dropHandle: HDROP;
-//  buffer: WideString;
-//  count, index: integer;
-//  length: integer;
-//  filename: String;
-begin
-  Result := S_OK;
-
-//  try
-//  Result := E_INVALIDARG;
-//  FFilenames.Clear;
-//
-//  // Prepare format structure
-//  ZeroMemory(@formatEtc, SizeOf(TFormatEtc));
-//  formatEtc.cfFormat := CF_HDROP;
-//  formatEtc.ptd := nil;
-//  formatEtc.dwAspect := DVASPECT_CONTENT;
-//  formatEtc.lindex := -1;
-//  formatEtc.tymed := TYMED_HGLOBAL;
-//  stgMedium.tymed := TYMED_HGLOBAL;
-//
-//  // get handle
-//  if (lpdobj <> nil) and Succeeded(lpdobj.GetData(formatEtc, stgMedium)) then
-//  begin
-//    dropHandle := HDROP(GlobalLock(stgMedium.hGlobal));
-//    try
-//      if (dropHandle <> 0) then
-//      begin
-//        // Enumerate filenames.
-//        // Data can contain WideString or AnsiString(Win95, 98, ME), we catch only WideString
-//        if (PDropFiles(dropHandle).fWide) then
-//        begin
-//          count := DragQueryFileW(dropHandle, $FFFFFFFF, nil, 0);
-//          for index := 0 to count - 1 do
-//          begin
-//            // Get length of filename
-//            length := DragQueryFileW(dropHandle, index, nil, 0);
-//
-//            // Allocate the memory, the #0 is not included in "length"
-//            SetLength(buffer, length + 1);
-//
-//            // Get filename
-//            DragQueryFileW(dropHandle, index, PWideChar(buffer), length + 1);
-//            SetLength(buffer, length);
-//            filename := buffer;
-//            FFilenames.Add(filename);
-//          end;
-//        end;
-//        Result := S_OK;
-//      end;
-//    finally
-//      GlobalUnlock(stgMedium.hGlobal);
-//      ReleaseStgMedium(stgMedium);
-//    end;
-//  end;
-//  except
-//    Result := E_FAIL; // Don't let an exception escape to the explorer process
-//  end;
-end;
-
 initialization
   TAutoObjectFactory.Create(ComServer, TApp, Class_App, ciMultiInstance, tmApartment);
+
+  Logger := CreateLoggerDummy();
+{$IFDEF DEBUG}
+  // Uncomment line to get a logger for debugging.
+  Logger := CreateLogger('ExplorerGenie', 'D:\Temp\ExplorerGenie.log');
+{$ENDIF}
+
+finalization
+  Logger := nil;
 end.

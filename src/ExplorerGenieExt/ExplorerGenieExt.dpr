@@ -16,7 +16,8 @@ uses
   UnitLanguageService in 'UnitLanguageService.pas',
   UnitSettingsGotoToolModel in 'UnitSettingsGotoToolModel.pas',
   UnitExplorerCommand in 'UnitExplorerCommand.pas',
-  UnitEnumExplorerCommand in 'UnitEnumExplorerCommand.pas';
+  UnitEnumExplorerCommand in 'UnitEnumExplorerCommand.pas',
+  UnitLogger in 'UnitLogger.pas';
 
 // Windows apps are difficult to debug, because they are registered in a sandbox,
 // by registering it traditionally we can debug the extentsion.

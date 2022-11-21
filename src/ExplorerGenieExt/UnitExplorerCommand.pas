@@ -11,8 +11,11 @@ uses
   Classes,
   ComObj,
   Generics.Collections,
+  Shlwapi,
   ShlObj,
+  SysUtils,
   Windows,
+  UnitLogger,
   UnitMenuModel;
 
 type
@@ -24,7 +27,9 @@ type
   TExplorerCommand = class(TInterfacedObject, IExplorerCommand)
   private
     FModel: TMenuModel;
-    function ReturnWideStringProperty(value: String; out ppszValue: LPWSTR): HRESULT;
+    FTitle: WideString;
+    function ReturnWideStringProperty(const value: WideString; out ppszValue: LPWSTR): HRESULT;
+    procedure ReadSelectedFilenames(const psiItemArray: IShellItemArray; filenames: TStringList);
 
     // IExplorerCommand
     function GetTitle(const psiItemArray: IShellItemArray; var ppszName: LPWSTR): HRESULT; stdcall;
@@ -38,6 +43,7 @@ type
     function EnumSubCommands(out ppEnum: IEnumExplorerCommand): HRESULT; stdcall;
   public
     constructor Create(model: TMenuModel);
+    destructor Destroy(); override;
 
     property Model: TMenuModel read FModel;
   end;
@@ -52,6 +58,14 @@ constructor TExplorerCommand.Create(model: TMenuModel);
 begin
   inherited Create();
   FModel := model;
+  FTitle := Model.Title;
+  Logger.Debug('TExplorerCommand.Create'#9 + Model.Title);
+end;
+
+destructor TExplorerCommand.Destroy;
+begin
+  Logger.Debug('TExplorerCommand.Destroy'#9 + Model.Title);
+  inherited;
 end;
 
 function TExplorerCommand.EnumSubCommands(out ppEnum: IEnumExplorerCommand): HRESULT;
@@ -61,21 +75,28 @@ begin
 end;
 
 function TExplorerCommand.ExplorerCommandInvoke(const psiItemArray: IShellItemArray; const pbc: IBindCtx): HRESULT;
+var
+  filenames: TStringList;
 begin
+  Logger.Debug('TExplorerCommand.ExplorerCommandInvoke'#9 + Model.Title);
   Result := S_OK;
-//  try
-//  Result := S_OK;
-//  if (Model <> nil) and Assigned(Model.OnClicked) then
-//  begin
-//    Model.OnClicked(Model);
-//  end;
-//  except
-//    Result := E_FAIL; // Don't let an exception escape to the explorer process
-//  end;
+  if (not Assigned(psiItemArray) or (not Assigned(Model)) or (not Assigned(Model.OnClicked))) then
+    Exit;
+
+  filenames := TStringList.Create();
+  try
+    ReadSelectedFilenames(psiItemArray, filenames);
+    Model.OnClicked(Model, filenames);
+    Logger.Debug('TExplorerCommand.ExplorerCommandInvoke'#9 + filenames.Text);
+  except
+    Result := E_FAIL; // Don't let an exception escape to the explorer process
+  end;
+  filenames.Free();
 end;
 
 function TExplorerCommand.GetCanonicalName(var pguidCommandName: TGUID): HRESULT;
 begin
+  Logger.Debug('TExplorerCommand.GetCanonicalName'#9 + Model.Title);
   Result := E_NOTIMPL;
   pguidCommandName := TGuid.Empty;
 end;
@@ -83,38 +104,62 @@ end;
 function TExplorerCommand.GetFlags(var pFlags: TExpCmdFlags): HRESULT;
 begin
   Result := S_OK;
-  if (Model.Title = '-') then
+  if (Model.Title = MENU_SEPARATOR_TITLE) then
     pFlags := ECF_ISSEPARATOR
-  else if (Model.Children.Count > 0) then
+  else if (Model.HasChildren) then
     pFlags := ECF_HASSUBCOMMANDS
   else
     pFlags := ECF_DEFAULT;
+  Logger.Debug('TExplorerCommand.GetFlags'#9 + Model.Title + #9 + IntToStr(pFlags));
 end;
 
 function TExplorerCommand.GetIcon(const psiItemArray: IShellItemArray; var ppszIcon: LPWSTR): HRESULT;
 begin
+  Logger.Debug('TExplorerCommand.GetIcon'#9 + Model.Title);
   Result := ReturnWideStringProperty('', ppszIcon);
 end;
 
 function TExplorerCommand.GetState(const psiItemArray: IShellItemArray; fOkToBeSlow: BOOL; var pCmdState: TExpCmdState): HRESULT;
 begin
+  Logger.Debug('TExplorerCommand.GetState'#9 + Model.Title);
   Result := S_OK;
   pCmdState := ECS_ENABLED;
 end;
 
 function TExplorerCommand.GetTitle(const psiItemArray: IShellItemArray; var ppszName: LPWSTR): HRESULT;
 begin
-  Result := ReturnWideStringProperty(Model.Title, ppszName);
+  Logger.Debug('TExplorerCommand.GetTitle'#9 + Model.Title);
+  Result := ReturnWideStringProperty(FTitle, ppszName);
 end;
 
 function TExplorerCommand.GetToolTip(const psiItemArray: IShellItemArray; var ppszInfotip: LPWSTR): HRESULT;
 begin
+  Logger.Debug('TExplorerCommand.GetToolTip'#9 + Model.Title);
   Result := ReturnWideStringProperty('', ppszInfotip);
 end;
 
-function TExplorerCommand.ReturnWideStringProperty(value: String; out ppszValue: LPWSTR): HRESULT;
+procedure TExplorerCommand.ReadSelectedFilenames(const psiItemArray: IShellItemArray; filenames: TStringList);
 var
-  wsValue: WideString;
+  selectionCount: Cardinal;
+  selectionIndex: Cardinal;
+  shellItem: IShellItem;
+  filePath: PWideChar;
+begin
+  filenames.Clear();
+  if Succeeded(psiItemArray.GetCount(selectionCount)) then
+  begin
+    for selectionIndex := 0 to selectionCount - 1 do
+    begin
+      if Succeeded(psiItemArray.GetItemAt(selectionIndex, shellItem)) and
+         Succeeded(shellItem.GetDisplayName(SIGDN_FILESYSPATH, filePath)) then
+      begin
+        filenames.Add(filePath);
+      end;
+    end;
+  end;
+end;
+
+function TExplorerCommand.ReturnWideStringProperty(const value: WideString; out ppszValue: LPWSTR): HRESULT;
 begin
   if (value = '') then
   begin
@@ -124,8 +169,7 @@ begin
   else
   begin
     Result := S_OK;
-    wsValue := value;
-    ppszValue := PWideChar(wsValue);
+    ppszValue := PWideChar(value);
   end;
 end;
 
