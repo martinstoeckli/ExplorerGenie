@@ -28,8 +28,8 @@ type
   private
     FModel: TMenuModel;
     FTitle: WideString;
-    function ReturnWideStringProperty(const value: WideString; out ppszValue: LPWSTR): HRESULT;
-    procedure ReadSelectedFilenames(const psiItemArray: IShellItemArray; filenames: TStringList);
+    class function ReturnWideStringProperty(const value: WideString; out ppszValue: LPWSTR): HRESULT;
+    class procedure ReadSelectedFilenames(const psiItemArray: IShellItemArray; filenames: TStringList);
 
     // IExplorerCommand
     function GetTitle(const psiItemArray: IShellItemArray; var ppszName: LPWSTR): HRESULT; stdcall;
@@ -80,7 +80,7 @@ var
 begin
   Logger.Debug('TExplorerCommand.ExplorerCommandInvoke'#9 + Model.Title);
   Result := S_OK;
-  if (not Assigned(psiItemArray) or (not Assigned(Model)) or (not Assigned(Model.OnClicked))) then
+  if (not Assigned(psiItemArray) or (not Assigned(Model)) or (Model.IsSeparator) or (not Assigned(Model.OnClicked))) then
     Exit;
 
   filenames := TStringList.Create();
@@ -104,7 +104,7 @@ end;
 function TExplorerCommand.GetFlags(var pFlags: TExpCmdFlags): HRESULT;
 begin
   Result := S_OK;
-  if (Model.Title = MENU_SEPARATOR_TITLE) then
+  if (Model.IsSeparator) then
     pFlags := ECF_ISSEPARATOR
   else if (Model.HasChildren) then
     pFlags := ECF_HASSUBCOMMANDS
@@ -129,7 +129,16 @@ end;
 function TExplorerCommand.GetTitle(const psiItemArray: IShellItemArray; var ppszName: LPWSTR): HRESULT;
 begin
   Logger.Debug('TExplorerCommand.GetTitle'#9 + Model.Title);
-  Result := ReturnWideStringProperty(FTitle, ppszName);
+  if (Model.IsSeparator) then
+  begin
+    // For separators, the return values must be null and a positive result like S_OK or S_FALSE.
+    Result := S_OK;
+    ppszName := nil;
+  end
+  else
+  begin
+    Result := ReturnWideStringProperty(FTitle, ppszName);
+  end;
 end;
 
 function TExplorerCommand.GetToolTip(const psiItemArray: IShellItemArray; var ppszInfotip: LPWSTR): HRESULT;
@@ -138,7 +147,7 @@ begin
   Result := ReturnWideStringProperty('', ppszInfotip);
 end;
 
-procedure TExplorerCommand.ReadSelectedFilenames(const psiItemArray: IShellItemArray; filenames: TStringList);
+class procedure TExplorerCommand.ReadSelectedFilenames(const psiItemArray: IShellItemArray; filenames: TStringList);
 var
   selectionCount: Cardinal;
   selectionIndex: Cardinal;
@@ -159,7 +168,7 @@ begin
   end;
 end;
 
-function TExplorerCommand.ReturnWideStringProperty(const value: WideString; out ppszValue: LPWSTR): HRESULT;
+class function TExplorerCommand.ReturnWideStringProperty(const value: WideString; out ppszValue: LPWSTR): HRESULT;
 begin
   if (value = '') then
   begin

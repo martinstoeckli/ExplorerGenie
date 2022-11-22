@@ -13,12 +13,6 @@ uses
   Windows,
   UnitMenuModelIcon;
 
-const
-  /// <summary>
-  /// Use this constant  as the title of a TMenuModel to mark it as separator.
-  /// </summary>
-  MENU_SEPARATOR_TITLE = '-';
-
 type
   TMenuModelList = class;
 
@@ -31,6 +25,7 @@ type
     FChildren: TMenuModelList;
     FTitle: String;
     FIcon: TMenuIcon;
+    FIsSeparator: Boolean;
     FOnClicked: TProc<TMenuModel, TStrings>;
     FContext: TObject;
     function GetOrCreateChildren(): TMenuModelList;
@@ -65,6 +60,11 @@ type
     property Icon: TMenuIcon read FIcon write FIcon;
 
     /// <summary>
+    /// Gets or sets an a value indicating whether the menu represents a separator line.
+    /// </summary>
+    property IsSeparator: Boolean read FIsSeparator write FIsSeparator;
+
+    /// <summary>
     /// Gets or sets a delgate which should be executed when the user clicked the menu item.
     /// </summary>
     property OnClicked: TProc<TMenuModel, TStrings> read FOnClicked write FOnClicked;
@@ -96,6 +96,12 @@ type
     /// <param name="relativeCmdId">The command id we are looking for.</param>
     /// <returns>Returns the found menu item, or nil if no such menu item could be found.</returns>
     function FindByRelativeCmdId(relativeCmdId: UINT): TMenuModel;
+
+    /// <summary>
+    /// Shortcut for checking whether there are at least one item in the list.
+    /// </summary>
+    /// <returns>Returns true if the list contains at least one item, otherwise false.</returns>
+    function Any(): Boolean;
   end;
 
 implementation
@@ -148,6 +154,11 @@ begin
     if (Result = nil) and (menuModel.HasChildren) then
       Result := menuModel.Children.FindByRelativeCmdId(relativeCmdId);
   end;
+end;
+
+function TMenuModelList.Any: Boolean;
+begin
+  Result := Count > 0;
 end;
 
 end.
