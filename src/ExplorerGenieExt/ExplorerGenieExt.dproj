@@ -120,9 +120,6 @@
         <DelphiCompile Include="$(MainSource)">
             <MainSource>MainSource</MainSource>
         </DelphiCompile>
-        <RcCompile Include="Images.rc">
-            <Form>Images.res</Form>
-        </RcCompile>
         <DCCReference Include="ExplorerGenieExt_TLB.pas"/>
         <DCCReference Include="UnitApp.pas">
             <CoClasses>App</CoClasses>

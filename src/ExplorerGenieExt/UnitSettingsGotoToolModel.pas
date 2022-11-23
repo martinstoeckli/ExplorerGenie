@@ -14,7 +14,7 @@ type
   private
     FToolIndex: Integer;
     FTitle: String;
-    FIconName: String;
+    FIconResourceId: Integer;
     FIsCustomTool: Boolean;
     FVisible: Boolean;
   public
@@ -24,7 +24,7 @@ type
     constructor Create();
     property ToolIndex: Integer read FToolIndex write FToolIndex;
     property Title: String read FTitle write FTitle;
-    property IconName: String read FIconName write FIconName;
+    property IconResourceId: Integer read FIconResourceId write FIconResourceId;
     property IsCustomTool: Boolean read FIsCustomTool write FIsCustomTool;
     property Visible: Boolean read FVisible write FVisible;
   end;

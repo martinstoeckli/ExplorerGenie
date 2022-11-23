@@ -21,10 +21,9 @@ type
   /// </summary>
   TMenuModel = class(TObject)
   private
-    FRelativeCmdId: UINT;
     FChildren: TMenuModelList;
     FTitle: String;
-    FIcon: TMenuIcon;
+    FIconResourceId: Integer;
     FIsSeparator: Boolean;
     FOnClicked: TProc<TMenuModel, TStrings>;
     FContext: TObject;
@@ -42,22 +41,14 @@ type
     destructor Destroy; override;
 
     /// <summary>
-    /// Gets or sets the relative command id of the menu item. This id must be unique over all menu
-    /// items. The ids should start with a first id 0 and should be incremented for each visible
-    /// menu item, even for groups with sub menu items.
-    /// </summary>
-    property RelativeCmdId: UINT read FRelativeCmdId write FRelativeCmdId;
-
-    /// <summary>
     /// Gets or sets the title of the menu item.
     /// </summary>
     property Title: String read FTitle write FTitle;
 
     /// <summary>
-    /// Gets or sets an object handling the menu icon. This icon is owned by the menu model and
-    /// will be automatically released.
+    /// Gets or sets the id of a icon resource. A value of 0 indicates that no icon is associated.
     /// </summary>
-    property Icon: TMenuIcon read FIcon write FIcon;
+    property IconResourceId: Integer read FIconResourceId write FIconResourceId;
 
     /// <summary>
     /// Gets or sets an a value indicating whether the menu represents a separator line.
@@ -91,13 +82,6 @@ type
   TMenuModelList = class(TObjectList<TMenuModel>)
   public
     /// <summary>
-    /// Tries to recursively find the menu item with the given id in the menu tree.
-    /// </summary>
-    /// <param name="relativeCmdId">The command id we are looking for.</param>
-    /// <returns>Returns the found menu item, or nil if no such menu item could be found.</returns>
-    function FindByRelativeCmdId(relativeCmdId: UINT): TMenuModel;
-
-    /// <summary>
     /// Shortcut for checking whether there are at least one item in the list.
     /// </summary>
     /// <returns>Returns true if the list contains at least one item, otherwise false.</returns>
@@ -111,14 +95,13 @@ implementation
 constructor TMenuModel.Create;
 begin
   FChildren := nil;
-  FIcon := nil;
   FContext := nil;
+  FIconResourceId := 0;
 end;
 
 destructor TMenuModel.Destroy;
 begin
   FChildren.Free;
-  FIcon.Free;
   inherited Destroy;
 end;
 
@@ -135,26 +118,6 @@ begin
 end;
 
 { TMenuModelList }
-
-function TMenuModelList.FindByRelativeCmdId(relativeCmdId: UINT): TMenuModel;
-var
-  index: Integer;
-  menuModel: TMenuModel;
-begin
-  Result := nil;
-  index := 0;
-  while (Result = nil) and (index < Count) do
-  begin
-    menuModel := Items[index];
-    Inc(index);
-
-    if (menuModel.RelativeCmdId = relativeCmdId) then
-      Result := menuModel;
-
-    if (Result = nil) and (menuModel.HasChildren) then
-      Result := menuModel.Children.FindByRelativeCmdId(relativeCmdId);
-  end;
-end;
 
 function TMenuModelList.Any: Boolean;
 begin

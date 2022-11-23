@@ -11,7 +11,6 @@ uses
   Classes,
   ComObj,
   Generics.Collections,
-  Shlwapi,
   ShlObj,
   SysUtils,
   Windows,
@@ -114,9 +113,22 @@ begin
 end;
 
 function TExplorerCommand.GetIcon(const psiItemArray: IShellItemArray; var ppszIcon: LPWSTR): HRESULT;
+var
+  dllFilePath: String;
+  resourcePath: WideString;
 begin
   Logger.Debug('TExplorerCommand.GetIcon'#9 + Model.Title);
-  Result := ReturnWideStringProperty('', ppszIcon);
+
+  if (Model.IconResourceId > 0) then
+  begin
+    dllFilePath := GetModuleName(HInstance);
+    resourcePath := Format('%s,-%d', [dllFilePath, Model.IconResourceId]); // only numeric ids seem to be accepted.
+    Result := ReturnWideStringProperty(resourcePath, ppszIcon);
+  end
+  else
+  begin
+    Result := ReturnWideStringProperty('', ppszIcon);
+  end;
 end;
 
 function TExplorerCommand.GetState(const psiItemArray: IShellItemArray; fOkToBeSlow: BOOL; var pCmdState: TExpCmdState): HRESULT;

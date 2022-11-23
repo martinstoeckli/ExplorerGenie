@@ -149,7 +149,6 @@ var
   menuGroupClipboard: TMenuModelList;
   menuGroupGoto: TMenuModelList;
   menuGroupHash: TMenuModelList;
-  iconSize: TSize;
 //  menuClipboard: TMenuModel;
   submenuCopyFilename: TMenuModel;
   submenuCopyEmail: TMenuModel;
@@ -162,14 +161,13 @@ var
 begin
   Result := TMenuModel.Create();
   Result.Title := 'ExplorerGenie';
+  Result.IconResourceId := IcoClipboard;
 
   settings := TSettingsModel.Create();
   menuGroupClipboard := TMenuModelList.Create(false);
   menuGroupGoto := TMenuModelList.Create(false);
   menuGroupHash := TMenuModelList.Create(false);
   try
-  iconSize.Width := GetSystemMetrics(SM_CXMENUCHECK);
-  iconSize.Height := GetSystemMetrics(SM_CYMENUCHECK);
   settingsService.LoadSettingsOrDefault(settings);
 
   if (settings.CopyFileShowMenu) then
@@ -181,7 +179,7 @@ begin
 
     submenuCopyFilename := TMenuModel.Create;
     submenuCopyFilename.Title := languageService.LoadText('submenuCopyFile', 'Copy filename(s)');
-    submenuCopyFilename.Icon := TMenuIcon.Create('icoCopy', iconSize);
+    submenuCopyFilename.IconResourceId := IcoCopy;
     submenuCopyFilename.OnClicked :=
       procedure (caller: TMenuModel; filenames: TStrings)
       begin
@@ -191,7 +189,7 @@ begin
 
     submenuCopyEmail := TMenuModel.Create;
     submenuCopyEmail.Title := languageService.LoadText('submenuCopyEmail', 'Copy as email link');
-    submenuCopyEmail.Icon := TMenuIcon.Create('icoMail', iconSize);
+    submenuCopyEmail.IconResourceId := IcoMail;
     submenuCopyEmail.OnClicked :=
       procedure (caller: TMenuModel; filenames: TStrings)
       begin
@@ -212,7 +210,7 @@ begin
       begin
         submenuGotoTool := TMenuModel.Create();
         submenuGotoTool.Title := gotoTool.Title;
-        submenuGotoTool.Icon := TMenuIcon.Create(gotoTool.IconName, iconSize);
+        submenuGotoTool.IconResourceId := gotoTool.IconResourceId;
         submenuGotoTool.Context := gotoTool;
         submenuGotoTool.OnClicked :=
           procedure (caller: TMenuModel; filenames: TStrings)
@@ -238,7 +236,7 @@ begin
   begin
     menuHash := TMenuModel.Create;
     menuHash.Title := languageService.LoadText('menuHash', 'Calculate hash');
-    menuHash.Icon := TMenuIcon.Create('icoHash', iconSize);
+    menuHash.IconResourceId := IcoHash;
     menuHash.OnClicked :=
       procedure (caller: TMenuModel; filenames: TStrings)
       begin
@@ -250,7 +248,7 @@ begin
   // Add options menu
   submenuCopyOptions := TMenuModel.Create;
   submenuCopyOptions.Title := languageService.LoadText('submenuOptions', 'Options');
-  submenuCopyOptions.Icon := TMenuIcon.Create('icoOptions', iconSize);
+  submenuCopyOptions.IconResourceId := IcoOptions;
   submenuCopyOptions.OnClicked :=
     procedure (caller: TMenuModel; filenames: TStrings)
     begin
@@ -292,7 +290,7 @@ initialization
   Logger := CreateLoggerDummy();
 {$IFDEF DEBUG}
   // Uncomment line to get a logger for debugging.
-  Logger := CreateLogger('ExplorerGenie', 'D:\Temp\ExplorerGenie.log');
+  // Logger := CreateLogger('ExplorerGenie', 'D:\Temp\ExplorerGenie.log');
 {$ENDIF}
 
 finalization
