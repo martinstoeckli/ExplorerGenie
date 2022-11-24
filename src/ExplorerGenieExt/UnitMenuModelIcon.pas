@@ -7,6 +7,7 @@ unit UnitMenuModelIcon;
 
 interface
 const
+  IcoGenieLamp = 100;
   IcoClipboard = 101;
   IcoCmd = 102;
   IcoCopy = 103;

@@ -161,7 +161,7 @@ var
 begin
   Result := TMenuModel.Create();
   Result.Title := 'ExplorerGenie';
-  Result.IconResourceId := IcoClipboard;
+  Result.IconResourceId := IcoGenieLamp;
 
   settings := TSettingsModel.Create();
   menuGroupClipboard := TMenuModelList.Create(false);

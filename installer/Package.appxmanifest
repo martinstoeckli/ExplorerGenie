@@ -13,7 +13,7 @@
   <Identity
     Name="22846MartinStoeckli.ExplorerGenie"
     Publisher="CN=Martin Stoeckli"
-    Version="3.0.0.0" />
+    Version="2.9.2.0" />
 
   <Properties>
     <DisplayName>ExplorerGenie</DisplayName>
@@ -70,6 +70,5 @@
 
   <Capabilities>
     <rescap:Capability Name="runFullTrust" />
-    <rescap:Capability Name="unvirtualizedResources" />
   </Capabilities>
 </Package>
