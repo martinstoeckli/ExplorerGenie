@@ -149,14 +149,11 @@ var
   menuGroupClipboard: TMenuModelList;
   menuGroupGoto: TMenuModelList;
   menuGroupHash: TMenuModelList;
-//  menuClipboard: TMenuModel;
   submenuCopyFilename: TMenuModel;
   submenuCopyEmail: TMenuModel;
   submenuCopyOptions: TMenuModel;
-//  menuGoto: TMenuModel;
   gotoTool: TSettingsGotoToolModel;
   submenuGotoTool: TMenuModel;
-//  submenuGotoOptions: TMenuModel;
   menuHash: TMenuModel;
 begin
   Result := TMenuModel.Create();
@@ -172,11 +169,6 @@ begin
 
   if (settings.CopyFileShowMenu) then
   begin
-//    menuClipboard := TMenuModel.Create;
-//    menuClipboard.Title := languageService.LoadText('menuCopyFile', 'Copy as path');
-//    menuClipboard.Icon := TMenuIcon.Create('icoClipboard', iconSize);
-//    Result.Children.Add(menuClipboard);
-
     submenuCopyFilename := TMenuModel.Create;
     submenuCopyFilename.Title := languageService.LoadText('submenuCopyFile', 'Copy filename(s)');
     submenuCopyFilename.IconResourceId := IcoCopy;
@@ -200,10 +192,6 @@ begin
 
   if (settings.GotoShowMenu) then
   begin
-//    menuGoto := TMenuModel.Create;
-//    menuGoto.Title := languageService.LoadText('menuGoto', 'Go to tool');
-//    menuGoto.Icon := TMenuIcon.Create('icoCmd', iconSize);
-//    Result.Children.Add(menuGoto);
     for gotoTool in settings.GotoTools do
     begin
       if (gotoTool.Visible) then
@@ -220,16 +208,6 @@ begin
         menuGroupGoto.Add(submenuGotoTool);
       end;
     end;
-
-//    submenuGotoOptions := TMenuModel.Create;
-//    submenuGotoOptions.Title := languageService.LoadText('submenuOptions', 'Options');
-//    submenuGotoOptions.Icon := TMenuIcon.Create('icoOptions', iconSize);
-//    submenuGotoOptions.OnClicked :=
-//      procedure (caller: TMenuModel; filenames: TStrings)
-//      begin
-//        TActions.OnGotoOptionsClicked(filenames);
-//      end;
-//    Result.Children.Add(submenuGotoOptions);
   end;
 
   if (settings.HashShowMenu) then

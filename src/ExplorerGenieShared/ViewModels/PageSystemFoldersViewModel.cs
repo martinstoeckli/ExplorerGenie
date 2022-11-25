@@ -71,9 +71,6 @@ namespace ExplorerGenieShared.ViewModels
                         Environment.SpecialFolder.SendTo,
                         Environment.SpecialFolder.UserProfile,
                         Environment.SpecialFolder.Favorites,
-                        Environment.SpecialFolder.InternetCache,
-                        Environment.SpecialFolder.Cookies,
-                        Environment.SpecialFolder.History,
                     };
 
                     // List folders of interest

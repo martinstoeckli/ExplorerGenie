@@ -13,7 +13,7 @@
   <Identity
     Name="22846MartinStoeckli.ExplorerGenie"
     Publisher="CN=Martin Stoeckli"
-    Version="2.9.2.0" />
+    Version="2.9.4.0" />
 
   <Properties>
     <DisplayName>ExplorerGenie</DisplayName>
@@ -37,11 +37,8 @@
       <uap:VisualElements
         DisplayName="ExplorerGenie"
         Description="Explorer extension to copy path, open command line or calculate file hashes."
-        BackgroundColor="transparent"
-        Square150x150Logo="Images\Square150x150Logo.png"
-        Square44x44Logo="Images\Square44x44Logo.png">
-        <uap:DefaultTile Wide310x150Logo="Images\Wide310x150Logo.png"  Square71x71Logo="Images\SmallTile.png" Square310x310Logo="Images\LargeTile.png"/>
-        <uap:SplashScreen Image="Images\SplashScreen.png" />
+        BackgroundColor="transparent" Square44x44Logo="Images\Square44x44Logo.png" Square150x150Logo="Images\Square150x150Logo.png">
+        <uap:DefaultTile/>
       </uap:VisualElements>
       <Extensions>
         <desktop4:Extension Category="windows.fileExplorerContextMenus">
@@ -70,5 +67,6 @@
 
   <Capabilities>
     <rescap:Capability Name="runFullTrust" />
+    <rescap:Capability Name="unvirtualizedResources" />
   </Capabilities>
 </Package>
