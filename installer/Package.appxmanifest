@@ -13,7 +13,7 @@
   <Identity
     Name="22846MartinStoeckli.ExplorerGenie"
     Publisher="CN=Martin Stoeckli"
-    Version="2.9.4.0" />
+    Version="3.0.0.0" />
 
   <Properties>
     <DisplayName>ExplorerGenie</DisplayName>
