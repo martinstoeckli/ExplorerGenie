@@ -10,14 +10,11 @@ ExplorerGenie is an open source extension to the context menu of the Windows exp
 
 This extension adds a context menu, which can copy the paths of the selected files or directories to the clipboard.
 
-![ContextMenuCopy](screenshots/explorergenie_menu_copy.png)
+![ContextMenuCopy](screenshots/explorergenie_menu.png)
 
 ## Go to tool
 
 This extension makes it easy to open tools like the Command Line or Power Shell. It is possible to add user defined menu entries which can open other tools, or go to certain locations.
-
-![ContextMenuGoto](screenshots/explorergenie_menu_goto.png)
-
 
 ## Calculate file hashes
 
