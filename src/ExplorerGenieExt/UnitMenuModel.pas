@@ -114,7 +114,7 @@ end;
 
 function TMenuModel.GetHasChildren: Boolean;
 begin
-  Result := (FChildren <> nil) and (FChildren.Count > 0);
+  Result := (FChildren <> nil) and (FChildren.Any());
 end;
 
 { TMenuModelList }
