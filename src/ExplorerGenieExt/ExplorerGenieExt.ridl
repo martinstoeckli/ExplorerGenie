@@ -6,10 +6,10 @@
 // Änderungen. Wenn Sie aber Änderungen mit dem Editor vornehmen, wird diese
 // Datei neu erzeugt und Kommentare oder Formatänderungen gehen verloren.
 // ************************************************************************ //
-// Datei erzeugt am 09.11.2020 09:31:37 (- $Rev: 12980 $, 128122890).
+// Datei erzeugt am 30.10.2022 21:59:37 (- $Rev: 12980 $, 5188953).
 
 [
-  uuid(A16065CA-D03A-4F74-B1BB-EC91C4C4E9D4),
+  uuid(551C9002-4521-471A-9542-F3D4CA752011),
   version(1.0)
 
 ]
@@ -23,7 +23,7 @@ library ExplorerGenieExt
 
 
   [
-    uuid(264D3051-7949-4D69-AD88-C8B04D4B4254),
+    uuid(5F10B977-DBAE-4692-8652-0D8A89F85EFE),
     helpstring("Dispatch-Interface für App-Objekt"),
     dual,
     oleautomation
@@ -33,7 +33,7 @@ library ExplorerGenieExt
   };
 
   [
-    uuid(D7C1499F-25C0-4C6E-87F5-1C69EEBA6398),
+    uuid(5C6755B8-615C-4212-88F3-4E254CAE46FA),
     helpstring("App Objekt")
   ]
   coclass App

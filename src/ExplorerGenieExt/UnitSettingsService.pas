@@ -14,6 +14,7 @@ uses
   System.SysUtils,
   Winapi.Windows,
   UnitLanguageService,
+  UnitMenuModelIcon,
   UnitSettingsModel,
   UnitSettingsGotoToolModel;
 
@@ -114,42 +115,42 @@ begin
   gotoTool := TSettingsGotoToolModel.Create();
   gotoTool.ToolIndex := 0;
   gotoTool.Title := FLanguage.LoadText('submenuGotoCmd', 'Open in Command Prompt');
-  gotoTool.IconName := 'icoCmd';
+  gotoTool.IconResourceId := IcoCmd;
   gotoTool.IsCustomTool := false;
   settings.GotoTools.Add(gotoTool);
 
   gotoTool := TSettingsGotoToolModel.Create();
   gotoTool.ToolIndex := 1;
   gotoTool.Title := FLanguage.LoadText('submenuGotoCmdAdmin', 'Open in Command Prompt as admin');
-  gotoTool.IconName := 'icoCmd';
+  gotoTool.IconResourceId := IcoCmd;
   gotoTool.IsCustomTool := false;
   settings.GotoTools.Add(gotoTool);
 
   gotoTool := TSettingsGotoToolModel.Create();
   gotoTool.ToolIndex := 2;
   gotoTool.Title := FLanguage.LoadText('submenuGotoPowershell', 'Open in Power Shell');
-  gotoTool.IconName := 'icoPowershell';
+  gotoTool.IconResourceId := IcoPowershell;
   gotoTool.IsCustomTool := false;
   settings.GotoTools.Add(gotoTool);
 
   gotoTool := TSettingsGotoToolModel.Create();
   gotoTool.ToolIndex := 3;
   gotoTool.Title := FLanguage.LoadText('submenuGotoPowershellAdmin', 'Open in Power Shell as admin');
-  gotoTool.IconName := 'icoPowershell';
+  gotoTool.IconResourceId := IcoPowershell;
   gotoTool.IsCustomTool := false;
   settings.GotoTools.Add(gotoTool);
 
   gotoTool := TSettingsGotoToolModel.Create();
   gotoTool.ToolIndex := 4;
   gotoTool.Title := FLanguage.LoadText('submenuGotoExplorer', 'Open in Explorer');
-  gotoTool.IconName := 'icoExplorer';
+  gotoTool.IconResourceId := IcoExplorer;
   gotoTool.IsCustomTool := false;
   settings.GotoTools.Add(gotoTool);
 
   gotoTool := TSettingsGotoToolModel.Create();
   gotoTool.ToolIndex := 5;
   gotoTool.Title := FLanguage.LoadText('submenuGotoExplorerAdmin', 'Open in Explorer as admin');
-  gotoTool.IconName := 'icoExplorer';
+  gotoTool.IconResourceId := IcoExplorer;
   gotoTool.IsCustomTool := false;
   settings.GotoTools.Add(gotoTool);
 end;
@@ -187,7 +188,7 @@ begin
               gotoTool := TSettingsGotoToolModel.Create();
               gotoTool.ToolIndex := gotoToolIndex;
               gotoTool.Title := jsonReader.Value.AsString();
-              gotoTool.IconName := 'icoCustomTool';
+              gotoTool.IconResourceId := IcoCustomTool;
               gotoTool.IsCustomTool := true;
               gotoTool.Visible := false; // check later in commandline property
               settings.GotoTools.Add(gotoTool);

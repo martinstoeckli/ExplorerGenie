@@ -10,15 +10,16 @@ unit UnitApp;
 interface
 
 uses
-  Windows,
-  Classes,
-  SysUtils,
-  ComObj,
   ActiveX,
-  ShlObj,
-  ShellApi,
+  Classes,
+  ComObj,
   ComServ,
+  ShlObj,
+  SysUtils,
+  Windows,
   ExplorerGenieExt_TLB,
+  UnitExplorerCommand,
+  UnitLogger,
   UnitMenuModel,
   UnitMenuModelIcon,
   UnitActions,
@@ -31,25 +32,23 @@ type
   /// <summary>
   /// Main class of the shell extension, it implements the required interfaces.
   /// </summary>
-  TApp = class(TAutoObject, IApp, IContextMenu, IShellExtInit)
+  TApp = class(TAutoObject, IApp, IExplorerCommand)
   private
-    FMenus: TMenuModelList;
-    FFilenames: TStringList;
-    function CreateMenuModels(settingsService: TSettingsService; languageService: ILanguageService): TMenuModelList;
-    procedure BuildContextMenus(
-      menus: TMenuModelList; parent: HMENU; startInsertingAt: UINT; firstFreeCmdId: UINT; var nextFreeCmdId: UINT);
+    FMenus: TMenuModel;
+    FExplorerCommand: IExplorerCommand;
+    function CreateMenuModels(settingsService: TSettingsService; languageService: ILanguageService): TMenuModel;
+    class procedure AddMenuSeparator(menues: TMenuModelList);
 
-    // IContextMenu
-    function QueryContextMenu(
-      Menu: HMENU; indexMenu, idCmdFirst, idCmdLast, uFlags: UINT): HResult; stdcall;
-    function InvokeCommand(var lpici: TCMInvokeCommandInfo): HResult; stdcall;
-    function GetCommandString(
-      idcmd: UINT_Ptr; uType: UINT; pwreserved: puint; pszName: LPStr; cchMax: uint): HResult; stdcall;
-
-    // IShellExtInit
-    function IShellExtInit.Initialize = SEIInitialize; // avoid compiler warning
-    function SEIInitialize(
-      pidlFolder: PItemIDList; lpdobj: IDataObject; hKeyProgID: HKEY): HRESULT; stdcall;
+    // IExplorerCommand
+    function GetTitle(const psiItemArray: IShellItemArray; var ppszName: LPWSTR): HRESULT; stdcall;
+    function GetIcon(const psiItemArray: IShellItemArray; var ppszIcon: LPWSTR): HRESULT; stdcall;
+    function GetToolTip(const psiItemArray: IShellItemArray; var ppszInfotip: LPWSTR): HRESULT; stdcall;
+    function GetCanonicalName(var pguidCommandName: TGUID): HRESULT; stdcall;
+    function GetState(const psiItemArray: IShellItemArray; fOkToBeSlow: BOOL; var pCmdState: TExpCmdState): HRESULT; stdcall;
+    function IExplorerCommand.Invoke = ExplorerCommandInvoke;
+    function ExplorerCommandInvoke(const psiItemArray: IShellItemArray; const pbc: IBindCtx): HRESULT; stdcall;
+    function GetFlags(var pFlags: TExpCmdFlags): HRESULT; stdcall;
+    function EnumSubCommands(out ppEnum: IEnumExplorerCommand): HRESULT; stdcall;
   public
     /// <summary>
     /// Initializes a new instance of a TApp object.
@@ -72,8 +71,9 @@ var
   languageService: ILanguageService;
   settingsService: TSettingsService;
 begin
+  Logger.Debug('---');
+  Logger.Debug('TApp.Initialize');
   inherited Initialize;
-  FFilenames := TStringList.Create;
 
   languageService := TLanguageServiceFactory.CreateLanguageService('ExplorerGenie');
 {$IFDEF DEBUG}
@@ -84,6 +84,7 @@ begin
   settingsService := TSettingsService.Create(languageService);
   try
     FMenus := CreateMenuModels(settingsService, languageService);
+    FExplorerCommand := TExplorerCommand.Create(FMenus) as IExplorerCommand;
   finally
     settingsService.Free;
   end;
@@ -91,9 +92,10 @@ end;
 
 destructor TApp.Destroy;
 begin
+  Logger.Debug('TApp.Destroy');
   try
+    FExplorerCommand := nil;
     FMenus.Free;
-    FFilenames.Free;
   except
     on e: Exception do
       MessageBox(0, PChar(e.Message), '', MB_ICONERROR);
@@ -101,292 +103,174 @@ begin
   inherited Destroy;
 end;
 
-function TApp.CreateMenuModels(settingsService: TSettingsService; languageService: ILanguageService): TMenuModelList;
+function TApp.EnumSubCommands(out ppEnum: IEnumExplorerCommand): HRESULT;
+begin
+  Result := FExplorerCommand.EnumSubCommands(ppEnum);
+end;
+
+function TApp.ExplorerCommandInvoke(const psiItemArray: IShellItemArray; const pbc: IBindCtx): HRESULT;
+begin
+  Result := FExplorerCommand.Invoke(psiItemArray, pbc);
+end;
+
+function TApp.GetCanonicalName(var pguidCommandName: TGUID): HRESULT;
+begin
+  Result := FExplorerCommand.GetCanonicalName(pguidCommandName);
+end;
+
+function TApp.GetFlags(var pFlags: TExpCmdFlags): HRESULT;
+begin
+  Result := FExplorerCommand.GetFlags(pFlags);
+end;
+
+function TApp.GetIcon(const psiItemArray: IShellItemArray; var ppszIcon: LPWSTR): HRESULT;
+begin
+  Result := FExplorerCommand.GetIcon(psiItemArray, ppszIcon);
+end;
+
+function TApp.GetState(const psiItemArray: IShellItemArray; fOkToBeSlow: BOOL; var pCmdState: TExpCmdState): HRESULT;
+begin
+  Result := FExplorerCommand.GetState(psiItemArray, fOkToBeSlow, pCmdState);
+end;
+
+function TApp.GetTitle(const psiItemArray: IShellItemArray; var ppszName: LPWSTR): HRESULT;
+begin
+  Result := FExplorerCommand.GetTitle(psiItemArray, ppszName);
+end;
+
+function TApp.GetToolTip(const psiItemArray: IShellItemArray; var ppszInfotip: LPWSTR): HRESULT;
+begin
+  Result := FExplorerCommand.GetToolTip(psiItemArray, ppszInfotip);
+end;
+
+function TApp.CreateMenuModels(settingsService: TSettingsService; languageService: ILanguageService): TMenuModel;
 var
   settings: TSettingsModel;
-  iconSize: TSize;
-  menuClipboard: TMenuModel;
+  menuGroupClipboard: TMenuModelList;
+  menuGroupGoto: TMenuModelList;
+  menuGroupHash: TMenuModelList;
   submenuCopyFilename: TMenuModel;
   submenuCopyEmail: TMenuModel;
   submenuCopyOptions: TMenuModel;
-  menuGoto: TMenuModel;
   gotoTool: TSettingsGotoToolModel;
   submenuGotoTool: TMenuModel;
-  submenuGotoOptions: TMenuModel;
   menuHash: TMenuModel;
 begin
-  Result := TMenuModelList.Create(true);
+  Result := TMenuModel.Create();
+  Result.Title := 'ExplorerGenie';
+  Result.IconResourceId := IcoGenieLamp;
+
   settings := TSettingsModel.Create();
+  menuGroupClipboard := TMenuModelList.Create(false);
+  menuGroupGoto := TMenuModelList.Create(false);
+  menuGroupHash := TMenuModelList.Create(false);
   try
-  iconSize.Width := GetSystemMetrics(SM_CXMENUCHECK);
-  iconSize.Height := GetSystemMetrics(SM_CYMENUCHECK);
   settingsService.LoadSettingsOrDefault(settings);
 
   if (settings.CopyFileShowMenu) then
   begin
-    menuClipboard := TMenuModel.Create;
-    menuClipboard.Title := languageService.LoadText('menuCopyFile', 'Copy as path');
-    menuClipboard.Icon := TMenuIcon.Create('icoClipboard', iconSize);
-    Result.Add(menuClipboard);
-
     submenuCopyFilename := TMenuModel.Create;
     submenuCopyFilename.Title := languageService.LoadText('submenuCopyFile', 'Copy filename(s)');
-    submenuCopyFilename.Icon := TMenuIcon.Create('icoCopy', iconSize);
+    submenuCopyFilename.IconResourceId := IcoCopy;
     submenuCopyFilename.OnClicked :=
-      procedure (caller: TMenuModel)
+      procedure (caller: TMenuModel; filenames: TStrings)
       begin
-        TActions.OnCopyFileClicked(FFilenames);
+        TActions.OnCopyFileClicked(filenames);
       end;
-    menuClipboard.Children.Add(submenuCopyFilename);
+    menuGroupClipboard.Add(submenuCopyFilename);
 
     submenuCopyEmail := TMenuModel.Create;
     submenuCopyEmail.Title := languageService.LoadText('submenuCopyEmail', 'Copy as email link');
-    submenuCopyEmail.Icon := TMenuIcon.Create('icoMail', iconSize);
+    submenuCopyEmail.IconResourceId := IcoMail;
     submenuCopyEmail.OnClicked :=
-      procedure (caller: TMenuModel)
+      procedure (caller: TMenuModel; filenames: TStrings)
       begin
-        TActions.OnCopyEmailClicked(FFilenames);
+        TActions.OnCopyEmailClicked(filenames);
       end;
-    menuClipboard.Children.Add(submenuCopyEmail);
-
-    submenuCopyOptions := TMenuModel.Create;
-    submenuCopyOptions.Title := languageService.LoadText('submenuOptions', 'Options');
-    submenuCopyOptions.Icon := TMenuIcon.Create('icoOptions', iconSize);
-    submenuCopyOptions.OnClicked :=
-      procedure (caller: TMenuModel)
-      begin
-        TActions.OnCopyOptionsClicked(FFilenames);
-      end;
-    menuClipboard.Children.Add(submenuCopyOptions);
+    menuGroupClipboard.Add(submenuCopyEmail);
   end;
 
   if (settings.GotoShowMenu) then
   begin
-    menuGoto := TMenuModel.Create;
-    menuGoto.Title := languageService.LoadText('menuGoto', 'Go to tool');
-    menuGoto.Icon := TMenuIcon.Create('icoCmd', iconSize);
-    Result.Add(menuGoto);
-
     for gotoTool in settings.GotoTools do
     begin
       if (gotoTool.Visible) then
       begin
         submenuGotoTool := TMenuModel.Create();
         submenuGotoTool.Title := gotoTool.Title;
-        submenuGotoTool.Icon := TMenuIcon.Create(gotoTool.IconName, iconSize);
+        submenuGotoTool.IconResourceId := gotoTool.IconResourceId;
         submenuGotoTool.Context := gotoTool;
         submenuGotoTool.OnClicked :=
-          procedure (caller: TMenuModel)
+          procedure (caller: TMenuModel; filenames: TStrings)
           begin
-            TActions.OnGotoToolClicked(FFilenames, caller.Context as TSettingsGotoToolModel);
+            TActions.OnGotoToolClicked(filenames, caller.Context as TSettingsGotoToolModel);
           end;
-        menuGoto.Children.Add(submenuGotoTool);
+        menuGroupGoto.Add(submenuGotoTool);
       end;
     end;
-
-    submenuGotoOptions := TMenuModel.Create;
-    submenuGotoOptions.Title := languageService.LoadText('submenuOptions', 'Options');
-    submenuGotoOptions.Icon := TMenuIcon.Create('icoOptions', iconSize);
-    submenuGotoOptions.OnClicked :=
-      procedure (caller: TMenuModel)
-      begin
-        TActions.OnGotoOptionsClicked(FFilenames);
-      end;
-    menuGoto.Children.Add(submenuGotoOptions);
   end;
 
   if (settings.HashShowMenu) then
   begin
     menuHash := TMenuModel.Create;
     menuHash.Title := languageService.LoadText('menuHash', 'Calculate hash');
-    menuHash.Icon := TMenuIcon.Create('icoHash', iconSize);
+    menuHash.IconResourceId := IcoHash;
     menuHash.OnClicked :=
-      procedure (caller: TMenuModel)
+      procedure (caller: TMenuModel; filenames: TStrings)
       begin
-        TActions.OnHashClicked(FFilenames);
+        TActions.OnHashClicked(filenames);
       end;
-    Result.Add(menuHash);
+    menuGroupHash.Add(menuHash);
   end;
+
+  // Add options menu
+  submenuCopyOptions := TMenuModel.Create;
+  submenuCopyOptions.Title := languageService.LoadText('submenuOptions', 'Options');
+  submenuCopyOptions.IconResourceId := IcoOptions;
+  submenuCopyOptions.OnClicked :=
+    procedure (caller: TMenuModel; filenames: TStrings)
+    begin
+      TActions.OnCopyOptionsClicked(filenames);
+    end;
+
+  // Add separators
+  if (menuGroupClipboard.Any()) then
+    AddMenuSeparator(menuGroupClipboard);
+  if (menuGroupGoto.Any()) then
+    AddMenuSeparator(menuGroupGoto);
+  if (menuGroupHash.Any()) then
+    AddMenuSeparator(menuGroupHash);
+
+  Result.Children.AddRange(menuGroupClipboard);
+  Result.Children.AddRange(menuGroupGoto);
+  Result.Children.AddRange(menuGroupHash);
+  Result.Children.Add(submenuCopyOptions);
   finally
+    menuGroupHash.Free();
+    menuGroupGoto.Free();
+    menuGroupClipboard.Free();
     settings.Free();
   end;
 end;
 
-function TApp.QueryContextMenu(
-  Menu: HMENU; indexMenu, idCmdFirst, idCmdLast, uFlags: UINT): HResult; stdcall;
+class procedure TApp.AddMenuSeparator(menues: TMenuModelList);
 var
-  nextFreeCmdId: UINT;
-  offsetForNextIdCmdFirst: Integer;
+  menuSeparator: TMenuModel;
 begin
-  try
-  Result := 0;
-  if ((uFlags and $0000000F) = CMF_NORMAL) or ((uFlags and CMF_EXPLORE) <> 0) then
-  begin
-    nextFreeCmdId := idCmdFirst;
-    BuildContextMenus(FMenus, Menu, indexMenu, idCmdFirst, nextFreeCmdId);
-    offsetForNextIdCmdFirst := nextFreeCmdId - idCmdFirst; // Highest used id + 1 - first used id
-    Result := MakeResult(SEVERITY_SUCCESS, 0, offsetForNextIdCmdFirst);
-  end;
-  except
-    Result := 0; // Don't let an exception escape to the explorer process
-  end;
-end;
-
-procedure TApp.BuildContextMenus(
-  menus: TMenuModelList; parent: HMENU; startInsertingAt: UINT; firstFreeCmdId: UINT; var nextFreeCmdId: UINT);
-var
-  index: Integer;
-  menuModel: TMenuModel;
-  menuItemInfo: TMenuItemInfo;
-  popupMenu: HMENU;
-begin
-  for index := 0 to menus.Count - 1 do
-  begin
-    menuModel := menus[index];
-    menuModel.RelativeCmdId := nextFreeCmdId - firstFreeCmdId; // Later we need the relative id.
-    Inc(nextFreeCmdId);
-
-    ZeroMemory(@menuItemInfo, SizeOf(TMenuItemInfo));
-    menuItemInfo.cbSize := SizeOf(TMenuItemInfo);
-    if (menuModel.Icon <> nil) then
-      menuItemInfo.hbmpItem := menuModel.Icon.BitmapHandle;
-    menuItemInfo.dwTypeData := PChar(menuModel.Title);
-    menuItemInfo.wID := firstFreeCmdId + menuModel.RelativeCmdId; // This must be the absolute id.
-
-    if (menuModel.HasChildren) then
-    begin
-      // This is a group menu with sub items
-      popupMenu := CreatePopupMenu;
-      menuItemInfo.fMask := MIIM_ID or MIIM_STRING or MIIM_BITMAP or MIIM_SUBMENU;
-      menuItemInfo.hSubMenu := popupMenu;
-      InsertMenuItem(parent, startInsertingAt + UINT(index), True, menuItemInfo);
-
-      // Recursive call for children
-      BuildContextMenus(menuModel.Children, popupMenu, 0, firstFreeCmdId, nextFreeCmdId);
-    end
-    else
-    begin
-      // This is a normal menu item with an action
-      menuItemInfo.fMask := MIIM_ID or MIIM_STRING or MIIM_BITMAP;
-      InsertMenuItem(parent, startInsertingAt + UINT(index), True, menuItemInfo);
-    end;
-  end;
-end;
-
-function TApp.InvokeCommand(var lpici: TCMInvokeCommandInfo): HResult; stdcall;
-var
-  relativeCmdId: WORD;
-  menuModel: TMenuModel;
-begin
-  Result := E_FAIL;
-
-  // Make sure we can handle the command
-  if (HiWord(DWORD(lpici.lpVerb)) = 0) then
-  begin
-    Result := S_OK;
-
-    // Find the clicked menu item
-    try
-      relativeCmdId := LoWord(DWORD(lpici.lpVerb));
-      menuModel := FMenus.FindByRelativeCmdId(relativeCmdId);
-      if (menuModel <> nil) and Assigned(menuModel.OnClicked) then
-        menuModel.OnClicked(menuModel);
-    except
-      Result := E_FAIL; // Don't let an exception escape to the explorer process
-    end;
-  end;
-end;
-
-function TApp.GetCommandString(
-  idcmd: UINT_Ptr; uType: UINT; pwreserved: puint; pszName: LPStr; cchMax: uint): HResult; stdcall;
-var
-  descriptionA: AnsiString;
-  descriptionW: WideString;
-begin
-  try
-  Result := S_OK;
-  case uType of
-  GCS_HELPTEXTA:
-    begin
-      descriptionA := APP_DESCRIPTION;
-      lstrcpynA(PAnsiChar(pszName), PAnsiChar(descriptionA), cchMax);
-    end;
-  GCS_HELPTEXTW:
-    begin
-      descriptionW := APP_DESCRIPTION;
-      lstrcpynW(PWideChar(pszName), PWideChar(descriptionW), cchMax);
-    end
-  else
-    Result := E_NOTIMPL;
-  end;
-  except
-    Result := E_FAIL; // Don't let an exception escape to the explorer process
-  end;
-end;
-
-function TApp.SEIInitialize(
-  pidlFolder: PItemIDList; lpdobj: IDataObject; hKeyProgID: HKEY): HRESULT; stdcall;
-var
-  formatEtc: TFormatEtc;
-  stgMedium: TStgMedium;
-  dropHandle: HDROP;
-  buffer: WideString;
-  count, index: integer;
-  length: integer;
-  filename: String;
-begin
-  try
-  Result := E_INVALIDARG;
-  FFilenames.Clear;
-
-  // Prepare format structure
-  ZeroMemory(@formatEtc, SizeOf(TFormatEtc));
-  formatEtc.cfFormat := CF_HDROP;
-  formatEtc.ptd := nil;
-  formatEtc.dwAspect := DVASPECT_CONTENT;
-  formatEtc.lindex := -1;
-  formatEtc.tymed := TYMED_HGLOBAL;
-  stgMedium.tymed := TYMED_HGLOBAL;
-
-  // get handle
-  if (lpdobj <> nil) and Succeeded(lpdobj.GetData(formatEtc, stgMedium)) then
-  begin
-    dropHandle := HDROP(GlobalLock(stgMedium.hGlobal));
-    try
-      if (dropHandle <> 0) then
-      begin
-        // Enumerate filenames.
-        // Data can contain WideString or AnsiString(Win95, 98, ME), we catch only WideString
-        if (PDropFiles(dropHandle).fWide) then
-        begin
-          count := DragQueryFileW(dropHandle, $FFFFFFFF, nil, 0);
-          for index := 0 to count - 1 do
-          begin
-            // Get length of filename
-            length := DragQueryFileW(dropHandle, index, nil, 0);
-
-            // Allocate the memory, the #0 is not included in "length"
-            SetLength(buffer, length + 1);
-
-            // Get filename
-            DragQueryFileW(dropHandle, index, PWideChar(buffer), length + 1);
-            SetLength(buffer, length);
-            filename := buffer;
-            FFilenames.Add(filename);
-          end;
-        end;
-        Result := S_OK;
-      end;
-    finally
-      GlobalUnlock(stgMedium.hGlobal);
-      ReleaseStgMedium(stgMedium);
-    end;
-  end;
-  except
-    Result := E_FAIL; // Don't let an exception escape to the explorer process
-  end;
+  menuSeparator := TMenuModel.Create();
+  menuSeparator.IsSeparator := true;
+  menues.Add(menuSeparator);
 end;
 
 initialization
   TAutoObjectFactory.Create(ComServer, TApp, Class_App, ciMultiInstance, tmApartment);
+
+  Logger := CreateLoggerDummy();
+{$IFDEF DEBUG}
+  // Uncomment line to get a logger for debugging.
+  // Logger := CreateLogger('ExplorerGenie', 'D:\Temp\ExplorerGenie.log');
+{$ENDIF}
+
+finalization
+  Logger := nil;
 end.

@@ -1,6 +1,6 @@
 library ExplorerGenieExt;
 
-{$R 'Images.res' 'Images.rc'}
+{$R 'ExplorerGenieIcons.res'}
 
 uses
   Windows,
@@ -14,45 +14,16 @@ uses
   UnitSettingsModel in 'UnitSettingsModel.pas',
   UnitSettingsService in 'UnitSettingsService.pas',
   UnitLanguageService in 'UnitLanguageService.pas',
-  UnitSettingsGotoToolModel in 'UnitSettingsGotoToolModel.pas';
-
-  /// <summary>
-  /// "Overrides" the base function DllRegisterServer.
-  /// </summary>
-  function CustomDllRegisterServer: HResult; stdcall;
-  begin
-    // Call base function
-    Result := ComServ.DllRegisterServer;
-
-    // Register context menu
-    try
-      TContextMenuRegistrar.RegisterServer(CLASS_App, 'ExplorerGenie');
-    except
-      Result := E_FAIL;
-    end;
-  end;
-
-  /// <summary>
-  /// "Overrides" the base function DllUnregisterServer.
-  /// </summary>
-  function CustomDllUnregisterServer: HResult;
-  begin
-    // Call base function
-    Result := ComServ.DllUnregisterServer;
-
-    // Register context menu
-    try
-      TContextMenuRegistrar.UnregisterServer(CLASS_App, 'ExplorerGenie');
-    except
-      Result := E_FAIL;
-    end;
-  end;
+  UnitSettingsGotoToolModel in 'UnitSettingsGotoToolModel.pas',
+  UnitExplorerCommand in 'UnitExplorerCommand.pas',
+  UnitEnumExplorerCommand in 'UnitEnumExplorerCommand.pas',
+  UnitLogger in 'UnitLogger.pas';
 
 exports
   DllGetClassObject,
   DllCanUnloadNow,
-  CustomDllRegisterServer name 'DllRegisterServer', // Redirect the function
-  CustomDllUnregisterServer name 'DllUnregisterServer', // Redirect the function
+  DllRegisterServer,
+  DllUnregisterServer,
   DllInstall;
 
 {$R *.TLB}
