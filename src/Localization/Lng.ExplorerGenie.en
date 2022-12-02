@@ -17,6 +17,7 @@ guiClose Close
 guiShowMenu Show context menu
 guiPreview Preview
 guiInfo Information
+guiRestart After a new installation, a restart of Windows may be necessary, to make the context menu visible.
 
 guiAsOriginalPath Original path
 guiAsUri As URI (Uniform Resource Identifier)

@@ -17,6 +17,7 @@ guiClose Schliessen
 guiShowMenu Kontextmenu anzeigen
 guiPreview Vorschau
 guiInfo Information
+guiRestart Nach einer Neuinstallation muss Windows möglicherweise neu gestartet werden, damit das Kontextmenu angezeigt wird.
 
 guiAsOriginalPath Original Pfad
 guiAsUri Als URI (Uniform Resource Identifier)

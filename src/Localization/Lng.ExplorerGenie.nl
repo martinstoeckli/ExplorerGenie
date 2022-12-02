@@ -17,6 +17,7 @@ guiClose Sluiten
 guiShowMenu Toon contextmenu
 guiPreview Voorbeeld:
 guiInfo Informatie
+guiRestart After a new installation, a restart of Windows may be necessary, to make the context menu visible.
 
 guiAsOriginalPath Origineel pad
 guiAsUri Als URI (Uniform Resource Identifier)

@@ -19,6 +19,7 @@ namespace ExplorerGenieShared.Models
         /// </summary>
         public SettingsModel()
         {
+            FreshInstallation = true;
             CopyFileShowMenu = true;
             CopyEmailConvertToUnc = true; // receiver probably won't have access to local drives.
             GotoShowMenu = true;
@@ -27,6 +28,12 @@ namespace ExplorerGenieShared.Models
             GotoExplorer = true;
             HashShowMenu = true;
         }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether ExplorerGenie is shown the first time after
+        /// an installation.
+        /// </summary>
+        public bool FreshInstallation { get; set; }
 
         /// <summary>
         /// Gets or sets a value indicating whether the menu tree CopyFile should be loaded in the
@@ -110,7 +117,8 @@ namespace ExplorerGenieShared.Models
             if (other == null)
                 return false;
 
-            return (CopyFileShowMenu == other.CopyFileShowMenu)
+            return (FreshInstallation == other.FreshInstallation)
+                && (CopyFileShowMenu == other.CopyFileShowMenu)
                 && (CopyFileFormat == other.CopyFileFormat)
                 && (CopyFileOnlyFilename == other.CopyFileOnlyFilename)
                 && (CopyFileConvertToUnc == other.CopyFileConvertToUnc)
@@ -130,7 +138,8 @@ namespace ExplorerGenieShared.Models
             unchecked
             {
                 // include datasource in hash
-                int result = CopyFileShowMenu.GetHashCode();
+                int result = FreshInstallation.GetHashCode();
+                result = (result * 397) ^ CopyFileShowMenu.GetHashCode();
                 result = (result * 397) ^ CopyFileFormat.GetHashCode();
                 result = (result * 397) ^ CopyFileOnlyFilename.GetHashCode();
                 result = (result * 397) ^ CopyFileConvertToUnc.GetHashCode();

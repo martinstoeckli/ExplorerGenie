@@ -63,6 +63,20 @@ namespace ExplorerGenieShared.ViewModels
             GotoToolPageViewModel.Dispose();
         }
 
+        /// <inheritdoc cref="SettingsModel.FreshInstallation"/>
+        public bool FreshInstallation
+        {
+            get { return _model.FreshInstallation; }
+
+            set
+            {
+                if (SetPropertyIndirect(() => _model.FreshInstallation, (v) => _model.FreshInstallation = v, value, false))
+                {
+                    _settingsService?.TrySaveSettingsToLocalDevice(_model);
+                }
+            }
+        }
+
         public PageGotoToolViewModel GotoToolPageViewModel { get; private set; }
 
         public PageCopyPathViewModel CopyPathPageViewModel { get; private set; }
