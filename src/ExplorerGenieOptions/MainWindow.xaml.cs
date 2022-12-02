@@ -44,6 +44,12 @@ namespace ExplorerGenieOptions
             gridCustomGotoTools.Columns[0].Header = GetViewModel().Language["guiGotoMenuTitle"];
             gridCustomGotoTools.Columns[1].Header = GetViewModel().Language["guiGotoMenuCommand"];
             gridCustomGotoTools.Columns[2].Header = GetViewModel().Language["guiGotoMenuAdmin"];
+
+            if (GetViewModel().FreshInstallation)
+            {
+                MessageBox.Show(GetViewModel().Language["guiRestart"], Title, MessageBoxButton.OK, MessageBoxImage.Information);
+                GetViewModel().FreshInstallation = false;
+            }
         }
 
         private SettingsViewModel GetViewModel()

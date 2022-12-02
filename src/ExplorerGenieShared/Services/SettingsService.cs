@@ -43,6 +43,7 @@ namespace ExplorerGenieShared.Services
             if (registry == null)
                 return model;
 
+            model.FreshInstallation = registry.GetValueAsBool(nameof(model.FreshInstallation), model.FreshInstallation);
             model.CopyFileShowMenu = registry.GetValueAsBool(nameof(model.CopyFileShowMenu), model.CopyFileShowMenu);
             model.CopyFileFormat = registry.GetValueAsEnum(nameof(model.CopyFileFormat), model.CopyFileFormat);
             model.CopyFileOnlyFilename = registry.GetValueAsBool(nameof(model.CopyFileOnlyFilename), model.CopyFileOnlyFilename);
@@ -77,6 +78,7 @@ namespace ExplorerGenieShared.Services
             try
             {
                 RegistryKey registry = Registry.CurrentUser.CreateSubKey(_registryPath, RegistryKeyPermissionCheck.ReadWriteSubTree);
+                registry.SetValue(nameof(model.FreshInstallation), model.FreshInstallation);
                 registry.SetValue(nameof(model.CopyFileShowMenu), model.CopyFileShowMenu);
                 registry.SetValue(nameof(model.CopyFileFormat), model.CopyFileFormat);
                 registry.SetValue(nameof(model.CopyFileOnlyFilename), model.CopyFileOnlyFilename);
