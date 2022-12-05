@@ -19,13 +19,13 @@ uses
 
 type
   /// <summary>
-  /// Wraps a TMenuModel and implements the IExplorerCommand interface required
+  /// Wraps a IMenuModel and implements the IExplorerCommand interface required
   /// by the explorer.
   /// Access instances of this class only via interface to get reference counting.
   /// </summary>
   TExplorerCommand = class(TInterfacedObject, IExplorerCommand)
   private
-    FModel: TMenuModel;
+    FModel: IMenuModel;
     FTitle: WideString;
     class function ReturnWideStringProperty(const value: WideString; out ppszValue: LPWSTR): HRESULT;
     class procedure ReadSelectedFilenames(const psiItemArray: IShellItemArray; filenames: TStringList);
@@ -41,10 +41,10 @@ type
     function GetFlags(var pFlags: TExpCmdFlags): HRESULT; stdcall;
     function EnumSubCommands(out ppEnum: IEnumExplorerCommand): HRESULT; stdcall;
   public
-    constructor Create(model: TMenuModel);
+    constructor Create(model: IMenuModel);
     destructor Destroy(); override;
 
-    property Model: TMenuModel read FModel;
+    property Model: IMenuModel read FModel;
   end;
 
 implementation
@@ -53,7 +53,7 @@ uses
 
 { TExplorerCommandBase }
 
-constructor TExplorerCommand.Create(model: TMenuModel);
+constructor TExplorerCommand.Create(model: IMenuModel);
 begin
   inherited Create();
   FModel := model;
@@ -64,13 +64,14 @@ end;
 destructor TExplorerCommand.Destroy;
 begin
   Logger.Debug('TExplorerCommand.Destroy'#9 + Model.Title);
+  FModel := nil;
   inherited;
 end;
 
 function TExplorerCommand.EnumSubCommands(out ppEnum: IEnumExplorerCommand): HRESULT;
 begin
   Result := S_OK;
-  ppEnum := TEnumExplorerCommand.Create(Model.Children);
+  ppEnum := TEnumExplorerCommand.Create(Model);
 end;
 
 function TExplorerCommand.ExplorerCommandInvoke(const psiItemArray: IShellItemArray; const pbc: IBindCtx): HRESULT;
@@ -105,7 +106,7 @@ begin
   Result := S_OK;
   if (Model.IsSeparator) then
     pFlags := ECF_ISSEPARATOR
-  else if (Model.HasChildren) then
+  else if (Model.ChildrenCount > 0) then
     pFlags := ECF_HASSUBCOMMANDS
   else
     pFlags := ECF_DEFAULT;

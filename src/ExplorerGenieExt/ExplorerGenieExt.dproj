@@ -127,7 +127,6 @@
         <DCCReference Include="UnitApp.pas">
             <CoClasses>App</CoClasses>
         </DCCReference>
-        <DCCReference Include="UnitContextMenuRegistrar.pas"/>
         <DCCReference Include="UnitMenuModel.pas"/>
         <DCCReference Include="UnitMenuModelIcon.pas"/>
         <DCCReference Include="UnitActions.pas"/>
@@ -138,6 +137,7 @@
         <DCCReference Include="UnitExplorerCommand.pas"/>
         <DCCReference Include="UnitEnumExplorerCommand.pas"/>
         <DCCReference Include="UnitLogger.pas"/>
+        <DCCReference Include="UnitMenuModelGoto.pas"/>
         <RidlCompile Include="ExplorerGenieExt.ridl"/>
         <BuildConfiguration Include="Release">
             <Key>Cfg_2</Key>

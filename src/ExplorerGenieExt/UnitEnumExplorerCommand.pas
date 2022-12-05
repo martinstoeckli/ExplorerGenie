@@ -16,13 +16,13 @@ uses
 
 type
   /// <summary>
-  /// Enumerator class which wraps a TMenuModelList and implements the
+  /// Enumerator class which wraps a IMenuModel.Children list and implements the
   /// IEnumExplorerCommand interface required by the explorer.
   /// Access instances of this class only via interface to get reference counting.
   /// </summary>
   TEnumExplorerCommand = class(TInterfacedObject, IEnumExplorerCommand)
   private
-    FModel: TMenuModelList;
+    FModel: IMenuModel;
     FCursor: ULONG;
 
     // IEnumExplorerCommand
@@ -31,10 +31,10 @@ type
     function Reset: HRESULT; stdcall;
     function Clone(out ppenum: IEnumExplorerCommand): HRESULT; stdcall;
   public
-    constructor Create(model: TMenuModelList);
+    constructor Create(model: IMenuModel);
     destructor Destroy(); override;
 
-    property Model: TMenuModelList read FModel;
+    property Model: IMenuModel read FModel;
   end;
 
 implementation
@@ -43,7 +43,7 @@ uses
 
 { TEnumExplorerCommand }
 
-constructor TEnumExplorerCommand.Create(model: TMenuModelList);
+constructor TEnumExplorerCommand.Create(model: IMenuModel);
 begin
   Logger.Debug('TEnumExplorerCommand.Create');
   inherited Create();
@@ -53,6 +53,7 @@ end;
 destructor TEnumExplorerCommand.Destroy;
 begin
   Logger.Debug('TEnumExplorerCommand.Destroy');
+  FModel := nil;
   inherited;
 end;
 
@@ -81,9 +82,9 @@ begin
     // the memory allocation of the array is done by the Explorer.
     commandsArrayPtr := PIExplorerCommandArray(@pUICommand);
     pceltFetched := 0;
-    while (pceltFetched < celt) and (FCursor < ULONG(Model.Count)) do
+    while (pceltFetched < celt) and (FCursor < ULONG(Model.ChildrenCount)) do
     begin
-      command := TExplorerCommand.Create(Model[FCursor]);
+      command := TExplorerCommand.Create(Model.Children[FCursor]);
       commandsArrayPtr^[pceltFetched] := command;
 
       Inc(FCursor);

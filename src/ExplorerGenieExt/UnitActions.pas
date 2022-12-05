@@ -12,7 +12,7 @@ uses
   SysUtils,
   StrUtils,
   IOUtils,
-  UnitSettingsGotoToolModel;
+  UnitMenuModelGoto;
 
 type
   TActions = class(TObject)
@@ -62,9 +62,9 @@ type
     /// <summary>
     /// Action for menu item "open tool ..."
     /// </summary>
+    /// <param name="caller">The menu item which called the event.</param>
     /// <param name="filenames">List with paths of selected files.</param>
-    /// <param name="gotoTool">Model of the tool to open.</param>
-    class procedure OnGotoToolClicked(filenames: TStrings; gotoTool: TSettingsGotoToolModel);
+    class procedure OnGotoToolClicked(caller: IMenuModelGoto; filenames: TStrings);
 
     /// <summary>
     /// Action for menu item "Go to options"
@@ -111,7 +111,7 @@ begin
   ExecuteCommand(exePath, params, true);
 end;
 
-class procedure TActions.OnGotoToolClicked(filenames: TStrings; gotoTool: TSettingsGotoToolModel);
+class procedure TActions.OnGotoToolClicked(caller: IMenuModelGoto; filenames: TStrings);
 var
   exePath: String;
   customOrPredefinedTool: String;
@@ -119,11 +119,11 @@ var
   params: String;
 begin
   exePath := FindExplorerGenieCmdPath();
-  if (gotoTool.IsCustomTool) then
+  if (caller.IsCustomTool) then
     customOrPredefinedTool := 'U'
   else
     customOrPredefinedTool := 'P';
-  action := Format('-GotoTool-%s-%d', [customOrPredefinedTool, gotoTool.ToolIndex]);
+  action := Format('-GotoTool-%s-%d', [customOrPredefinedTool, caller.ToolIndex]);
   params := BuildCommandLine(action, filenames);
   ExecuteCommand(exePath, params, false);
 end;

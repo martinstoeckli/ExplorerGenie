@@ -18,10 +18,12 @@ uses
   SysUtils,
   Windows,
   ExplorerGenieExt_TLB,
+  Generics.Collections,
   UnitExplorerCommand,
   UnitLogger,
   UnitMenuModel,
   UnitMenuModelIcon,
+  UnitMenuModelGoto,
   UnitActions,
   UnitLanguageService,
   UnitSettingsModel,
@@ -34,10 +36,9 @@ type
   /// </summary>
   TApp = class(TAutoObject, IApp, IExplorerCommand)
   private
-    FMenus: TMenuModel;
+    FMenus: IMenuModel;
     FExplorerCommand: IExplorerCommand;
-    function CreateMenuModels(settingsService: TSettingsService; languageService: ILanguageService): TMenuModel;
-    class procedure AddMenuSeparator(menues: TMenuModelList);
+    function CreateMenuModels(settingsService: TSettingsService; languageService: ILanguageService): IMenuModel;
 
     // IExplorerCommand
     function GetTitle(const psiItemArray: IShellItemArray; var ppszName: LPWSTR): HRESULT; stdcall;
@@ -95,7 +96,7 @@ begin
   Logger.Debug('TApp.Destroy');
   try
     FExplorerCommand := nil;
-    FMenus.Free;
+    FMenus := nil;
   except
     on e: Exception do
       MessageBox(0, PChar(e.Message), '', MB_ICONERROR);
@@ -143,47 +144,54 @@ begin
   Result := FExplorerCommand.GetToolTip(psiItemArray, ppszInfotip);
 end;
 
-function TApp.CreateMenuModels(settingsService: TSettingsService; languageService: ILanguageService): TMenuModel;
+function TApp.CreateMenuModels(settingsService: TSettingsService; languageService: ILanguageService): IMenuModel;
+
+  function _CreateSeparator(): IMenuModel;
+  begin
+    Result := TMenuModel.Create();
+    Result.IsSeparator := true;
+  end;
+
 var
   settings: TSettingsModel;
-  menuGroupClipboard: TMenuModelList;
-  menuGroupGoto: TMenuModelList;
-  menuGroupHash: TMenuModelList;
-  submenuCopyFilename: TMenuModel;
-  submenuCopyEmail: TMenuModel;
-  submenuCopyOptions: TMenuModel;
+  menuGroupClipboard: TList<IMenuModel>;
+  menuGroupGoto: TList<IMenuModel>;
+  menuGroupHash: TList<IMenuModel>;
+  submenuCopyFilename: IMenuModel;
+  submenuCopyEmail: IMenuModel;
+  submenuCopyOptions: IMenuModel;
   gotoTool: TSettingsGotoToolModel;
-  submenuGotoTool: TMenuModel;
-  menuHash: TMenuModel;
+  submenuGotoTool: IMenuModelGoto;
+  menuHash: IMenuModel;
 begin
   Result := TMenuModel.Create();
   Result.Title := 'ExplorerGenie';
   Result.IconResourceId := IcoGenieLamp;
 
   settings := TSettingsModel.Create();
-  menuGroupClipboard := TMenuModelList.Create(false);
-  menuGroupGoto := TMenuModelList.Create(false);
-  menuGroupHash := TMenuModelList.Create(false);
+  menuGroupClipboard := TList<IMenuModel>.Create();
+  menuGroupGoto := TList<IMenuModel>.Create();
+  menuGroupHash := TList<IMenuModel>.Create();
   try
   settingsService.LoadSettingsOrDefault(settings);
 
   if (settings.CopyFileShowMenu) then
   begin
-    submenuCopyFilename := TMenuModel.Create;
+    submenuCopyFilename := TMenuModel.Create();
     submenuCopyFilename.Title := languageService.LoadText('submenuCopyFile', 'Copy filename(s)');
     submenuCopyFilename.IconResourceId := IcoCopy;
     submenuCopyFilename.OnClicked :=
-      procedure (caller: TMenuModel; filenames: TStrings)
+      procedure (caller: IMenuModel; filenames: TStrings)
       begin
         TActions.OnCopyFileClicked(filenames);
       end;
     menuGroupClipboard.Add(submenuCopyFilename);
 
-    submenuCopyEmail := TMenuModel.Create;
+    submenuCopyEmail := TMenuModel.Create();
     submenuCopyEmail.Title := languageService.LoadText('submenuCopyEmail', 'Copy as email link');
     submenuCopyEmail.IconResourceId := IcoMail;
     submenuCopyEmail.OnClicked :=
-      procedure (caller: TMenuModel; filenames: TStrings)
+      procedure (caller: IMenuModel; filenames: TStrings)
       begin
         TActions.OnCopyEmailClicked(filenames);
       end;
@@ -196,14 +204,15 @@ begin
     begin
       if (gotoTool.Visible) then
       begin
-        submenuGotoTool := TMenuModel.Create();
+        submenuGotoTool := TMenuModelGoto.Create();
         submenuGotoTool.Title := gotoTool.Title;
         submenuGotoTool.IconResourceId := gotoTool.IconResourceId;
-        submenuGotoTool.Context := gotoTool;
+        submenuGotoTool.IsCustomTool := gotoTool.IsCustomTool;
+        submenuGotoTool.ToolIndex := gotoTool.ToolIndex;
         submenuGotoTool.OnClicked :=
-          procedure (caller: TMenuModel; filenames: TStrings)
+          procedure (caller: IMenuModel; filenames: TStrings)
           begin
-            TActions.OnGotoToolClicked(filenames, caller.Context as TSettingsGotoToolModel);
+            TActions.OnGotoToolClicked(caller as IMenuModelGoto, filenames);
           end;
         menuGroupGoto.Add(submenuGotoTool);
       end;
@@ -212,11 +221,11 @@ begin
 
   if (settings.HashShowMenu) then
   begin
-    menuHash := TMenuModel.Create;
+    menuHash := TMenuModel.Create();
     menuHash.Title := languageService.LoadText('menuHash', 'Calculate hash');
     menuHash.IconResourceId := IcoHash;
     menuHash.OnClicked :=
-      procedure (caller: TMenuModel; filenames: TStrings)
+      procedure (caller: IMenuModel; filenames: TStrings)
       begin
         TActions.OnHashClicked(filenames);
       end;
@@ -224,42 +233,33 @@ begin
   end;
 
   // Add options menu
-  submenuCopyOptions := TMenuModel.Create;
+  submenuCopyOptions := TMenuModel.Create();
   submenuCopyOptions.Title := languageService.LoadText('submenuOptions', 'Options');
   submenuCopyOptions.IconResourceId := IcoOptions;
   submenuCopyOptions.OnClicked :=
-    procedure (caller: TMenuModel; filenames: TStrings)
+    procedure (caller: IMenuModel; filenames: TStrings)
     begin
       TActions.OnCopyOptionsClicked(filenames);
     end;
 
   // Add separators
-  if (menuGroupClipboard.Any()) then
-    AddMenuSeparator(menuGroupClipboard);
-  if (menuGroupGoto.Any()) then
-    AddMenuSeparator(menuGroupGoto);
-  if (menuGroupHash.Any()) then
-    AddMenuSeparator(menuGroupHash);
+  if (menuGroupClipboard.Count > 0) then
+    menuGroupClipboard.Add(_CreateSeparator());
+  if (menuGroupGoto.Count > 0) then
+    menuGroupGoto.Add(_CreateSeparator());
+  if (menuGroupHash.Count > 0) then
+    menuGroupHash.Add(_CreateSeparator());
 
-  Result.Children.AddRange(menuGroupClipboard);
-  Result.Children.AddRange(menuGroupGoto);
-  Result.Children.AddRange(menuGroupHash);
-  Result.Children.Add(submenuCopyOptions);
+  Result.AddChildren(menuGroupClipboard);
+  Result.AddChildren(menuGroupGoto);
+  Result.AddChildren(menuGroupHash);
+  Result.AddChild(submenuCopyOptions);
   finally
     menuGroupHash.Free();
     menuGroupGoto.Free();
     menuGroupClipboard.Free();
     settings.Free();
   end;
-end;
-
-class procedure TApp.AddMenuSeparator(menues: TMenuModelList);
-var
-  menuSeparator: TMenuModel;
-begin
-  menuSeparator := TMenuModel.Create();
-  menuSeparator.IsSeparator := true;
-  menues.Add(menuSeparator);
 end;
 
 initialization

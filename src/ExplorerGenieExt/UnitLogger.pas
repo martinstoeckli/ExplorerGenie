@@ -14,6 +14,7 @@ type
   /// Since this shell extension is part of a Windows app, it is very hard to debug otherwise.
   /// </remarks>
   ILogger = interface
+    ['{336971F1-2D62-4748-A67A-352AC69EB37F}']
     procedure Debug(const text: string);
   end;
 
