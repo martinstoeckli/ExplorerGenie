@@ -5,6 +5,7 @@
 
 unit UnitApp;
 
+{$R 'ExplorerGenieIcons.res'}
 {$WARN SYMBOL_PLATFORM OFF}
 
 interface
