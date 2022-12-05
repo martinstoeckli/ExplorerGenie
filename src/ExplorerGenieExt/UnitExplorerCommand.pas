@@ -26,7 +26,6 @@ type
   TExplorerCommand = class(TInterfacedObject, IExplorerCommand)
   private
     FModel: IMenuModel;
-    FTitle: WideString;
     class function ReturnWideStringProperty(const value: WideString; out ppszValue: LPWSTR): HRESULT;
     class procedure ReadSelectedFilenames(const psiItemArray: IShellItemArray; filenames: TStringList);
 
@@ -57,7 +56,6 @@ constructor TExplorerCommand.Create(model: IMenuModel);
 begin
   inherited Create();
   FModel := model;
-  FTitle := Model.Title;
   Logger.Debug('TExplorerCommand.Create'#9 + Model.Title);
 end;
 
@@ -114,22 +112,12 @@ begin
 end;
 
 function TExplorerCommand.GetIcon(const psiItemArray: IShellItemArray; var ppszIcon: LPWSTR): HRESULT;
-var
-  dllFilePath: String;
-  resourcePath: WideString;
 begin
   Logger.Debug('TExplorerCommand.GetIcon'#9 + Model.Title);
 
-  if (Model.IconResourceId > 0) then
-  begin
-    dllFilePath := GetModuleName(HInstance);
-    resourcePath := Format('%s,-%d', [dllFilePath, Model.IconResourceId]); // only numeric ids seem to be accepted.
-    Result := ReturnWideStringProperty(resourcePath, ppszIcon);
-  end
-  else
-  begin
-    Result := ReturnWideStringProperty('', ppszIcon);
-  end;
+  // Calling GetModuleName() here has lead to errors in Windows10, so we read the already prepared
+  // resource path from the model.
+  Result := ReturnWideStringProperty(Model.IconResourcePath, ppszIcon);
 end;
 
 function TExplorerCommand.GetState(const psiItemArray: IShellItemArray; fOkToBeSlow: BOOL; var pCmdState: TExpCmdState): HRESULT;
@@ -150,7 +138,7 @@ begin
   end
   else
   begin
-    Result := ReturnWideStringProperty(FTitle, ppszName);
+    Result := ReturnWideStringProperty(Model.Title, ppszName);
   end;
 end;
 

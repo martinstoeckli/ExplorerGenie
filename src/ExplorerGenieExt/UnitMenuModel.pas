@@ -17,12 +17,17 @@ type
   /// The model class which can describe a menu tree structure. Because they can live longer than
   /// the application itself (IExplorerCommand) they should be used reference counted by interface.
   /// </summary>
+  /// <remarks>
+  /// This model can outlive the application object and therefore should self contain all information
+  /// required by the Windows IExplorerCommand API. This means storing properties in WideString
+  /// instead of string and avoiding calls to GetModuleName().
+  /// </remarks>
   IMenuModel = interface
     ['{923968D3-DFEF-47FE-A688-2E3D3DE1B728}']
-    function GetTitle(): String;
-    procedure SetTitle(value: String);
-    function GetIconResourceId(): Integer;
-    procedure SetIconResourceId(value: Integer);
+    function GetTitle(): WideString;
+    procedure SetTitle(value: WideString);
+    function GetIconResourcePath(): WideString;
+    procedure SetIconResourcePath(value: WideString);
     function GetIsSeparator(): Boolean;
     procedure SetIsSeparator(value: Boolean);
     function GetOnClicked(): TProc<IMenuModel, TStrings>;
@@ -33,12 +38,16 @@ type
     /// <summary>
     /// Gets or sets the title of the menu item.
     /// </summary>
-    property Title: String read GetTitle write SetTitle;
+    property Title: WideString read GetTitle write SetTitle;
 
     /// <summary>
-    /// Gets or sets the id of a icon resource. A value of 0 indicates that no icon is associated.
+    /// Gets or sets the path of an icon resource. An empty string indicates that no icon is
+    /// associated. The path looks like...
+    ///   <ResourceDllPath>,-<IconId>
+    ///   C:\Programs\MyApp.dll,-101
+    /// ...where only numeric ids seem to be accepted.
     /// </summary>
-    property IconResourceId: Integer read GetIconResourceId write SetIconResourceId;
+    property IconResourcePath: WideString read GetIconResourcePath write SetIconResourcePath;
 
     /// <summary>
     /// Gets or sets an a value indicating whether the menu represents a separator line.
@@ -78,15 +87,15 @@ type
   TMenuModel = class(TInterfacedObject, IMenuModel)
   private
     FChildren: TList<IMenuModel>;
-    FTitle: String;
-    FIconResourceId: Integer;
+    FTitle: WideString;
+    FIconResourcePath: WideString;
     FIsSeparator: Boolean;
     FOnClicked: TProc<IMenuModel, TStrings>;
   protected
-    function GetTitle(): String;
-    procedure SetTitle(value: String);
-    function GetIconResourceId(): Integer;
-    procedure SetIconResourceId(value: Integer);
+    function GetTitle(): WideString;
+    procedure SetTitle(value: WideString);
+    function GetIconResourcePath(): WideString;
+    procedure SetIconResourcePath(value: WideString);
     function GetIsSeparator(): Boolean;
     procedure SetIsSeparator(value: Boolean);
     function GetOnClicked(): TProc<IMenuModel, TStrings>;
@@ -115,7 +124,6 @@ implementation
 constructor TMenuModel.Create;
 begin
   FChildren := nil;
-  FIconResourceId := 0;
 end;
 
 destructor TMenuModel.Destroy;
@@ -146,9 +154,9 @@ begin
     Result := FChildren.Count;
 end;
 
-function TMenuModel.GetIconResourceId: Integer;
+function TMenuModel.GetIconResourcePath: WideString;
 begin
-  Result := FIconResourceId;
+  Result := FIconResourcePath;
 end;
 
 function TMenuModel.GetIsSeparator: Boolean;
@@ -168,14 +176,14 @@ begin
   Result := FChildren;
 end;
 
-function TMenuModel.GetTitle: String;
+function TMenuModel.GetTitle: WideString;
 begin
   Result := FTitle;
 end;
 
-procedure TMenuModel.SetIconResourceId(value: Integer);
+procedure TMenuModel.SetIconResourcePath(value: WideString);
 begin
-  FIconResourceId := value;
+  FIconResourcePath := value;
 end;
 
 procedure TMenuModel.SetIsSeparator(value: Boolean);
@@ -188,7 +196,7 @@ begin
   FOnClicked := value;
 end;
 
-procedure TMenuModel.SetTitle(value: String);
+procedure TMenuModel.SetTitle(value: WideString);
 begin
   FTitle := value;
 end;

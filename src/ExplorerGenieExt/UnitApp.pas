@@ -39,7 +39,7 @@ type
   private
     FMenus: IMenuModel;
     FExplorerCommand: IExplorerCommand;
-    function CreateMenuModels(settingsService: TSettingsService; languageService: ILanguageService): IMenuModel;
+    function CreateMenuModels(settingsService: TSettingsService; languageService: ILanguageService; resourceDllPath: String): IMenuModel;
 
     // IExplorerCommand
     function GetTitle(const psiItemArray: IShellItemArray; var ppszName: LPWSTR): HRESULT; stdcall;
@@ -72,6 +72,7 @@ procedure TApp.Initialize;
 var
   languageService: ILanguageService;
   settingsService: TSettingsService;
+  resourceDllPath: String;
 begin
   Logger.Debug('---');
   Logger.Debug('TApp.Initialize');
@@ -85,7 +86,8 @@ begin
 
   settingsService := TSettingsService.Create(languageService);
   try
-    FMenus := CreateMenuModels(settingsService, languageService);
+    resourceDllPath := GetModuleName(HInstance);
+    FMenus := CreateMenuModels(settingsService, languageService, resourceDllPath);
     FExplorerCommand := TExplorerCommand.Create(FMenus) as IExplorerCommand;
   finally
     settingsService.Free;
@@ -145,7 +147,12 @@ begin
   Result := FExplorerCommand.GetToolTip(psiItemArray, ppszInfotip);
 end;
 
-function TApp.CreateMenuModels(settingsService: TSettingsService; languageService: ILanguageService): IMenuModel;
+function TApp.CreateMenuModels(settingsService: TSettingsService; languageService: ILanguageService; resourceDllPath: String): IMenuModel;
+
+  function _BuildIconResourcePath(const resourceDllPath: String; const iconId: Integer): String;
+  begin
+    Result := Format('%s,-%d', [resourceDllPath, iconId]);
+  end;
 
   function _CreateSeparator(): IMenuModel;
   begin
@@ -167,7 +174,7 @@ var
 begin
   Result := TMenuModel.Create();
   Result.Title := 'ExplorerGenie';
-  Result.IconResourceId := IcoGenieLamp;
+  Result.IconResourcePath := _BuildIconResourcePath(resourceDllPath, IcoGenieLamp);
 
   settings := TSettingsModel.Create();
   menuGroupClipboard := TList<IMenuModel>.Create();
@@ -180,7 +187,7 @@ begin
   begin
     submenuCopyFilename := TMenuModel.Create();
     submenuCopyFilename.Title := languageService.LoadText('submenuCopyFile', 'Copy filename(s)');
-    submenuCopyFilename.IconResourceId := IcoCopy;
+    submenuCopyFilename.IconResourcePath := _BuildIconResourcePath(resourceDllPath, IcoCopy);
     submenuCopyFilename.OnClicked :=
       procedure (caller: IMenuModel; filenames: TStrings)
       begin
@@ -190,7 +197,7 @@ begin
 
     submenuCopyEmail := TMenuModel.Create();
     submenuCopyEmail.Title := languageService.LoadText('submenuCopyEmail', 'Copy as email link');
-    submenuCopyEmail.IconResourceId := IcoMail;
+    submenuCopyEmail.IconResourcePath := _BuildIconResourcePath(resourceDllPath, IcoMail);
     submenuCopyEmail.OnClicked :=
       procedure (caller: IMenuModel; filenames: TStrings)
       begin
@@ -207,7 +214,7 @@ begin
       begin
         submenuGotoTool := TMenuModelGoto.Create();
         submenuGotoTool.Title := gotoTool.Title;
-        submenuGotoTool.IconResourceId := gotoTool.IconResourceId;
+        submenuGotoTool.IconResourcePath := _BuildIconResourcePath(resourceDllPath, gotoTool.IconResourceId);
         submenuGotoTool.IsCustomTool := gotoTool.IsCustomTool;
         submenuGotoTool.ToolIndex := gotoTool.ToolIndex;
         submenuGotoTool.OnClicked :=
@@ -224,7 +231,7 @@ begin
   begin
     menuHash := TMenuModel.Create();
     menuHash.Title := languageService.LoadText('menuHash', 'Calculate hash');
-    menuHash.IconResourceId := IcoHash;
+    menuHash.IconResourcePath := _BuildIconResourcePath(resourceDllPath, IcoHash);
     menuHash.OnClicked :=
       procedure (caller: IMenuModel; filenames: TStrings)
       begin
@@ -236,7 +243,7 @@ begin
   // Add options menu
   submenuCopyOptions := TMenuModel.Create();
   submenuCopyOptions.Title := languageService.LoadText('submenuOptions', 'Options');
-  submenuCopyOptions.IconResourceId := IcoOptions;
+  submenuCopyOptions.IconResourcePath := _BuildIconResourcePath(resourceDllPath, IcoOptions);
   submenuCopyOptions.OnClicked :=
     procedure (caller: IMenuModel; filenames: TStrings)
     begin
