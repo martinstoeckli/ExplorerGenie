@@ -27,7 +27,7 @@ type
   private
     FModel: IMenuModel;
     class function ReturnWideStringProperty(const value: WideString; out ppszValue: LPWSTR): HRESULT;
-    class procedure ReadSelectedFilenames(const psiItemArray: IShellItemArray; filenames: TStringList);
+    class procedure ListSelectedFilenames(const psiItemArray: IShellItemArray; filenames: TStringList);
 
     // IExplorerCommand
     function GetTitle(const psiItemArray: IShellItemArray; var ppszName: LPWSTR): HRESULT; stdcall;
@@ -83,7 +83,7 @@ begin
 
   filenames := TStringList.Create();
   try
-    ReadSelectedFilenames(psiItemArray, filenames);
+    ListSelectedFilenames(psiItemArray, filenames);
     Model.OnClicked(Model, filenames);
     Logger.Debug('TExplorerCommand.ExplorerCommandInvoke'#9 + filenames.Text);
   except
@@ -114,9 +114,6 @@ end;
 function TExplorerCommand.GetIcon(const psiItemArray: IShellItemArray; var ppszIcon: LPWSTR): HRESULT;
 begin
   Logger.Debug('TExplorerCommand.GetIcon'#9 + Model.Title);
-
-  // Calling GetModuleName() here has lead to errors in Windows10, so we read the already prepared
-  // resource path from the model.
   Result := ReturnWideStringProperty(Model.IconResourcePath, ppszIcon);
 end;
 
@@ -148,7 +145,7 @@ begin
   Result := ReturnWideStringProperty('', ppszInfotip);
 end;
 
-class procedure TExplorerCommand.ReadSelectedFilenames(const psiItemArray: IShellItemArray; filenames: TStringList);
+class procedure TExplorerCommand.ListSelectedFilenames(const psiItemArray: IShellItemArray; filenames: TStringList);
 var
   selectionCount: Cardinal;
   selectionIndex: Cardinal;

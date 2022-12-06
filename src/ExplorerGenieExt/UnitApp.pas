@@ -37,7 +37,6 @@ type
   /// </summary>
   TApp = class(TAutoObject, IApp, IExplorerCommand)
   private
-    FMenus: IMenuModel;
     FExplorerCommand: IExplorerCommand;
     function CreateMenuModels(settingsService: TSettingsService; languageService: ILanguageService; resourceDllPath: String): IMenuModel;
 
@@ -73,6 +72,7 @@ var
   languageService: ILanguageService;
   settingsService: TSettingsService;
   resourceDllPath: String;
+  menus: IMenuModel;
 begin
   Logger.Debug('---');
   Logger.Debug('TApp.Initialize');
@@ -81,14 +81,14 @@ begin
   languageService := TLanguageServiceFactory.CreateLanguageService('ExplorerGenie');
 {$IFDEF DEBUG}
   // development: Here we can force loading of a specific language.
-  languageService := TLanguageServiceFactory.CreateLanguageService('ExplorerGenie', 'en');
+  // languageService := TLanguageServiceFactory.CreateLanguageService('ExplorerGenie', 'en');
 {$ENDIF}
 
   settingsService := TSettingsService.Create(languageService);
   try
     resourceDllPath := GetModuleName(HInstance);
-    FMenus := CreateMenuModels(settingsService, languageService, resourceDllPath);
-    FExplorerCommand := TExplorerCommand.Create(FMenus) as IExplorerCommand;
+    menus := CreateMenuModels(settingsService, languageService, resourceDllPath);
+    FExplorerCommand := TExplorerCommand.Create(menus) as IExplorerCommand;
   finally
     settingsService.Free;
   end;
@@ -99,7 +99,6 @@ begin
   Logger.Debug('TApp.Destroy');
   try
     FExplorerCommand := nil;
-    FMenus := nil;
   except
     on e: Exception do
       MessageBox(0, PChar(e.Message), '', MB_ICONERROR);

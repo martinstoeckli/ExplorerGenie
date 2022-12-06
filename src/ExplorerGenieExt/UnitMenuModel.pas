@@ -18,9 +18,9 @@ type
   /// the application itself (IExplorerCommand) they should be used reference counted by interface.
   /// </summary>
   /// <remarks>
-  /// This model can outlive the application object and therefore should self contain all information
-  /// required by the Windows IExplorerCommand API. This means storing properties in WideString
-  /// instead of string and avoiding calls to GetModuleName().
+  /// This model can outlive the application object and therefore should self contain all
+  /// information required by the Windows IExplorerCommand API. Store and keep properties in
+  /// WideString instead of string.
   /// </remarks>
   IMenuModel = interface
     ['{923968D3-DFEF-47FE-A688-2E3D3DE1B728}']
@@ -91,7 +91,9 @@ type
     FIconResourcePath: WideString;
     FIsSeparator: Boolean;
     FOnClicked: TProc<IMenuModel, TStrings>;
+    function GetOrCreateChildren(): TList<IMenuModel>;
   protected
+    // IMenuModel
     function GetTitle(): WideString;
     procedure SetTitle(value: WideString);
     function GetIconResourcePath(): WideString;
@@ -100,7 +102,6 @@ type
     procedure SetIsSeparator(value: Boolean);
     function GetOnClicked(): TProc<IMenuModel, TStrings>;
     procedure SetOnClicked(value: TProc<IMenuModel, TStrings>);
-    function GetOrCreateChildren(): TList<IMenuModel>;
     function GetChildrenCount: Integer;
     function GetChild(index: Integer): IMenuModel;
     procedure AddChild(const item: IMenuModel);

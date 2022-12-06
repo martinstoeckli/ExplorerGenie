@@ -25,6 +25,8 @@ type
     FModel: IMenuModel;
     FCursor: ULONG;
 
+    property Model: IMenuModel read FModel;
+
     // IEnumExplorerCommand
     function Next(celt: Cardinal; out pUICommand: IExplorerCommand; var pceltFetched: Cardinal): HRESULT; stdcall;
     function Skip(celt: Cardinal): HRESULT; stdcall;
@@ -33,8 +35,6 @@ type
   public
     constructor Create(model: IMenuModel);
     destructor Destroy(); override;
-
-    property Model: IMenuModel read FModel;
   end;
 
 implementation
@@ -79,7 +79,7 @@ begin
   try
     // pUICommand is actually an array which has already memory allocated to hold all references
     // of the requested commands. MAX_COMMAND has no meaning but to define a type of a static array,
-    // the memory allocation of the array is done by the Explorer.
+    // the memory allocation of the array is done by the Explorer. While testing, celt was always 1.
     commandsArrayPtr := PIExplorerCommandArray(@pUICommand);
     pceltFetched := 0;
     while (pceltFetched < celt) and (FCursor < ULONG(Model.ChildrenCount)) do

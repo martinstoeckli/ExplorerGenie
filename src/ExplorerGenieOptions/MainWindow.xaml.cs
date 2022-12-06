@@ -44,12 +44,6 @@ namespace ExplorerGenieOptions
             gridCustomGotoTools.Columns[0].Header = GetViewModel().Language["guiGotoMenuTitle"];
             gridCustomGotoTools.Columns[1].Header = GetViewModel().Language["guiGotoMenuCommand"];
             gridCustomGotoTools.Columns[2].Header = GetViewModel().Language["guiGotoMenuAdmin"];
-
-            if (GetViewModel().FreshInstallation)
-            {
-                MessageBox.Show(GetViewModel().Language["guiRestart"], Title, MessageBoxButton.OK, MessageBoxImage.Information);
-                GetViewModel().FreshInstallation = false;
-            }
         }
 
         private SettingsViewModel GetViewModel()
@@ -72,6 +66,15 @@ namespace ExplorerGenieOptions
             if (grid.SelectedItem is HashResultViewModel selectedViewModel)
             {
                 GetViewModel().CalculateHashPageViewModel.CopyHashToClipboardCommand.Execute(selectedViewModel);
+            }
+        }
+
+        private void MainWindow_ContentRendered(object sender, EventArgs e)
+        {
+            if (GetViewModel().FreshInstallation)
+            {
+                MessageBox.Show(this, GetViewModel().Language["guiRestart"], Title, MessageBoxButton.OK, MessageBoxImage.Information);
+                GetViewModel().FreshInstallation = false;
             }
         }
     }

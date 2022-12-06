@@ -9,7 +9,7 @@
         mc:Ignorable="d"
         Title="ExplorerGenie"
         Height="420" Width="720"
-        Icon="Resources/options.ico" ResizeMode="CanResizeWithGrip" Loaded="MainWindow_Loaded">
+        Icon="Resources/options.ico" ResizeMode="CanResizeWithGrip" Loaded="MainWindow_Loaded" ContentRendered="MainWindow_ContentRendered">
 
     <Window.Resources>
         <Color x:Key="GridHighlightBackgroundColor">#cce7ff</Color>
@@ -124,7 +124,7 @@
                             <RowDefinition Height="auto"/>
                             <RowDefinition Height="auto"/>
                         </Grid.RowDefinitions>
-                    
+
                         <CheckBox Grid.Row="0" IsChecked="{Binding CopyFileShowMenu}" Content="{Binding Language[guiShowMenu]}" VerticalAlignment="Center"/>
 
                         <GroupBox Grid.Row="1" Header="{Binding Language[submenuCopyFile]}" Margin="0,6,0,0" Padding="6">
@@ -208,7 +208,7 @@
                                     <Image Source="{StaticResource imgsrcArrowDown}" Margin="1" Width="12" Height="14"/>
                                 </Button>
                             </StackPanel>
-                                
+
                             <DataGrid
                                 x:Name="gridCustomGotoTools"
                                 Grid.Row="1"
@@ -238,7 +238,7 @@
                                     </DataGridTemplateColumn>
                                 </DataGrid.Columns>
                             </DataGrid>
-                                
+
                             <StackPanel Grid.Row="2" Orientation="Horizontal" Margin="0,6,0,0">
                                 <Image Source="{StaticResource imgsrcInfo}" Margin="0,4,6,0" Height="14" VerticalAlignment="Top"/>
                                 <TextBlock Text="{Binding Language[guiGotoInfo]}" />
