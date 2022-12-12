@@ -13,6 +13,8 @@ uses
   UnitMenuModelIcon;
 
 type
+  TExplorerCommandFilter = (ecfAll, ecfDiretoryOnly);
+
   /// <summary>
   /// The model class which can describe a menu tree structure. Because they can live longer than
   /// the application itself (IExplorerCommand) they should be used reference counted by interface.
@@ -30,6 +32,8 @@ type
     procedure SetIconResourcePath(value: WideString);
     function GetIsSeparator(): Boolean;
     procedure SetIsSeparator(value: Boolean);
+    function GetFilter(): TExplorerCommandFilter;
+    procedure SetFilter(value: TExplorerCommandFilter);
     function GetOnClicked(): TProc<IMenuModel, TStrings>;
     procedure SetOnClicked(value: TProc<IMenuModel, TStrings>);
     function GetChildrenCount: Integer;
@@ -53,6 +57,11 @@ type
     /// Gets or sets an a value indicating whether the menu represents a separator line.
     /// </summary>
     property IsSeparator: Boolean read GetIsSeparator write SetIsSeparator;
+
+    /// <summary>
+    /// Gets or sets an a filter which decides whether the menu is visible depending on the user selection.
+    /// </summary>
+    property Filter: TExplorerCommandFilter read GetFilter write SetFilter;
 
     /// <summary>
     /// Gets or sets a delgate which should be executed when the user clicked the menu item.
@@ -90,6 +99,7 @@ type
     FTitle: WideString;
     FIconResourcePath: WideString;
     FIsSeparator: Boolean;
+    FFilter: TExplorerCommandFilter;
     FOnClicked: TProc<IMenuModel, TStrings>;
     function GetOrCreateChildren(): TList<IMenuModel>;
   protected
@@ -100,6 +110,8 @@ type
     procedure SetIconResourcePath(value: WideString);
     function GetIsSeparator(): Boolean;
     procedure SetIsSeparator(value: Boolean);
+    function GetFilter(): TExplorerCommandFilter;
+    procedure SetFilter(value: TExplorerCommandFilter);
     function GetOnClicked(): TProc<IMenuModel, TStrings>;
     procedure SetOnClicked(value: TProc<IMenuModel, TStrings>);
     function GetChildrenCount: Integer;
@@ -125,6 +137,7 @@ implementation
 constructor TMenuModel.Create;
 begin
   FChildren := nil;
+  FFilter := ecfAll;
 end;
 
 destructor TMenuModel.Destroy;
@@ -155,6 +168,11 @@ begin
     Result := FChildren.Count;
 end;
 
+function TMenuModel.GetFilter: TExplorerCommandFilter;
+begin
+  Result := FFilter;
+end;
+
 function TMenuModel.GetIconResourcePath: WideString;
 begin
   Result := FIconResourcePath;
@@ -180,6 +198,11 @@ end;
 function TMenuModel.GetTitle: WideString;
 begin
   Result := FTitle;
+end;
+
+procedure TMenuModel.SetFilter(value: TExplorerCommandFilter);
+begin
+  FFilter := value;
 end;
 
 procedure TMenuModel.SetIconResourcePath(value: WideString);

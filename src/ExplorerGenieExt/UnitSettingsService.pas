@@ -100,6 +100,10 @@ begin
         customGotoTools := registry.ReadString('CustomGotoTools');
       if (registry.ValueExists('HashShowMenu')) then
         settings.HashShowMenu := StrToBoolDef(registry.ReadString('HashShowMenu'), settings.HashShowMenu);
+      if (registry.ValueExists('NewFolderShowMenu')) then
+        settings.NewFolderShowMenu := StrToBoolDef(registry.ReadString('NewFolderShowMenu'), settings.NewFolderShowMenu);
+      if (registry.ValueExists('SymbolicLinkShowMenu')) then
+        settings.SymbolicLinkShowMenu := StrToBoolDef(registry.ReadString('SymbolicLinkShowMenu'), settings.SymbolicLinkShowMenu);
       AddCustomGotoTools(settings, customGotoTools);
     end;
   except

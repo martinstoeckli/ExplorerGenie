@@ -153,10 +153,16 @@ function TApp.CreateMenuModels(settingsService: TSettingsService; languageServic
     Result := Format('%s,-%d', [resourceDllPath, iconId]);
   end;
 
-  function _CreateSeparator(): IMenuModel;
+  procedure _AddSeparatorIfNotEmpty(menuGroup: TList<IMenuModel>);
+  var
+    separator: IMenuModel;
   begin
-    Result := TMenuModel.Create();
-    Result.IsSeparator := true;
+    if (menuGroup.Count > 0) then
+    begin
+      separator := TMenuModel.Create();
+      separator.IsSeparator := true;
+      menuGroup.Add(separator);
+    end;
   end;
 
 var
@@ -164,12 +170,15 @@ var
   menuGroupClipboard: TList<IMenuModel>;
   menuGroupGoto: TList<IMenuModel>;
   menuGroupHash: TList<IMenuModel>;
+  menuGroupNtfs: TList<IMenuModel>;
   submenuCopyFilename: IMenuModel;
   submenuCopyEmail: IMenuModel;
   submenuCopyOptions: IMenuModel;
   gotoTool: TSettingsGotoToolModel;
   submenuGotoTool: IMenuModelGoto;
   menuHash: IMenuModel;
+  menuNewFolder: IMenuModel;
+  menuSymbolicLink: IMenuModel;
 begin
   Result := TMenuModel.Create();
   Result.Title := 'ExplorerGenie';
@@ -179,6 +188,7 @@ begin
   menuGroupClipboard := TList<IMenuModel>.Create();
   menuGroupGoto := TList<IMenuModel>.Create();
   menuGroupHash := TList<IMenuModel>.Create();
+  menuGroupNtfs := TList<IMenuModel>.Create();
   try
   settingsService.LoadSettingsOrDefault(settings);
 
@@ -239,6 +249,34 @@ begin
     menuGroupHash.Add(menuHash);
   end;
 
+  if (settings.NewFolderShowMenu) then
+  begin
+    menuNewFolder := TMenuModel.Create();
+    menuNewFolder.Title := languageService.LoadText('menuNewFolder', 'New folder');
+    menuNewFolder.IconResourcePath := '';
+    menuNewFolder.Filter := ecfDiretoryOnly;
+    menuNewFolder.OnClicked :=
+      procedure (caller: IMenuModel; filenames: TStrings)
+      begin
+        TActions.OnNewFolderClicked(filenames);
+      end;
+    menuGroupNtfs.Add(menuNewFolder);
+  end;
+
+  if (settings.SymbolicLinkShowMenu) then
+  begin
+    menuSymbolicLink := TMenuModel.Create();
+    menuSymbolicLink.Title := languageService.LoadText('menuSymbolicLink', 'New symbolic link');
+    menuSymbolicLink.IconResourcePath := '';
+    menuSymbolicLink.Filter := ecfDiretoryOnly;
+    menuSymbolicLink.OnClicked :=
+      procedure (caller: IMenuModel; filenames: TStrings)
+      begin
+        TActions.OnNewSymbolicLinkClicked(filenames);
+      end;
+    menuGroupNtfs.Add(menuSymbolicLink);
+  end;
+
   // Add options menu
   submenuCopyOptions := TMenuModel.Create();
   submenuCopyOptions.Title := languageService.LoadText('submenuOptions', 'Options');
@@ -249,19 +287,18 @@ begin
       TActions.OnCopyOptionsClicked(filenames);
     end;
 
-  // Add separators
-  if (menuGroupClipboard.Count > 0) then
-    menuGroupClipboard.Add(_CreateSeparator());
-  if (menuGroupGoto.Count > 0) then
-    menuGroupGoto.Add(_CreateSeparator());
-  if (menuGroupHash.Count > 0) then
-    menuGroupHash.Add(_CreateSeparator());
+  _AddSeparatorIfNotEmpty(menuGroupClipboard);
+  _AddSeparatorIfNotEmpty(menuGroupGoto);
+  _AddSeparatorIfNotEmpty(menuGroupHash);
+  _AddSeparatorIfNotEmpty(menuGroupNtfs);
 
   Result.AddChildren(menuGroupClipboard);
   Result.AddChildren(menuGroupGoto);
   Result.AddChildren(menuGroupHash);
+  Result.AddChildren(menuGroupNtfs);
   Result.AddChild(submenuCopyOptions);
   finally
+    menuGroupNtfs.Free();
     menuGroupHash.Free();
     menuGroupGoto.Free();
     menuGroupClipboard.Free();

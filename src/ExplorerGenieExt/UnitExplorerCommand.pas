@@ -27,6 +27,7 @@ type
   private
     FModel: IMenuModel;
     class function ReturnWideStringProperty(const value: WideString; out ppszValue: LPWSTR): HRESULT;
+    class function ContainsSingleDirectory(const psiItemArray: IShellItemArray): Boolean;
     class procedure ListSelectedFilenames(const psiItemArray: IShellItemArray; filenames: TStringList);
 
     // IExplorerCommand
@@ -121,7 +122,13 @@ function TExplorerCommand.GetState(const psiItemArray: IShellItemArray; fOkToBeS
 begin
   Logger.Debug('TExplorerCommand.GetState'#9 + Model.Title);
   Result := S_OK;
+
   pCmdState := ECS_ENABLED;
+  if (Model.Filter = ecfDiretoryOnly) then
+  begin
+    if (not ContainsSingleDirectory(psiItemArray)) then
+      pCmdState := ECS_DISABLED;
+  end;
 end;
 
 function TExplorerCommand.GetTitle(const psiItemArray: IShellItemArray; var ppszName: LPWSTR): HRESULT;
@@ -143,6 +150,25 @@ function TExplorerCommand.GetToolTip(const psiItemArray: IShellItemArray; var pp
 begin
   Logger.Debug('TExplorerCommand.GetToolTip'#9 + Model.Title);
   Result := ReturnWideStringProperty('', ppszInfotip);
+end;
+
+class function TExplorerCommand.ContainsSingleDirectory(const psiItemArray: IShellItemArray): Boolean;
+var
+  selectionCount: Cardinal;
+  shellItem: IShellItem;
+  attr: Cardinal;
+begin
+  Result := false;
+  if (Succeeded(psiItemArray.GetCount(selectionCount)) and (selectionCount = 1))then
+  begin
+    if Succeeded(psiItemArray.GetItemAt(0, shellItem)) then
+    begin
+      if Succeeded(shellItem.GetAttributes(SFGAO_FOLDER, attr)) then
+      begin
+        Result := (SFGAO_FOLDER and attr) <> 0;
+      end;
+    end;
+  end;
 end;
 
 class procedure TExplorerCommand.ListSelectedFilenames(const psiItemArray: IShellItemArray; filenames: TStringList);

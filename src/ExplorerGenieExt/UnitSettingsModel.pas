@@ -19,6 +19,8 @@ type
     FCopyFileShowMenu: Boolean;
     FGotoShowMenu: Boolean;
     FHashShowMenu: Boolean;
+    FNewFolderShowMenu: Boolean;
+    FSymbolicLinkShowMenu: Boolean;
     FGotoTools: TObjectList<TSettingsGotoToolModel>;
   public
     constructor Create();
@@ -27,6 +29,8 @@ type
     property CopyFileShowMenu: Boolean read FCopyFileShowMenu write FCopyFileShowMenu;
     property GotoShowMenu: Boolean read FGotoShowMenu write FGotoShowMenu;
     property HashShowMenu: Boolean read FHashShowMenu write FHashShowMenu;
+    property NewFolderShowMenu: Boolean read FNewFolderShowMenu write FNewFolderShowMenu;
+    property SymbolicLinkShowMenu: Boolean read FSymbolicLinkShowMenu write FSymbolicLinkShowMenu;
     property GotoTools: TObjectList<TSettingsGotoToolModel> read FGotoTools;
   end;
 
@@ -49,6 +53,8 @@ begin
   CopyFileShowMenu := true;
   GotoShowMenu := true;
   HashShowMenu := true;
+  NewFolderShowMenu := false;
+  SymbolicLinkShowMenu := false;
   FGotoTools.Clear();
 end;
 

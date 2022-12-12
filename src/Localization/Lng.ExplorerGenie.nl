@@ -10,6 +10,8 @@ submenuGotoPowershellAdmin Power Shell (admin)
 submenuGotoExplorer Explorer
 submenuGotoExplorerAdmin Explorer (admin)
 menuHash Bereken hash
+menuNewFolder New folder
+menuSymbolicLink New symbolic link
 
 guiCopy Kopieer
 guiPaste Plak
@@ -39,6 +41,11 @@ guiHashValues Hash-waarden
 guiHashValue Hash-waarde
 guiAlgorithm Algoritme
 guiHashVerification Controleer een hash door deze in het tekstvak te typen of te plakken.
+
+guiNtfs NTFS file system
+guiNtfsNewFolderShowMenu Show context menu "New folder".
+guiNtfsSymbolicLinkShowMenu Show context menu to create "symbolic link".
+guiNtfsSymbolicLinkInfo A "Symbolic link" points to another directory/file without making a copy. Deleting a "Symbolic link" doesn't delete the referenced directory/file.
 
 guiSystemFolders Systeemmappen
 guiGotoSystemFolder Ga naar de systeemmap

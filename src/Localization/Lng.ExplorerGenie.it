@@ -10,6 +10,8 @@ submenuGotoPowershellAdmin Apri in Power Shell come ammnistratore
 submenuGotoExplorer Apri in Esplora Risorse
 submenuGotoExplorerAdmin Apri in Esplora Risorse come amministratore
 menuHash Calcola hash
+menuNewFolder New folder
+menuSymbolicLink New symbolic link
 
 guiCopy Copia
 guiPaste Incolla
@@ -39,6 +41,11 @@ guiHashValues Valori Hash
 guiHashValue Valore Hash
 guiAlgorithm Algoritmo
 guiHashVerification Verifica un hash digitandolo o incollandolo nella casella di testo.
+
+guiNtfs NTFS file system
+guiNtfsNewFolderShowMenu Show context menu "New folder".
+guiNtfsSymbolicLinkShowMenu Show context menu to create "symbolic link".
+guiNtfsSymbolicLinkInfo A "Symbolic link" points to another directory/file without making a copy. Deleting a "Symbolic link" doesn't delete the referenced directory/file.
 
 guiSystemFolders Cartelle di sistema
 guiGotoSystemFolder Vai alle cartelle di sistema

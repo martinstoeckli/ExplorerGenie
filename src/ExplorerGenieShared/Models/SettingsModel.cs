@@ -27,6 +27,8 @@ namespace ExplorerGenieShared.Models
             GotoPowerShell = true;
             GotoExplorer = true;
             HashShowMenu = true;
+            NewFolderShowMenu = false;
+            SymbolicLinkShowMenu = false;
         }
 
         /// <summary>
@@ -105,6 +107,18 @@ namespace ExplorerGenieShared.Models
         /// </summary>
         public bool HashShowMenu { get; set; }
 
+        /// <summary>
+        /// Gets or sets a value indicating whether the menu "create symbolic link" should be loaded
+        /// in the context menu.
+        /// </summary>
+        public bool SymbolicLinkShowMenu { get; set; }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether the menu "new folder" should be loaded
+        /// in the context menu.
+        /// </summary>
+        public bool NewFolderShowMenu { get; set; }
+
         /// <inheritdoc/>
         public override bool Equals(object other)
         {
@@ -129,6 +143,8 @@ namespace ExplorerGenieShared.Models
                 && (GotoPowerShell == other.GotoPowerShell)
                 && (GotoExplorer == other.GotoExplorer)
                 && (HashShowMenu == other.HashShowMenu)
+                && (NewFolderShowMenu == other.NewFolderShowMenu)
+                && (SymbolicLinkShowMenu == other.SymbolicLinkShowMenu)
                 && (CustomGotoTools.Equals(other.CustomGotoTools));
         }
 
@@ -150,6 +166,8 @@ namespace ExplorerGenieShared.Models
                 result = (result * 397) ^ GotoPowerShell.GetHashCode();
                 result = (result * 397) ^ GotoExplorer.GetHashCode();
                 result = (result * 397) ^ HashShowMenu.GetHashCode();
+                result = (result * 397) ^ NewFolderShowMenu.GetHashCode();
+                result = (result * 397) ^ SymbolicLinkShowMenu.GetHashCode();
                 result = (result * 397) ^ CustomGotoTools.GetHashCode();
                 return result;
             }

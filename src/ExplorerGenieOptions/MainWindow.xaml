@@ -93,6 +93,10 @@
             <Setter Property="BorderThickness" Value="0"/>
             <Setter Property="Background" Value="Transparent"/>
         </Style>
+        <Style TargetType="TextBlock" x:Key="Info">
+            <Setter Property="Foreground" Value="DarkGreen"/>
+            <Setter Property="FontSize" Value="11"/>
+        </Style>
     </Window.Resources>
 
     <Window.DataContext>
@@ -239,10 +243,14 @@
                                 </DataGrid.Columns>
                             </DataGrid>
 
-                            <StackPanel Grid.Row="2" Orientation="Horizontal" Margin="0,6,0,0">
-                                <Image Source="{StaticResource imgsrcInfo}" Margin="0,4,6,0" Height="14" VerticalAlignment="Top"/>
-                                <TextBlock Text="{Binding Language[guiGotoInfo]}" />
-                            </StackPanel>
+                            <Grid Grid.Row="2" Margin="0,6,0,0">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="auto"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <Image Grid.Column="0" Source="{StaticResource imgsrcInfo}" Margin="0,4,6,0" Height="14" VerticalAlignment="Top"/>
+                                <TextBlock Grid.Column="1" Text="{Binding Language[guiGotoInfo]}" TextWrapping="NoWrap" Style="{StaticResource Info }"/>
+                            </Grid>
                         </Grid>
                     </GroupBox>
                 </Grid>
@@ -349,6 +357,31 @@
                             </Grid>
                         </Grid>
                     </GroupBox>
+                </Grid>
+            </TabItem>
+
+            <!-- Ntfs -->
+            <TabItem DataContext="{Binding NtfsPageViewModel}" Header="{Binding Language[guiNtfs]}">
+                <Grid Margin="12,15,12,15">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+
+                    <CheckBox Grid.Row="0" IsChecked="{Binding NewFolderShowMenu}" Content="{Binding Language[guiNtfsNewFolderShowMenu]}" VerticalAlignment="Center"/>
+
+                    <CheckBox Grid.Row="1" IsChecked="{Binding SymbolicLinkShowMenu}" Content="{Binding Language[guiNtfsSymbolicLinkShowMenu]}" VerticalAlignment="Center" Margin="0,6,0,0"/>
+
+                    <Grid Grid.Row="2" Margin="0,6,0,0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="auto"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <Image Grid.Column="0" Source="{StaticResource imgsrcInfo}" Margin="0,4,6,0" Height="14" VerticalAlignment="Top"/>
+                        <TextBlock Grid.Column="1" Text="{Binding Language[guiNtfsSymbolicLinkInfo]}" TextWrapping="Wrap" Style="{StaticResource Info }"/>
+                    </Grid>
                 </Grid>
             </TabItem>
 
