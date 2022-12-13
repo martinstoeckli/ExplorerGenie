@@ -46,6 +46,8 @@ guiNtfsNewFolderShowMenu Show context menu "New folder".
 guiNtfsSymbolicLinkShowMenu Show context menu to create "symbolic link".
 guiNtfsSymbolicLinkInfo A "Symbolic link" points to another directory/file without making a copy. Deleting a "Symbolic link" doesn't delete the referenced directory/file.
 guiNtfsSymbolicLinkPickFolder Choose the directory which should be added as symbolic link.
+errNtfsSymbolicLinkRecursive Cannot create a "symbolic link" which would lead to a recursive path.
+guiNtfsAds Alternative data streams (ADS)
 
 guiSystemFolders Systeemmappen
 guiGotoSystemFolder Ga naar de systeemmap

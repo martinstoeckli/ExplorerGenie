@@ -97,6 +97,12 @@
             <Setter Property="Foreground" Value="DarkGreen"/>
             <Setter Property="FontSize" Value="11"/>
         </Style>
+        <Style TargetType="Border" x:Key="Badge">
+            <Setter Property="Background" Value="#007fff"/>
+            <Setter Property="CornerRadius" Value="5"/>
+            <Setter Property="Padding" Value="4 0 4 0"/>
+            <Setter Property="TextBlock.Foreground" Value="White"/>
+        </Style>
     </Window.Resources>
 
     <Window.DataContext>
@@ -382,6 +388,21 @@
                         <Image Grid.Column="0" Source="{StaticResource imgsrcInfo}" Margin="0,4,6,0" Height="14" VerticalAlignment="Top"/>
                         <TextBlock Grid.Column="1" Text="{Binding Language[guiNtfsSymbolicLinkInfo]}" TextWrapping="Wrap" Style="{StaticResource Info }"/>
                     </Grid>
+
+                    <GroupBox Grid.Row="3" Header="{Binding Language[guiNtfsAds]}" Margin="0,6,0,0" Padding="6">
+                        <ListBox ItemsSource="{Binding AlternativeDataStreams}" BorderThickness="0,0,0,0" >
+                            <ListBox.Resources>
+                                <DataTemplate DataType="{x:Type vm:AdsViewModel}">
+                                    <StackPanel Orientation="Horizontal" Margin="0,4,0,6">
+                                        <TextBlock Text="{Binding FileName}" Margin="0 0 16 0"/>
+                                        <Border Style="{StaticResource Badge}">
+                                            <TextBlock Text="{Binding StreamCount}" />
+                                        </Border>
+                                    </StackPanel>
+                                </DataTemplate>
+                            </ListBox.Resources>
+                        </ListBox>
+                    </GroupBox>
                 </Grid>
             </TabItem>
 

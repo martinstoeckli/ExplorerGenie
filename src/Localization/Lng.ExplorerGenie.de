@@ -46,6 +46,8 @@ guiNtfsNewFolderShowMenu Kontextmenu "Neuer Ordner" anzeigen.
 guiNtfsSymbolicLinkShowMenu Kontextmenu zum Erstellen von "Symbolic link" anzeigen.
 guiNtfsSymbolicLinkInfo Ein "Symbolic link" zeigt auf eine anderes Verzeichnis/Datei ohne davon eine Kopie zu machen. Das Löschen des "Symbolic link" löscht nicht das referenzierte Verzeichnis/Datei.
 guiNtfsSymbolicLinkPickFolder Wählen Sie den Ordner welcher als "Symbolic link" hinzugefügt werden soll.
+errNtfsSymbolicLinkRecursive Kann keinen "Symbolic link" erstellen der zu einem rekursiven Pfad führen würde.
+guiNtfsAds Alternative data streams (ADS)
 
 guiSystemFolders Systemverzeichnisse
 guiGotoSystemFolder Gehe zu Systemverzeichnis

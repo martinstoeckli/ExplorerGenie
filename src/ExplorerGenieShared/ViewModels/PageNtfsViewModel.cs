@@ -4,6 +4,8 @@
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 using ExplorerGenieShared.Models;
 using ExplorerGenieShared.Services;
 
@@ -32,6 +34,7 @@ namespace ExplorerGenieShared.ViewModels
             Language = language;
             _settingsService = settingsService;
             _filenames = filenames;
+            AlternativeDataStreams = CreateAdsInfos(_filenames);
         }
 
         /// <inheritdoc cref="SettingsModel.NewFolderShowMenu"/>
@@ -61,5 +64,40 @@ namespace ExplorerGenieShared.ViewModels
                 }
             }
         }
+
+        private List<AdsViewModel> CreateAdsInfos(List<string> filenames)
+        {
+            var result = new List<AdsViewModel>();
+            if (filenames.Count > 0)
+            {
+                bool isDirectory = Directory.Exists(filenames[0]);
+                string rootDirectory = isDirectory ? filenames[0] : Path.GetDirectoryName(filenames[0]);
+                List<string> paths = Directory.EnumerateFileSystemEntries(rootDirectory).ToList();
+                new FilenameSorter().Sort(paths);
+                AddAdsInfos(result, paths);
+            }
+            return result;
+        }
+
+        private static void AddAdsInfos(List<AdsViewModel> result, IEnumerable<string> paths)
+        {
+            foreach (string path in paths)
+                AddAdsInfo(result, path);
+        }
+
+        private static void AddAdsInfo(List<AdsViewModel> result, string path)
+        {
+            AdsViewModel item = new AdsViewModel
+            {
+                Directory = Path.GetDirectoryName(path),
+                FileName = Path.GetFileName(path),
+            };
+            result.Add(item);
+        }
+
+        /// <summary>
+        /// Gets a list of ads infos.
+        /// </summary>
+        public List<AdsViewModel> AlternativeDataStreams { get; }
     }
 }

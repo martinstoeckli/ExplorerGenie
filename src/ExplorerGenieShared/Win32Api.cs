@@ -4,6 +4,7 @@
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 using System;
+using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.InteropServices;
 
@@ -91,5 +92,26 @@ namespace ExplorerGenieShared
                 Pointer = IntPtr.Zero;
             }
         }
+
+        [Flags]
+        public enum SYMBOLIC_LINK_FLAG
+        {
+            File = 0,
+            Directory = 1,
+            AllowUnprivilegedCreate = 2
+        }
+
+        public static void CreateSymbolicLink(string lpSymlinkFileName, string lpTargetFileName, SYMBOLIC_LINK_FLAG dwFlags)
+        {
+            bool success = CreateSymbolicLinkInternal(lpSymlinkFileName, lpTargetFileName, dwFlags);
+            if (!success)
+            {
+                throw new Win32Exception(Marshal.GetLastWin32Error());
+            }
+        }
+
+        [DllImport("Kernel32.dll", EntryPoint = "CreateSymbolicLinkW", SetLastError = true, CharSet = CharSet.Unicode)]
+        [return: MarshalAs(UnmanagedType.U1)]
+        private static extern bool CreateSymbolicLinkInternal(string lpSymlinkFileName, string lpTargetFileName, SYMBOLIC_LINK_FLAG dwFlags);
     }
 }

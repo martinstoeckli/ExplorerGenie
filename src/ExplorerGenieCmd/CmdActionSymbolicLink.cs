@@ -3,6 +3,7 @@
 // License, v. 2.0. If a copy of the MPL was not distributed with this
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -31,6 +32,12 @@ namespace ExplorerGenieCmd
             if (folderDialog.ShowDialog() == DialogResult.OK)
             {
                 string linkTargetDirectory = folderDialog.SelectedPath;
+                if (IsBaseDirectoryOf(clickedDirectory, linkTargetDirectory))
+                {
+                    MessageBox.Show(Language["errNtfsSymbolicLinkRecursive"], Language["menuSymbolicLink"], MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                    return;
+                }
+
                 string commandlineArguments = string.Format(
                     @"-NewSymbolicLinkElevated ""{0}"" ""{1}"" ""{2}""",
                     clickedDirectory, clickedDirectory, linkTargetDirectory);
@@ -44,11 +51,18 @@ namespace ExplorerGenieCmd
                     Verb = "runas",
                     WindowStyle = ProcessWindowStyle.Hidden
                 };
-                Process.Start(startInfo);
+                try
+                {
+                    Process.Start(startInfo);
+                }
+                catch (Exception)
+                {
+                    // Probably not elevated by the user, the called action is responsible to inform the user.
+                }
             }
         }
 
-        private bool TryGetDirectoryPath(List<string> filenames, out string directory)
+        private static bool TryGetDirectoryPath(List<string> filenames, out string directory)
         {
             directory = null;
             if (filenames.Count == 1)
@@ -58,6 +72,19 @@ namespace ExplorerGenieCmd
                 return isDirectory;
             }
             return false;
+        }
+
+        /// <summary>
+        /// Checks whether the <paramref name="candidateDirectory"/> contains the <paramref name="baseDirectory"/>
+        /// and therefore is a sibling of it. This method does not cover all possible quirks of the
+        /// file system, but it takes care of some obvious mistakes.
+        /// </summary>
+        /// <param name="candidateDirectory">Directory to check.</param>
+        /// <param name="baseDirectory">Check if this base is part of the candidate.</param>
+        /// <returns>Returns true if it is the base path, otherwise false.</returns>
+        private static bool IsBaseDirectoryOf(string candidateDirectory, string baseDirectory)
+        {
+            return candidateDirectory.StartsWith(baseDirectory, StringComparison.InvariantCultureIgnoreCase);
         }
     }
 }
