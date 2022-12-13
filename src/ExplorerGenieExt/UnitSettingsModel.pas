@@ -51,7 +51,7 @@ begin
   CopyFileShowMenu := true;
   HashShowMenu := true;
   NewFolderShowMenu := false;
-  SymbolicLinkShowMenu := false;
+  SymbolicLinkShowMenu := true;
   FGotoTools.Clear();
 end;
 

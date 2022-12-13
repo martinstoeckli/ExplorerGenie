@@ -246,26 +246,25 @@ begin
     menuGroupHash.Add(menuHash);
   end;
 
-  // Not yet decided whether this action will be implemented
-//  if (settings.NewFolderShowMenu) then
-//  begin
-//    menuNewFolder := TMenuModel.Create();
-//    menuNewFolder.Title := languageService.LoadText('menuNewFolder', 'New folder');
-//    menuNewFolder.IconResourcePath := '';
-//    menuNewFolder.Filter := ecfDiretoryOnly;
-//    menuNewFolder.OnClicked :=
-//      procedure (caller: IMenuModel; filenames: TStrings)
-//      begin
-//        TActions.OnNewFolderClicked(filenames);
-//      end;
-//    menuGroupNtfs.Add(menuNewFolder);
-//  end;
+  if (settings.NewFolderShowMenu) then
+  begin
+    menuNewFolder := TMenuModel.Create();
+    menuNewFolder.Title := languageService.LoadText('menuNewFolder', 'New folder');
+    menuNewFolder.IconResourcePath := _BuildIconResourcePath('shell32.dll', 4);
+    menuNewFolder.Filter := ecfDiretoryOnly;
+    menuNewFolder.OnClicked :=
+      procedure (caller: IMenuModel; filenames: TStrings)
+      begin
+        TActions.OnNewFolderClicked(filenames);
+      end;
+    menuGroupNtfs.Add(menuNewFolder);
+  end;
 
   if (settings.SymbolicLinkShowMenu) then
   begin
     menuSymbolicLink := TMenuModel.Create();
     menuSymbolicLink.Title := languageService.LoadText('menuSymbolicLink', 'New symbolic link');
-    menuSymbolicLink.IconResourcePath := '';
+    menuSymbolicLink.IconResourcePath := _BuildIconResourcePath('shell32.dll', 46);
     menuSymbolicLink.Filter := ecfDiretoryOnly;
     menuSymbolicLink.OnClicked :=
       procedure (caller: IMenuModel; filenames: TStrings)

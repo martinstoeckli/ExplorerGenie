@@ -27,7 +27,7 @@ namespace ExplorerGenieShared.Models
             GotoExplorer = true;
             HashShowMenu = true;
             NewFolderShowMenu = false;
-            SymbolicLinkShowMenu = false;
+            SymbolicLinkShowMenu = true;
         }
 
         /// <summary>
