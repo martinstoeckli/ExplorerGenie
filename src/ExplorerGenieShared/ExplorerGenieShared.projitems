@@ -19,6 +19,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Services\ILanguageServiceResourceReader.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Services\LanguageService.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Services\LanguageServiceFileResourceReader.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ViewModels\PageNtfsViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewModels\PageCalculateHashViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewModels\PageCopyPathViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewModels\CustomGotoToolViewModel.cs" />

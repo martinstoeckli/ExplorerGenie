@@ -77,6 +77,18 @@ type
     /// </summary>
     /// <param name="filenames">List with paths of selected files.</param>
     class procedure OnHashClicked(filenames: TStrings);
+
+    /// <summary>
+    /// Action for menu item "New folder"
+    /// </summary>
+    /// <param name="filenames">List with paths of selected files.</param>
+    class procedure OnNewFolderClicked(filenames: TStrings);
+
+    /// <summary>
+    /// Action for menu item "New symbolic link"
+    /// </summary>
+    /// <param name="filenames">List with paths of selected files.</param>
+    class procedure OnNewSymbolicLinkClicked(filenames: TStrings);
   end;
 
 implementation
@@ -146,6 +158,26 @@ begin
   exePath := FindExplorerGenieOptionsPath();
   params := BuildCommandLine('-OpenedFromHash', filenames);
   ExecuteCommand(exePath, params, true);
+end;
+
+class procedure TActions.OnNewFolderClicked(filenames: TStrings);
+var
+  exePath: String;
+  params: String;
+begin
+  exePath := FindExplorerGenieCmdPath();
+  params := BuildCommandLine('-NewFolder', filenames);
+  ExecuteCommand(exePath, params, false);
+end;
+
+class procedure TActions.OnNewSymbolicLinkClicked(filenames: TStrings);
+var
+  exePath: String;
+  params: String;
+begin
+  exePath := FindExplorerGenieCmdPath();
+  params := BuildCommandLine('-NewSymbolicLink', filenames);
+  ExecuteCommand(exePath, params, false);
 end;
 
 class function TActions.FindExplorerGenieCmdPath: String;

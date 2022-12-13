@@ -50,11 +50,12 @@ namespace ExplorerGenieShared.Services
             model.CopyFileConvertToUnc = registry.GetValueAsBool(nameof(model.CopyFileConvertToUnc), model.CopyFileConvertToUnc);
             model.CopyEmailFormat = registry.GetValueAsEnum(nameof(model.CopyEmailFormat), model.CopyEmailFormat);
             model.CopyEmailConvertToUnc = registry.GetValueAsBool(nameof(model.CopyEmailConvertToUnc), model.CopyEmailConvertToUnc);
-            model.GotoShowMenu = registry.GetValueAsBool(nameof(model.GotoShowMenu), model.GotoShowMenu);
             model.GotoCommandPrompt = registry.GetValueAsBool(nameof(model.GotoCommandPrompt), model.GotoCommandPrompt);
             model.GotoPowerShell = registry.GetValueAsBool(nameof(model.GotoPowerShell), model.GotoPowerShell);
             model.GotoExplorer = registry.GetValueAsBool(nameof(model.GotoExplorer), model.GotoExplorer);
             model.HashShowMenu = registry.GetValueAsBool(nameof(model.HashShowMenu), model.HashShowMenu);
+            model.NewFolderShowMenu = registry.GetValueAsBool(nameof(model.NewFolderShowMenu), model.NewFolderShowMenu);
+            model.SymbolicLinkShowMenu = registry.GetValueAsBool(nameof(model.SymbolicLinkShowMenu), model.SymbolicLinkShowMenu);
 
             string jsonCustomTools = registry.GetValueAsString(nameof(model.CustomGotoTools), string.Empty);
             if (!string.IsNullOrEmpty(jsonCustomTools))
@@ -85,11 +86,12 @@ namespace ExplorerGenieShared.Services
                 registry.SetValue(nameof(model.CopyFileConvertToUnc), model.CopyFileConvertToUnc);
                 registry.SetValue(nameof(model.CopyEmailFormat), model.CopyEmailFormat);
                 registry.SetValue(nameof(model.CopyEmailConvertToUnc), model.CopyEmailConvertToUnc);
-                registry.SetValue(nameof(model.GotoShowMenu), model.GotoShowMenu);
                 registry.SetValue(nameof(model.GotoCommandPrompt), model.GotoCommandPrompt);
                 registry.SetValue(nameof(model.GotoPowerShell), model.GotoPowerShell);
                 registry.SetValue(nameof(model.GotoExplorer), model.GotoExplorer);
                 registry.SetValue(nameof(model.HashShowMenu), model.HashShowMenu);
+                registry.SetValue(nameof(model.NewFolderShowMenu), model.NewFolderShowMenu);
+                registry.SetValue(nameof(model.SymbolicLinkShowMenu), model.SymbolicLinkShowMenu);
 
                 string jsonCustomTools = JsonConvert.SerializeObject(model.CustomGotoTools);
                 registry.SetValue(nameof(model.CustomGotoTools), jsonCustomTools);

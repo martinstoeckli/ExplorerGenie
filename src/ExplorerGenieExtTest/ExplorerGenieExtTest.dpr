@@ -16,7 +16,8 @@ uses
   UnitSettingsServiceTest in 'UnitSettingsServiceTest.pas',
   UnitSettingsService in '..\ExplorerGenieExt\UnitSettingsService.pas',
   UnitSettingsGotoToolModel in '..\ExplorerGenieExt\UnitSettingsGotoToolModel.pas',
-  UnitSettingsModel in '..\ExplorerGenieExt\UnitSettingsModel.pas';
+  UnitSettingsModel in '..\ExplorerGenieExt\UnitSettingsModel.pas',
+  UnitMenuModelIcon in '..\ExplorerGenieExt\UnitMenuModelIcon.pas';
 
 var
   runner : ITestRunner;

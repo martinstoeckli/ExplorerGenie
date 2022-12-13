@@ -44,6 +44,7 @@ namespace ExplorerGenieShared.ViewModels
             GotoToolPageViewModel = new PageGotoToolViewModel(_model, Language, _settingsService);
             CopyPathPageViewModel = new PageCopyPathViewModel(_model, Language, _settingsService, filenames);
             CalculateHashPageViewModel = new PageCalculateHashViewModel(_model, Language, _settingsService, filenames);
+            NtfsPageViewModel = new PageNtfsViewModel(_model, Language, _settingsService, filenames);
             SystemFoldersPageViewModel = new PageSystemFoldersViewModel(Language);
 
             OpenHomepageCommand = new RelayCommand(OpenHomepage);
@@ -82,6 +83,8 @@ namespace ExplorerGenieShared.ViewModels
         public PageCopyPathViewModel CopyPathPageViewModel { get; private set; }
 
         public PageCalculateHashViewModel CalculateHashPageViewModel { get; private set; }
+
+        public PageNtfsViewModel NtfsPageViewModel { get; private set; }
 
         public PageSystemFoldersViewModel SystemFoldersPageViewModel { get; private set; }
 

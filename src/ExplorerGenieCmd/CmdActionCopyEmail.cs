@@ -13,7 +13,7 @@ namespace ExplorerGenieCmd
     /// <summary>
     /// This action copies the filename(s) to the Windows clipboard, to be used inside emails.
     /// </summary>
-    internal class CmdActionCopyEmail : ICmdAction
+    internal class CmdActionCopyEmail : CmdActionBase, ICmdAction
     {
         private readonly ISettingsService _settingsService;
 

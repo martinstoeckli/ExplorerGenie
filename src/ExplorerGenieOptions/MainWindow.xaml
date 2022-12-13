@@ -93,6 +93,10 @@
             <Setter Property="BorderThickness" Value="0"/>
             <Setter Property="Background" Value="Transparent"/>
         </Style>
+        <Style TargetType="TextBlock" x:Key="Info">
+            <Setter Property="Foreground" Value="DarkGreen"/>
+            <Setter Property="FontSize" Value="11"/>
+        </Style>
     </Window.Resources>
 
     <Window.DataContext>
@@ -181,18 +185,16 @@
                 <Grid Margin="12,15,12,15">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="auto"/>
-                        <RowDefinition Height="auto"/>
                         <RowDefinition Height="*"/>
                     </Grid.RowDefinitions>
-                    <CheckBox Grid.Row="0" IsChecked="{Binding GotoShowMenu}" Content="{Binding Language[guiShowMenu]}" VerticalAlignment="Center"/>
-                    <GroupBox Grid.Row="1" Header="{Binding Language[guiVisibleMenus]}" Margin="0,6,0,0" Padding="6">
+                    <GroupBox Grid.Row="0" Header="{Binding Language[guiShowMenu]}" Padding="6">
                         <StackPanel Orientation="Vertical">
                             <CheckBox IsChecked="{Binding GotoCommandPrompt}" Content="Command Prompt" VerticalAlignment="Center" Margin="0,6,0,0" />
                             <CheckBox IsChecked="{Binding GotoPowerShell}" Content="Power Shell" VerticalAlignment="Center" Margin="0,6,0,0" />
                             <CheckBox IsChecked="{Binding GotoExplorer}" Content="Explorer" VerticalAlignment="Center" Margin="0,6,0,0" />
                         </StackPanel>
                     </GroupBox>
-                    <GroupBox Grid.Row="2" Header="{Binding Language[guiUserDefinedMenus]}" Margin="0,6,0,0" Padding="6">
+                    <GroupBox Grid.Row="1" Header="{Binding Language[guiUserDefinedMenus]}" Margin="0,6,0,0" Padding="6">
                         <Grid>
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="auto"/>
@@ -239,10 +241,14 @@
                                 </DataGrid.Columns>
                             </DataGrid>
 
-                            <StackPanel Grid.Row="2" Orientation="Horizontal" Margin="0,6,0,0">
-                                <Image Source="{StaticResource imgsrcInfo}" Margin="0,4,6,0" Height="14" VerticalAlignment="Top"/>
-                                <TextBlock Text="{Binding Language[guiGotoInfo]}" />
-                            </StackPanel>
+                            <Grid Grid.Row="2" Margin="0,6,0,0">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="auto"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <Image Grid.Column="0" Source="{StaticResource imgsrcInfo}" Margin="0,4,6,0" Height="14" VerticalAlignment="Top"/>
+                                <TextBlock Grid.Column="1" Text="{Binding Language[guiGotoInfo]}" TextWrapping="NoWrap" Style="{StaticResource Info }"/>
+                            </Grid>
                         </Grid>
                     </GroupBox>
                 </Grid>
@@ -349,6 +355,33 @@
                             </Grid>
                         </Grid>
                     </GroupBox>
+                </Grid>
+            </TabItem>
+
+            <!-- Ntfs -->
+            <TabItem DataContext="{Binding NtfsPageViewModel}" Header="{Binding Language[guiNtfs]}">
+                <Grid Margin="12,15,12,15">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+
+                    <!--
+                    <CheckBox Grid.Row="0" IsChecked="{Binding NewFolderShowMenu}" Content="{Binding Language[guiNtfsNewFolderShowMenu]}" VerticalAlignment="Center"/>
+                    -->
+                    
+                    <CheckBox Grid.Row="1" IsChecked="{Binding SymbolicLinkShowMenu}" Content="{Binding Language[guiNtfsSymbolicLinkShowMenu]}" VerticalAlignment="Center" Margin="0,6,0,0"/>
+
+                    <Grid Grid.Row="2" Margin="0,6,0,0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="auto"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <Image Grid.Column="0" Source="{StaticResource imgsrcInfo}" Margin="0,4,6,0" Height="14" VerticalAlignment="Top"/>
+                        <TextBlock Grid.Column="1" Text="{Binding Language[guiNtfsSymbolicLinkInfo]}" TextWrapping="Wrap" Style="{StaticResource Info }"/>
+                    </Grid>
                 </Grid>
             </TabItem>
 

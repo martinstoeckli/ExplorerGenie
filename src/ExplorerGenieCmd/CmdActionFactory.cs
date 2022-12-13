@@ -44,6 +44,18 @@ namespace ExplorerGenieCmd
             {
                 return new CmdActionOpenTool(_settingsService, commandLineAction);
             }
+            else if (commandLineAction.StartsWith("-NewFolder", StringComparison.OrdinalIgnoreCase))
+            {
+                return new CmdActionNewFolder();
+            }
+            else if (commandLineAction.StartsWith("-NewSymbolicLinkElevated", StringComparison.OrdinalIgnoreCase))
+            {
+                return new CmdActionSymbolicLinkElevated();
+            }
+            else if (commandLineAction.StartsWith("-NewSymbolicLink", StringComparison.OrdinalIgnoreCase))
+            {
+                return new CmdActionSymbolicLink();
+            }
             else
             {
                 return null;

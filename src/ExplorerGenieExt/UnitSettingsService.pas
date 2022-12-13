@@ -76,8 +76,6 @@ begin
     begin
       if (registry.ValueExists('CopyFileShowMenu')) then
         settings.CopyFileShowMenu := StrToBoolDef(registry.ReadString('CopyFileShowMenu'), settings.CopyFileShowMenu);
-      if (registry.ValueExists('GotoShowMenu')) then
-        settings.GotoShowMenu := StrToBoolDef(registry.ReadString('GotoShowMenu'), settings.GotoShowMenu);
       if (registry.ValueExists('GotoCommandPrompt')) then
       begin
         isVisible := StrToBoolDef(registry.ReadString('GotoCommandPrompt'), true);
@@ -100,6 +98,10 @@ begin
         customGotoTools := registry.ReadString('CustomGotoTools');
       if (registry.ValueExists('HashShowMenu')) then
         settings.HashShowMenu := StrToBoolDef(registry.ReadString('HashShowMenu'), settings.HashShowMenu);
+      if (registry.ValueExists('NewFolderShowMenu')) then
+        settings.NewFolderShowMenu := StrToBoolDef(registry.ReadString('NewFolderShowMenu'), settings.NewFolderShowMenu);
+      if (registry.ValueExists('SymbolicLinkShowMenu')) then
+        settings.SymbolicLinkShowMenu := StrToBoolDef(registry.ReadString('SymbolicLinkShowMenu'), settings.SymbolicLinkShowMenu);
       AddCustomGotoTools(settings, customGotoTools);
     end;
   except
