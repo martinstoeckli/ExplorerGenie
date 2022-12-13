@@ -30,7 +30,6 @@ guiAsThunderbird Thunderbird e altri
 guiUnc Ottieni percorso di rete (UNC) per le unita' mappate
 guiOnlyFile Solo il nome del file senza percorso
 
-guiVisibleMenus Voci del menu visibili
 guiUserDefinedMenus Voci del menu definite dall'utente
 guiGotoMenuTitle Titolo del menu
 guiGotoMenuCommand Riga di comando
@@ -46,6 +45,7 @@ guiNtfs NTFS file system
 guiNtfsNewFolderShowMenu Show context menu "New folder".
 guiNtfsSymbolicLinkShowMenu Show context menu to create "symbolic link".
 guiNtfsSymbolicLinkInfo A "Symbolic link" points to another directory/file without making a copy. Deleting a "Symbolic link" doesn't delete the referenced directory/file.
+guiNtfsSymbolicLinkPickFolder Choose the directory which should be added as symbolic link.
 
 guiSystemFolders Cartelle di sistema
 guiGotoSystemFolder Vai alle cartelle di sistema

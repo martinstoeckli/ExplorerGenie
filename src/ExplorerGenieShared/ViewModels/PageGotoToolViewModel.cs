@@ -70,18 +70,6 @@ namespace ExplorerGenieShared.ViewModels
                 toolViewModel.PropertyChanged -= CustomGotoToolChangedEventHandler;
         }
 
-        /// <inheritdoc cref="SettingsModel.GotoShowMenu"/>
-        public bool GotoShowMenu
-        {
-            get { return _model.GotoShowMenu; }
-
-            set
-            {
-                if (SetPropertyIndirect(() => _model.GotoShowMenu, (v) => _model.GotoShowMenu = v, value, false))
-                    _settingsService?.TrySaveSettingsToLocalDevice(_model);
-            }
-        }
-
         /// <inheritdoc cref="SettingsModel.GotoCommandPrompt"/>
         public bool GotoCommandPrompt
         {

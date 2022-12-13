@@ -76,8 +76,6 @@ begin
     begin
       if (registry.ValueExists('CopyFileShowMenu')) then
         settings.CopyFileShowMenu := StrToBoolDef(registry.ReadString('CopyFileShowMenu'), settings.CopyFileShowMenu);
-      if (registry.ValueExists('GotoShowMenu')) then
-        settings.GotoShowMenu := StrToBoolDef(registry.ReadString('GotoShowMenu'), settings.GotoShowMenu);
       if (registry.ValueExists('GotoCommandPrompt')) then
       begin
         isVisible := StrToBoolDef(registry.ReadString('GotoCommandPrompt'), true);

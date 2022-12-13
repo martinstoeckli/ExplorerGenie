@@ -98,6 +98,7 @@
         <DCCReference Include="..\ExplorerGenieExt\UnitSettingsService.pas"/>
         <DCCReference Include="..\ExplorerGenieExt\UnitSettingsGotoToolModel.pas"/>
         <DCCReference Include="..\ExplorerGenieExt\UnitSettingsModel.pas"/>
+        <DCCReference Include="..\ExplorerGenieExt\UnitMenuModelIcon.pas"/>
         <BuildConfiguration Include="Release">
             <Key>Cfg_2</Key>
             <CfgParent>Base</CfgParent>

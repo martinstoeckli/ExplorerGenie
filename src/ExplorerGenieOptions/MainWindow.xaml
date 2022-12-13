@@ -185,18 +185,16 @@
                 <Grid Margin="12,15,12,15">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="auto"/>
-                        <RowDefinition Height="auto"/>
                         <RowDefinition Height="*"/>
                     </Grid.RowDefinitions>
-                    <CheckBox Grid.Row="0" IsChecked="{Binding GotoShowMenu}" Content="{Binding Language[guiShowMenu]}" VerticalAlignment="Center"/>
-                    <GroupBox Grid.Row="1" Header="{Binding Language[guiVisibleMenus]}" Margin="0,6,0,0" Padding="6">
+                    <GroupBox Grid.Row="0" Header="{Binding Language[guiShowMenu]}" Padding="6">
                         <StackPanel Orientation="Vertical">
                             <CheckBox IsChecked="{Binding GotoCommandPrompt}" Content="Command Prompt" VerticalAlignment="Center" Margin="0,6,0,0" />
                             <CheckBox IsChecked="{Binding GotoPowerShell}" Content="Power Shell" VerticalAlignment="Center" Margin="0,6,0,0" />
                             <CheckBox IsChecked="{Binding GotoExplorer}" Content="Explorer" VerticalAlignment="Center" Margin="0,6,0,0" />
                         </StackPanel>
                     </GroupBox>
-                    <GroupBox Grid.Row="2" Header="{Binding Language[guiUserDefinedMenus]}" Margin="0,6,0,0" Padding="6">
+                    <GroupBox Grid.Row="1" Header="{Binding Language[guiUserDefinedMenus]}" Margin="0,6,0,0" Padding="6">
                         <Grid>
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="auto"/>
@@ -370,8 +368,10 @@
                         <RowDefinition Height="*"/>
                     </Grid.RowDefinitions>
 
+                    <!--
                     <CheckBox Grid.Row="0" IsChecked="{Binding NewFolderShowMenu}" Content="{Binding Language[guiNtfsNewFolderShowMenu]}" VerticalAlignment="Center"/>
-
+                    -->
+                    
                     <CheckBox Grid.Row="1" IsChecked="{Binding SymbolicLinkShowMenu}" Content="{Binding Language[guiNtfsSymbolicLinkShowMenu]}" VerticalAlignment="Center" Margin="0,6,0,0"/>
 
                     <Grid Grid.Row="2" Margin="0,6,0,0">

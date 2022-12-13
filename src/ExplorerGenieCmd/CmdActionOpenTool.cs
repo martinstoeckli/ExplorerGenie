@@ -17,7 +17,7 @@ namespace ExplorerGenieCmd
     /// <summary>
     /// This action opens a predefined or a user defined tool.
     /// </summary>
-    internal class CmdActionOpenTool : ICmdAction
+    internal class CmdActionOpenTool : CmdActionBase, ICmdAction
     {
         private readonly ISettingsService _settingsService;
         private readonly bool _isCustomTool;

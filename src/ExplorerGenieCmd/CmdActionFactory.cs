@@ -46,7 +46,7 @@ namespace ExplorerGenieCmd
             }
             else if (commandLineAction.StartsWith("-NewFolder", StringComparison.OrdinalIgnoreCase))
             {
-                return new CmdActionNewFolder(_settingsService);
+                return new CmdActionNewFolder();
             }
             else if (commandLineAction.StartsWith("-NewSymbolicLinkElevated", StringComparison.OrdinalIgnoreCase))
             {
@@ -54,7 +54,7 @@ namespace ExplorerGenieCmd
             }
             else if (commandLineAction.StartsWith("-NewSymbolicLink", StringComparison.OrdinalIgnoreCase))
             {
-                return new CmdActionSymbolicLink(_settingsService, commandLineAction);
+                return new CmdActionSymbolicLink();
             }
             else
             {

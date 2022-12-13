@@ -14,7 +14,6 @@ namespace ExplorerGenieShared.ViewModels
         private readonly SettingsModel _model;
         private readonly ISettingsService _settingsService;
         private readonly List<string> _filenames;
-        private List<FilenameOnlyViewModel> _filenamesForHash;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="PageNtfsViewModel"/> class.

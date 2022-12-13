@@ -17,7 +17,6 @@ type
   TSettingsModel = class(TObject)
   private
     FCopyFileShowMenu: Boolean;
-    FGotoShowMenu: Boolean;
     FHashShowMenu: Boolean;
     FNewFolderShowMenu: Boolean;
     FSymbolicLinkShowMenu: Boolean;
@@ -27,7 +26,6 @@ type
     destructor Destroy(); override;
     procedure SetToDefault();
     property CopyFileShowMenu: Boolean read FCopyFileShowMenu write FCopyFileShowMenu;
-    property GotoShowMenu: Boolean read FGotoShowMenu write FGotoShowMenu;
     property HashShowMenu: Boolean read FHashShowMenu write FHashShowMenu;
     property NewFolderShowMenu: Boolean read FNewFolderShowMenu write FNewFolderShowMenu;
     property SymbolicLinkShowMenu: Boolean read FSymbolicLinkShowMenu write FSymbolicLinkShowMenu;
@@ -51,7 +49,6 @@ end;
 procedure TSettingsModel.SetToDefault;
 begin
   CopyFileShowMenu := true;
-  GotoShowMenu := true;
   HashShowMenu := true;
   NewFolderShowMenu := false;
   SymbolicLinkShowMenu := false;

@@ -7,7 +7,6 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Windows.Forms;
-using ExplorerGenieShared.Services;
 
 namespace ExplorerGenieCmd
 {
@@ -15,38 +14,26 @@ namespace ExplorerGenieCmd
     /// This action can add a directory as a symbolic link. Because the creation of new symbolic
     /// links requires elevation, the application will be restarted with admin privileges.
     /// </summary>
-    internal class CmdActionSymbolicLink : ICmdAction
+    internal class CmdActionSymbolicLink : CmdActionBase, ICmdAction
     {
-        private readonly ISettingsService _settingsService;
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="CmdActionSymbolicLink"/> class.
-        /// </summary>
-        /// <param name="settingsService">A service which can store the settings.</param>
-        /// <param name="commandLineAction">The action parameter of the command line.</param>
-        public CmdActionSymbolicLink(ISettingsService settingsService, string commandLineAction)
-        {
-            _settingsService = settingsService;
-        }
-
         /// <inheritdoc/>
         public void Execute(List<string> filenames)
         {
-            if (!TryGetDirectoryPath(filenames, out string parentDirectory))
+            if (!TryGetDirectoryPath(filenames, out string clickedDirectory))
                 return;
 
             FolderBrowserDialog folderDialog = new FolderBrowserDialog
             {
-                Description = "Select the directory which should be added as symbolic link.",
+                Description = Language["guiNtfsSymbolicLinkPickFolder"],
                 ShowNewFolderButton = false,
             };
 
             if (folderDialog.ShowDialog() == DialogResult.OK)
             {
-                string childDirectory = folderDialog.SelectedPath;
+                string linkTargetDirectory = folderDialog.SelectedPath;
                 string commandlineArguments = string.Format(
                     @"-NewSymbolicLinkElevated ""{0}"" ""{1}"" ""{2}""",
-                    parentDirectory, parentDirectory, childDirectory);
+                    clickedDirectory, clickedDirectory, linkTargetDirectory);
 
                 // Restart application elevated with admin privileges
                 ProcessStartInfo startInfo = new ProcessStartInfo

@@ -22,7 +22,6 @@ namespace ExplorerGenieShared.Models
             FreshInstallation = true;
             CopyFileShowMenu = true;
             CopyEmailConvertToUnc = true; // receiver probably won't have access to local drives.
-            GotoShowMenu = true;
             GotoCommandPrompt = true;
             GotoPowerShell = true;
             GotoExplorer = true;
@@ -70,12 +69,6 @@ namespace ExplorerGenieShared.Models
         /// to its UNC network path im possible.
         /// </summary>
         public bool CopyEmailConvertToUnc { get; set; }
-
-        /// <summary>
-        /// Gets or sets a value indicating whether the menu tree CopyEmail should be loaded in the
-        /// context menu.
-        /// </summary>
-        public bool GotoShowMenu { get; set; }
 
         /// <summary>
         /// Gets or sets a value indicating whether the "go to command prompt" menu should be shown.
@@ -138,7 +131,6 @@ namespace ExplorerGenieShared.Models
                 && (CopyFileConvertToUnc == other.CopyFileConvertToUnc)
                 && (CopyEmailFormat == other.CopyEmailFormat)
                 && (CopyEmailConvertToUnc == other.CopyEmailConvertToUnc)
-                && (GotoShowMenu == other.GotoShowMenu)
                 && (GotoCommandPrompt == other.GotoCommandPrompt)
                 && (GotoPowerShell == other.GotoPowerShell)
                 && (GotoExplorer == other.GotoExplorer)
@@ -161,7 +153,6 @@ namespace ExplorerGenieShared.Models
                 result = (result * 397) ^ CopyFileConvertToUnc.GetHashCode();
                 result = (result * 397) ^ CopyEmailFormat.GetHashCode();
                 result = (result * 397) ^ CopyEmailConvertToUnc.GetHashCode();
-                result = (result * 397) ^ GotoShowMenu.GetHashCode();
                 result = (result * 397) ^ GotoCommandPrompt.GetHashCode();
                 result = (result * 397) ^ GotoPowerShell.GetHashCode();
                 result = (result * 397) ^ GotoExplorer.GetHashCode();

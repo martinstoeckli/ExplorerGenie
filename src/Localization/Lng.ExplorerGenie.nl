@@ -30,7 +30,6 @@ guiAsThunderbird Thunderbird en anderen
 guiUnc Haal het netwerkpad (UNC) op voor toegewezen stations
 guiOnlyFile Bestandsnaam zonder pad
 
-guiVisibleMenus Zichtbare menu-items
 guiUserDefinedMenus Gebruiker gedefinieerde menu-items
 guiGotoMenuTitle Menu titel
 guiGotoMenuCommand Opdrachtregel
@@ -46,6 +45,7 @@ guiNtfs NTFS file system
 guiNtfsNewFolderShowMenu Show context menu "New folder".
 guiNtfsSymbolicLinkShowMenu Show context menu to create "symbolic link".
 guiNtfsSymbolicLinkInfo A "Symbolic link" points to another directory/file without making a copy. Deleting a "Symbolic link" doesn't delete the referenced directory/file.
+guiNtfsSymbolicLinkPickFolder Choose the directory which should be added as symbolic link.
 
 guiSystemFolders Systeemmappen
 guiGotoSystemFolder Ga naar de systeemmap

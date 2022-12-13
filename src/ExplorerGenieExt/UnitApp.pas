@@ -215,24 +215,21 @@ begin
     menuGroupClipboard.Add(submenuCopyEmail);
   end;
 
-  if (settings.GotoShowMenu) then
+  for gotoTool in settings.GotoTools do
   begin
-    for gotoTool in settings.GotoTools do
+    if (gotoTool.Visible) then
     begin
-      if (gotoTool.Visible) then
-      begin
-        submenuGotoTool := TMenuModelGoto.Create();
-        submenuGotoTool.Title := gotoTool.Title;
-        submenuGotoTool.IconResourcePath := _BuildIconResourcePath(resourceDllPath, gotoTool.IconResourceId);
-        submenuGotoTool.IsCustomTool := gotoTool.IsCustomTool;
-        submenuGotoTool.ToolIndex := gotoTool.ToolIndex;
-        submenuGotoTool.OnClicked :=
-          procedure (caller: IMenuModel; filenames: TStrings)
-          begin
-            TActions.OnGotoToolClicked(caller as IMenuModelGoto, filenames);
-          end;
-        menuGroupGoto.Add(submenuGotoTool);
-      end;
+      submenuGotoTool := TMenuModelGoto.Create();
+      submenuGotoTool.Title := gotoTool.Title;
+      submenuGotoTool.IconResourcePath := _BuildIconResourcePath(resourceDllPath, gotoTool.IconResourceId);
+      submenuGotoTool.IsCustomTool := gotoTool.IsCustomTool;
+      submenuGotoTool.ToolIndex := gotoTool.ToolIndex;
+      submenuGotoTool.OnClicked :=
+        procedure (caller: IMenuModel; filenames: TStrings)
+        begin
+          TActions.OnGotoToolClicked(caller as IMenuModelGoto, filenames);
+        end;
+      menuGroupGoto.Add(submenuGotoTool);
     end;
   end;
 
@@ -249,19 +246,20 @@ begin
     menuGroupHash.Add(menuHash);
   end;
 
-  if (settings.NewFolderShowMenu) then
-  begin
-    menuNewFolder := TMenuModel.Create();
-    menuNewFolder.Title := languageService.LoadText('menuNewFolder', 'New folder');
-    menuNewFolder.IconResourcePath := '';
-    menuNewFolder.Filter := ecfDiretoryOnly;
-    menuNewFolder.OnClicked :=
-      procedure (caller: IMenuModel; filenames: TStrings)
-      begin
-        TActions.OnNewFolderClicked(filenames);
-      end;
-    menuGroupNtfs.Add(menuNewFolder);
-  end;
+  // Not yet decided whether this action will be implemented
+//  if (settings.NewFolderShowMenu) then
+//  begin
+//    menuNewFolder := TMenuModel.Create();
+//    menuNewFolder.Title := languageService.LoadText('menuNewFolder', 'New folder');
+//    menuNewFolder.IconResourcePath := '';
+//    menuNewFolder.Filter := ecfDiretoryOnly;
+//    menuNewFolder.OnClicked :=
+//      procedure (caller: IMenuModel; filenames: TStrings)
+//      begin
+//        TActions.OnNewFolderClicked(filenames);
+//      end;
+//    menuGroupNtfs.Add(menuNewFolder);
+//  end;
 
   if (settings.SymbolicLinkShowMenu) then
   begin

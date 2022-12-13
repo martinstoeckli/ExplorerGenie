@@ -30,7 +30,6 @@ guiAsThunderbird Thunderbird und andere
 guiUnc Für verbundene Laufwerke den Netzwerkpfad (UNC) einsetzen
 guiOnlyFile Nur Dateiname ohne Pfad
 
-guiVisibleMenus Sichtbare Menueinträge
 guiUserDefinedMenus Benutzerdefinierte Menueinträge
 guiGotoMenuTitle Menutitel
 guiGotoMenuCommand Kommandozeile
@@ -46,6 +45,7 @@ guiNtfs NTFS Dateisystem
 guiNtfsNewFolderShowMenu Kontextmenu "Neuer Ordner" anzeigen.
 guiNtfsSymbolicLinkShowMenu Kontextmenu zum Erstellen von "Symbolic link" anzeigen.
 guiNtfsSymbolicLinkInfo Ein "Symbolic link" zeigt auf eine anderes Verzeichnis/Datei ohne davon eine Kopie zu machen. Das Löschen des "Symbolic link" löscht nicht das referenzierte Verzeichnis/Datei.
+guiNtfsSymbolicLinkPickFolder Wählen Sie den Ordner welcher als "Symbolic link" hinzugefügt werden soll.
 
 guiSystemFolders Systemverzeichnisse
 guiGotoSystemFolder Gehe zu Systemverzeichnis
