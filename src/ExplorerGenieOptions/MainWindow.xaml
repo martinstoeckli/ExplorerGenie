@@ -17,6 +17,7 @@
         <Color x:Key="GridAlternatingBackgroundColor">AliceBlue</Color>
         <SolidColorBrush x:Key="GridAlternatingBackgroundBrush" Color="{StaticResource GridAlternatingBackgroundColor}" />
         <BooleanToVisibilityConverter x:Key="BoolToVisibility" />
+        <vm:InverseBooleanToVisibilityConverter x:Key="InverseBoolToVisibility" />
         <ImageSource x:Key="imgsrcLogo">/Resources/explorergenie.png</ImageSource>
         <DrawingImage x:Key="imgsrcOpenInExplorer">
             <DrawingImage.Drawing>
@@ -72,6 +73,24 @@
                 </DrawingGroup>
             </DrawingImage.Drawing>
         </DrawingImage>
+        <DrawingImage x:Key="imgsrcFile">
+            <DrawingImage.Drawing>
+                <DrawingGroup>
+                    <DrawingGroup.Children>
+                        <GeometryDrawing Brush="LightBlue" Geometry="M13,9V3.5L18.5,9M6,2C4.89,2 4,2.89 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2H6Z" />
+                    </DrawingGroup.Children>
+                </DrawingGroup>
+            </DrawingImage.Drawing>
+        </DrawingImage>
+        <DrawingImage x:Key="imgsrcFolder">
+            <DrawingImage.Drawing>
+                <DrawingGroup>
+                    <DrawingGroup.Children>
+                        <GeometryDrawing Brush="#fde17d" Geometry="M10,4H4C2.89,4 2,4.89 2,6V18A2,2 0 0,0 4,20H20A2,2 0 0,0 22,18V8C22,6.89 21.1,6 20,6H12L10,4Z" />
+                    </DrawingGroup.Children>
+                </DrawingGroup>
+            </DrawingImage.Drawing>
+        </DrawingImage>
         <DrawingImage x:Key="imgsrcInfo">
             <DrawingImage.Drawing>
                 <DrawingGroup>
@@ -100,7 +119,7 @@
         <Style TargetType="Border" x:Key="Badge">
             <Setter Property="Background" Value="#007fff"/>
             <Setter Property="CornerRadius" Value="5"/>
-            <Setter Property="Padding" Value="4 0 4 0"/>
+            <Setter Property="Padding" Value="6,0,6,0"/>
             <Setter Property="TextBlock.Foreground" Value="White"/>
         </Style>
     </Window.Resources>
@@ -390,18 +409,39 @@
                     </Grid>
 
                     <GroupBox Grid.Row="3" Header="{Binding Language[guiNtfsAds]}" Margin="0,6,0,0" Padding="6">
-                        <ListBox ItemsSource="{Binding AlternativeDataStreams}" BorderThickness="0,0,0,0" >
-                            <ListBox.Resources>
-                                <DataTemplate DataType="{x:Type vm:AdsViewModel}">
-                                    <StackPanel Orientation="Horizontal" Margin="0,4,0,6">
-                                        <TextBlock Text="{Binding FileName}" Margin="0 0 16 0"/>
-                                        <Border Style="{StaticResource Badge}">
-                                            <TextBlock Text="{Binding StreamCount}" />
+                        <ScrollViewer VerticalScrollBarVisibility="Auto">
+                            <ItemsControl ItemsSource="{Binding AlternativeDataStreams}" BorderThickness="0">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate DataType="{x:Type vm:AdsViewModel}">
+                                        <Border Background="AliceBlue" Padding="2,0,2,0">
+                                            <StackPanel Orientation="Vertical">
+                                                <StackPanel Orientation="Horizontal" Margin="0,4,0,6">
+                                                    <Image Source="{StaticResource imgsrcFolder}" Width="16" Height="16" Margin="2,0,8,0" Visibility="{Binding IsDirectory, Converter={StaticResource BoolToVisibility}}"/>
+                                                    <Image Source="{StaticResource imgsrcFile}" Width="16" Height="16" Margin="2,0,8,0" Visibility="{Binding IsDirectory, Converter={StaticResource InverseBoolToVisibility}}"/>
+                                                    <TextBlock Text="{Binding FileOrDirectoryName}" Margin="0,0,16,0"/>
+                                                    <Border Style="{StaticResource Badge}">
+                                                        <TextBlock Text="{Binding StreamCount, StringFormat={}{0} streams}" />
+                                                    </Border>
+                                                </StackPanel>
+
+                                                <Grid>
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="20"/>
+                                                        <ColumnDefinition Width="*"/>
+                                                        <ColumnDefinition Width="20"/>
+                                                    </Grid.ColumnDefinitions>
+                                                </Grid>
+                                            </StackPanel>
                                         </Border>
-                                    </StackPanel>
-                                </DataTemplate>
-                            </ListBox.Resources>
-                        </ListBox>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                                <ItemsControl.ItemContainerStyle>
+                                    <Style>
+                                        <Setter Property="FrameworkElement.Margin" Value="0,1,0,1"/>
+                                    </Style>
+                                </ItemsControl.ItemContainerStyle>
+                            </ItemsControl>
+                        </ScrollViewer>
                     </GroupBox>
                 </Grid>
             </TabItem>

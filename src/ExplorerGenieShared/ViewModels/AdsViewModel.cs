@@ -3,7 +3,10 @@
 // License, v. 2.0. If a copy of the MPL was not distributed with this
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
+using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 
 namespace ExplorerGenieShared.ViewModels
 {
@@ -12,25 +15,34 @@ namespace ExplorerGenieShared.ViewModels
     /// </summary>
     public class AdsViewModel
     {
-        public AdsViewModel()
+        private List<FileStreamInfo> _streams;
+
+        public AdsViewModel(string fullPath)
         {
-            Streams = new List<AdsStreamViewModel>();
+            IsDirectory = Directory.Exists(fullPath);
+            FullPath = fullPath;
+            FileOrDirectoryName = Path.GetFileName(fullPath);
         }
 
-        public string Directory { get; set; }
+        public bool IsDirectory { get; }
 
-        public string FileName { get; set; }
+        public string FullPath { get; }
 
-        public List<AdsStreamViewModel> Streams { get; set; }
+        public string FileOrDirectoryName { get; }
+
+        public List<FileStreamInfo> Streams
+        {
+            get { return _streams ?? (_streams = CreateStreamList()); }
+        }
+
+        private List<FileStreamInfo> CreateStreamList()
+        {
+            return FileStreamSearcher.GetStreams(FullPath).ToList();
+        }
 
         public int StreamCount
         {
             get { return Streams.Count; }
         }
-    }
-
-    public class AdsStreamViewModel
-    {
-
     }
 }

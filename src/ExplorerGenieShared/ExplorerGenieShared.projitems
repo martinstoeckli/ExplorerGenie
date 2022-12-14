@@ -11,6 +11,7 @@
   <ItemGroup>
     <Compile Include="$(MSBuildThisFileDirectory)CommandLineInterpreter.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)CommandLineArgs.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)FileStreamSearcher.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)GotoToolStarter.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)HashCalculator.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ListExtensions.cs" />
@@ -20,6 +21,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Services\LanguageService.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Services\LanguageServiceFileResourceReader.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewModels\AdsViewModel.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ViewModels\InverseBooleanToVisibilityConverter.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewModels\PageNtfsViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewModels\PageCalculateHashViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewModels\PageCopyPathViewModel.cs" />

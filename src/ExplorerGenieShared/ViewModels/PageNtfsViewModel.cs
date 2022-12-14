@@ -72,6 +72,7 @@ namespace ExplorerGenieShared.ViewModels
             {
                 bool isDirectory = Directory.Exists(filenames[0]);
                 string rootDirectory = isDirectory ? filenames[0] : Path.GetDirectoryName(filenames[0]);
+
                 List<string> paths = Directory.EnumerateFileSystemEntries(rootDirectory).ToList();
                 new FilenameSorter().Sort(paths);
                 AddAdsInfos(result, paths);
@@ -82,17 +83,7 @@ namespace ExplorerGenieShared.ViewModels
         private static void AddAdsInfos(List<AdsViewModel> result, IEnumerable<string> paths)
         {
             foreach (string path in paths)
-                AddAdsInfo(result, path);
-        }
-
-        private static void AddAdsInfo(List<AdsViewModel> result, string path)
-        {
-            AdsViewModel item = new AdsViewModel
-            {
-                Directory = Path.GetDirectoryName(path),
-                FileName = Path.GetFileName(path),
-            };
-            result.Add(item);
+                result.Add(new AdsViewModel(path));
         }
 
         /// <summary>

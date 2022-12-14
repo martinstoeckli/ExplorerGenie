@@ -47,7 +47,12 @@ guiNtfsSymbolicLinkShowMenu Kontextmenu zum Erstellen von "Symbolic link" anzeig
 guiNtfsSymbolicLinkInfo Ein "Symbolic link" zeigt auf eine anderes Verzeichnis/Datei ohne davon eine Kopie zu machen. Das Löschen des "Symbolic link" löscht nicht das referenzierte Verzeichnis/Datei.
 guiNtfsSymbolicLinkPickFolder Wählen Sie den Ordner welcher als "Symbolic link" hinzugefügt werden soll.
 errNtfsSymbolicLinkRecursive Kann keinen "Symbolic link" erstellen der zu einem rekursiven Pfad führen würde.
+
+// Do not translate "data stream"
 guiNtfsAds Alternative data streams (ADS)
+guiNtfsAdsExport Exportiere Stream in Datei
+guiNtfsAdsDelete Lösche Stream
+guiNtfsAdsConfirm Sind Sie sicher dass sie den Stream {0} von Datei {1} löschen wollen?
 
 guiSystemFolders Systemverzeichnisse
 guiGotoSystemFolder Gehe zu Systemverzeichnis
