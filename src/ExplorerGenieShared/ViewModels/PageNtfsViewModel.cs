@@ -80,10 +80,10 @@ namespace ExplorerGenieShared.ViewModels
             return result;
         }
 
-        private static void AddAdsInfos(List<AdsViewModel> result, IEnumerable<string> paths)
+        private void AddAdsInfos(List<AdsViewModel> result, IEnumerable<string> paths)
         {
             foreach (string path in paths)
-                result.Add(new AdsViewModel(path));
+                result.Add(new AdsViewModel(path, Language));
         }
 
         /// <summary>

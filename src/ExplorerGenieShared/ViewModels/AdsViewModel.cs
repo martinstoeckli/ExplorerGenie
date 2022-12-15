@@ -7,20 +7,23 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text;
+using ExplorerGenieShared.Services;
 
 namespace ExplorerGenieShared.ViewModels
 {
     /// <summary>
     /// Collects information about the alternative datastreams of a single file/directory.
     /// </summary>
-    public class AdsViewModel
+    public class AdsViewModel : ViewModelBaseWithLanguage
     {
-        private List<FileStreamInfo> _streams;
+        private List<AdsStreamViewModel> _streams;
 
-        public AdsViewModel(string fullPath)
+        public AdsViewModel(string fullPath, ILanguageService language)
         {
-            IsDirectory = Directory.Exists(fullPath);
             FullPath = fullPath;
+            Language = language;
+            IsDirectory = Directory.Exists(fullPath);
             FileOrDirectoryName = Path.GetFileName(fullPath);
         }
 
@@ -30,19 +33,57 @@ namespace ExplorerGenieShared.ViewModels
 
         public string FileOrDirectoryName { get; }
 
-        public List<FileStreamInfo> Streams
+        public List<AdsStreamViewModel> Streams
         {
-            get { return _streams ?? (_streams = CreateStreamList()); }
+            get 
+            { 
+                if (_streams == null)
+                {
+                    _streams = new List<AdsStreamViewModel>();
+                    var streamInfos = FileStreamSearcher.GetStreams(FullPath);
+                    _streams.AddRange(streamInfos.Select(streamInfo => new AdsStreamViewModel(streamInfo, Language)));
+
+                    if (_streams.Count > 0)
+                        _streams.Add(_streams[0]);
+                }
+                return _streams; 
+            }
         }
 
-        private List<FileStreamInfo> CreateStreamList()
+        public string StreamCountBadge
         {
-            return FileStreamSearcher.GetStreams(FullPath).ToList();
+            get
+            {
+                string format = Streams.Count == 1 ? "{0} stream" : "{0} streams";
+                return string.Format(format, Streams.Count);
+            }
         }
 
-        public int StreamCount
+        public bool HasStreams
         {
-            get { return Streams.Count; }
+            get { return Streams.Count > 0; }
+        }
+    }
+
+    /// <summary>
+    /// View model for a single alternative data stream.
+    /// </summary>
+    public class AdsStreamViewModel : ViewModelBaseWithLanguage
+    {
+        private FileStreamInfo _model;
+
+        public AdsStreamViewModel(FileStreamInfo model, ILanguageService language)
+        {
+            _model = model;
+            Language = language;
+        }
+
+        public string StreamDescription
+        {
+            get { return string.Format(
+                "{0} [{1}]",
+                _model.StreamName,
+                Win32Api.StrFormatByteSize(_model.StreamSize)); }
         }
     }
 }

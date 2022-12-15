@@ -9,7 +9,7 @@ using Microsoft.Win32.SafeHandles;
 namespace ExplorerGenieShared
 {
     /// <summary>
-    /// Copied and adapted from https://learn.microsoft.com/en-us/archive/msdn-magazine/2006/january/net-matters-iterating-ntfs-streams
+    /// Inspired by https://learn.microsoft.com/en-us/archive/msdn-magazine/2006/january/net-matters-iterating-ntfs-streams
     /// </summary>
     public class FileStreamSearcher
     {
@@ -19,15 +19,20 @@ namespace ExplorerGenieShared
                 throw new ArgumentNullException(nameof(fullPath));
 
             WIN32_FIND_STREAM_DATA findStreamData = new WIN32_FIND_STREAM_DATA();
-            SafeFindHandle handle = FindFirstStreamW(fullPath, StreamInfoLevels.FindStreamInfoStandard, findStreamData, 0);
-            int lastError = Marshal.GetLastWin32Error();
-            if (lastError != ERROR_HANDLE_EOF)
-                throw new Win32Exception(lastError);
-
-            // Handle can be invalid by directories without data stream
-            if (!handle.IsInvalid)
+            using (SafeFindHandle handle = FindFirstStreamW(fullPath, StreamInfoLevels.FindStreamInfoStandard, findStreamData, 0))
             {
-                try
+                int lastError = Marshal.GetLastWin32Error();
+                if (lastError == ERROR_INVALID_PARAMETER)
+                    yield break; // file system does not support ADS (not NTFS)
+
+                if (lastError == ERROR_HANDLE_EOF)
+                    yield break; // no stream found (usually directory)
+
+                if (lastError != ERROR_SUCCESS)
+                    throw new Win32Exception(lastError);
+
+                // Handle can be invalid by directories without data stream
+                if (!handle.IsInvalid)
                 {
                     do
                     {
@@ -47,10 +52,6 @@ namespace ExplorerGenieShared
                     if (lastError != ERROR_HANDLE_EOF)
                         throw new Win32Exception(lastError);
                 }
-                finally
-                {
-                    handle.Dispose();
-                }
             }
         }
 
@@ -59,7 +60,9 @@ namespace ExplorerGenieShared
             return string.Equals("::$DATA", streamName, StringComparison.OrdinalIgnoreCase);
         }
 
+        private const int ERROR_SUCCESS = 0;
         private const int ERROR_HANDLE_EOF = 38;
+        private const int ERROR_INVALID_PARAMETER = 87;
 
         private enum StreamInfoLevels
         {

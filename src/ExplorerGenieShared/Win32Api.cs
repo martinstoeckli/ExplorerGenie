@@ -7,6 +7,8 @@ using System;
 using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.InteropServices;
+using System.Runtime.InteropServices.ComTypes;
+using System.Text;
 
 namespace ExplorerGenieShared
 {
@@ -113,5 +115,15 @@ namespace ExplorerGenieShared
         [DllImport("Kernel32.dll", EntryPoint = "CreateSymbolicLinkW", SetLastError = true, CharSet = CharSet.Unicode)]
         [return: MarshalAs(UnmanagedType.U1)]
         private static extern bool CreateSymbolicLinkInternal(string lpSymlinkFileName, string lpTargetFileName, SYMBOLIC_LINK_FLAG dwFlags);
+
+        public static string StrFormatByteSize(long fileSize)
+        {
+            StringBuilder buffer = new StringBuilder(32);
+            StrFormatByteSizeW(fileSize, buffer, (uint)buffer.Capacity);
+            return buffer.ToString();
+        }
+
+        [DllImport("shlwapi.dll", CharSet = CharSet.Unicode)]
+        private static extern long StrFormatByteSizeW(long qdw, [MarshalAs(UnmanagedType.LPWStr)] StringBuilder pszBuf, uint cchBuf);
     }
 }

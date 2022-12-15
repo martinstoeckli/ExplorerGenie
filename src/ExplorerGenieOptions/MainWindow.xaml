@@ -91,11 +91,29 @@
                 </DrawingGroup>
             </DrawingImage.Drawing>
         </DrawingImage>
+        <DrawingImage x:Key="imgsrcFileStream">
+            <DrawingImage.Drawing>
+                <DrawingGroup>
+                    <DrawingGroup.Children>
+                        <GeometryDrawing Brush="DarkGray" Geometry="M17,18C17.56,18 18,18.44 18,19C18,19.56 17.56,20 17,20C16.44,20 16,19.56 16,19C16,18.44 16.44,18 17,18M17,15C14.27,15 11.94,16.66 11,19C11.94,21.34 14.27,23 17,23C19.73,23 22.06,21.34 23,19C22.06,16.66 19.73,15 17,15M17,21.5A2.5,2.5 0 0,1 14.5,19A2.5,2.5 0 0,1 17,16.5A2.5,2.5 0 0,1 19.5,19A2.5,2.5 0 0,1 17,21.5M9.14,19.75L8.85,19L9.14,18.26C10.43,15.06 13.5,13 17,13C18.05,13 19.06,13.21 20,13.56V8L14,2H6C4.89,2 4,2.89 4,4V20A2,2 0 0,0 6,22H10.5C9.95,21.34 9.5,20.58 9.14,19.75M13,3.5L18.5,9H13V3.5Z" />
+                    </DrawingGroup.Children>
+                </DrawingGroup>
+            </DrawingImage.Drawing>
+        </DrawingImage>
         <DrawingImage x:Key="imgsrcInfo">
             <DrawingImage.Drawing>
                 <DrawingGroup>
                     <DrawingGroup.Children>
                         <GeometryDrawing Brush="#009900" Geometry="M13,9H11V7H13M13,17H11V11H13M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2Z" />
+                    </DrawingGroup.Children>
+                </DrawingGroup>
+            </DrawingImage.Drawing>
+        </DrawingImage>
+        <DrawingImage x:Key="imgsrcSave">
+            <DrawingImage.Drawing>
+                <DrawingGroup>
+                    <DrawingGroup.Children>
+                        <GeometryDrawing Brush="#007fff" Geometry="M15,9H5V5H15M12,19A3,3 0 0,1 9,16A3,3 0 0,1 12,13A3,3 0 0,1 15,16A3,3 0 0,1 12,19M17,3H5C3.89,3 3,3.9 3,5V19A2,2 0 0,0 5,21H19A2,2 0 0,0 21,19V7L17,3Z" />
                     </DrawingGroup.Children>
                 </DrawingGroup>
             </DrawingImage.Drawing>
@@ -322,7 +340,8 @@
                                     <DataGridTemplateColumn Width="32">
                                         <DataGridTemplateColumn.CellTemplate>
                                             <DataTemplate>
-                                                <Button Command="{Binding Path=DataContext.CopyHashToClipboardCommand, RelativeSource={RelativeSource AncestorType={x:Type DataGrid}}}" CommandParameter="{Binding}" Margin="4,0,4,0" Style="{StaticResource ToolButton}">
+                                                <Button Command="{Binding Path=DataContext.CopyHashToClipboardCommand, RelativeSource={RelativeSource AncestorType={x:Type DataGrid}}}" CommandParameter="{Binding}" Margin="4,0,4,0" Style="{StaticResource ToolButton}"
+                                                        ToolTip="{Binding Path=DataContext.Language[guiCopy], RelativeSource={RelativeSource AncestorType={x:Type Window}}}">
                                                     <Image Source="{StaticResource imgsrcCopy}" Width="12" Height="18"/>
                                                 </Button>
                                             </DataTemplate>
@@ -413,24 +432,50 @@
                             <ItemsControl ItemsSource="{Binding AlternativeDataStreams}" BorderThickness="0">
                                 <ItemsControl.ItemTemplate>
                                     <DataTemplate DataType="{x:Type vm:AdsViewModel}">
-                                        <Border Background="AliceBlue" Padding="2,0,2,0">
+                                        <Border Background="AliceBlue" Margin="0,0,0,0" Padding="2,1,2,1">
                                             <StackPanel Orientation="Vertical">
                                                 <StackPanel Orientation="Horizontal" Margin="0,4,0,6">
                                                     <Image Source="{StaticResource imgsrcFolder}" Width="16" Height="16" Margin="2,0,8,0" Visibility="{Binding IsDirectory, Converter={StaticResource BoolToVisibility}}"/>
                                                     <Image Source="{StaticResource imgsrcFile}" Width="16" Height="16" Margin="2,0,8,0" Visibility="{Binding IsDirectory, Converter={StaticResource InverseBoolToVisibility}}"/>
                                                     <TextBlock Text="{Binding FileOrDirectoryName}" Margin="0,0,16,0"/>
-                                                    <Border Style="{StaticResource Badge}">
-                                                        <TextBlock Text="{Binding StreamCount, StringFormat={}{0} streams}" />
+                                                    <Border>
+                                                        <TextBlock Text="{Binding StreamCountBadge}" />
+                                                        <Border.Style>
+                                                            <Style TargetType="Border" BasedOn="{StaticResource Badge}">
+                                                                <Style.Triggers>
+                                                                    <DataTrigger Binding="{Binding HasStreams}" Value="true">
+                                                                        <Setter Property="Background" Value="#d22d2d"/>
+                                                                    </DataTrigger>
+                                                                </Style.Triggers>
+                                                            </Style>
+                                                        </Border.Style>
                                                     </Border>
                                                 </StackPanel>
 
-                                                <Grid>
-                                                    <Grid.ColumnDefinitions>
-                                                        <ColumnDefinition Width="20"/>
-                                                        <ColumnDefinition Width="*"/>
-                                                        <ColumnDefinition Width="20"/>
-                                                    </Grid.ColumnDefinitions>
-                                                </Grid>
+                                                <ItemsControl ItemsSource="{Binding Streams}" BorderThickness="0">
+                                                    <ItemsControl.ItemTemplate>
+                                                        <DataTemplate DataType="{x:Type vm:AdsStreamViewModel}">
+                                                            <Grid Margin="0,0,0,4">
+                                                                <Grid.ColumnDefinitions>
+                                                                    <ColumnDefinition Width="36"/>
+                                                                    <ColumnDefinition Width="*"/>
+                                                                    <ColumnDefinition Width="20"/>
+                                                                    <ColumnDefinition Width="20"/>
+                                                                </Grid.ColumnDefinitions>
+                                                                <Image Grid.Column="0" Source="{StaticResource imgsrcFileStream}" Width="16" Height="16" Margin="2,0,8,0" HorizontalAlignment="Right"/>
+                                                                <TextBlock Grid.Column="1" Text="{Binding StreamDescription}"/>
+                                                                <Button Grid.Column="2" Margin="4,0,0,0" Style="{StaticResource ToolButton}"
+                                                                    ToolTip="{Binding Path=DataContext.Language[guiNtfsAdsExport], RelativeSource={RelativeSource AncestorType={x:Type Window}}}">
+                                                                    <Image Source="{StaticResource imgsrcSave}" Margin="1" Width="12" Height="14"/>
+                                                                </Button>
+                                                                <Button Grid.Column="3" Margin="0,0,4,0" Style="{StaticResource ToolButton}"
+                                                                    ToolTip="{Binding Path=DataContext.Language[guiNtfsAdsDelete], RelativeSource={RelativeSource AncestorType={x:Type Window}}}">
+                                                                    <Image Source="{StaticResource imgsrcDelete}" Margin="1" Width="12" Height="14"/>
+                                                                </Button>
+                                                            </Grid>
+                                                        </DataTemplate>
+                                                    </ItemsControl.ItemTemplate>
+                                                </ItemsControl>
                                             </StackPanel>
                                         </Border>
                                     </DataTemplate>
