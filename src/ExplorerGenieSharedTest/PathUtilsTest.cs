@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using ExplorerGenieShared;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -68,6 +69,50 @@ namespace ExplorerGenieSharedTest
             path = string.Empty;
             res = PathUtils.ExcludeTrailingBackslash(path);
             Assert.AreEqual(string.Empty, res);
+        }
+
+        [TestMethod]
+        public void GetUniqueFilename_ReturnsOriginalIfNotExisting()
+        {
+            string candidate = @"C:\notexisting.txt";
+            string res = PathUtils.GetUniqueFilename(candidate, FileExists);
+            Assert.AreEqual(candidate, res);
+        }
+
+        [TestMethod]
+        public void GetUniqueFilename_AddsNumberToExistingFile()
+        {
+            string candidate = @"D:\existing1.txt";
+            string res = PathUtils.GetUniqueFilename(candidate, FileExists);
+            Assert.AreEqual(@"D:\existing1(1).txt", res);
+        }
+
+        [TestMethod]
+        public void GetUniqueFilename_AddsNumberToExistingDirectory()
+        {
+            string candidate = @"D:\existing2";
+            string res = PathUtils.GetUniqueFilename(candidate, FileExists);
+            Assert.AreEqual(@"D:\existing2(1)", res);
+        }
+
+        [TestMethod]
+        public void GetUniqueFilename_AddsNumberToExistingNumberedFile()
+        {
+            string candidate = @"D:\existing3.txt";
+            string res = PathUtils.GetUniqueFilename(candidate, FileExists);
+            Assert.AreEqual(@"D:\existing3(2).txt", res);
+        }
+
+        private bool FileExists(string filePath)
+        {
+            var existingPaths = new List<string> 
+            { 
+                @"D:\existing1.txt",
+                @"D:\existing2",
+                @"D:\existing3.txt",
+                @"D:\existing3(1).txt",
+            };
+            return existingPaths.Contains(filePath);
         }
     }
 }

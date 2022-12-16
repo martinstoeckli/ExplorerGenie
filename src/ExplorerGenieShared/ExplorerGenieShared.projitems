@@ -11,7 +11,7 @@
   <ItemGroup>
     <Compile Include="$(MSBuildThisFileDirectory)CommandLineInterpreter.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)CommandLineArgs.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)FileStreamSearcher.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)AlternativeDataStream.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)GotoToolStarter.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)HashCalculator.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ListExtensions.cs" />

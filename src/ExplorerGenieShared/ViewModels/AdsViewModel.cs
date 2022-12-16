@@ -8,6 +8,9 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Input;
 using ExplorerGenieShared.Services;
 
 namespace ExplorerGenieShared.ViewModels
@@ -40,11 +43,8 @@ namespace ExplorerGenieShared.ViewModels
                 if (_streams == null)
                 {
                     _streams = new List<AdsStreamViewModel>();
-                    var streamInfos = FileStreamSearcher.GetStreams(FullPath);
+                    var streamInfos = AlternativeDataStream.EnumerateStreams(FullPath);
                     _streams.AddRange(streamInfos.Select(streamInfo => new AdsStreamViewModel(streamInfo, Language)));
-
-                    if (_streams.Count > 0)
-                        _streams.Add(_streams[0]);
                 }
                 return _streams; 
             }
@@ -72,10 +72,15 @@ namespace ExplorerGenieShared.ViewModels
     {
         private FileStreamInfo _model;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="AdsStreamViewModel"/> class.
+        /// </summary>
         public AdsStreamViewModel(FileStreamInfo model, ILanguageService language)
         {
             _model = model;
             Language = language;
+            ExportStreamCommand = new RelayCommand<string>(ExportStream);
+            DeleteStreamCommand = new RelayCommand<string>(DeleteStream);
         }
 
         public string StreamDescription
@@ -84,6 +89,49 @@ namespace ExplorerGenieShared.ViewModels
                 "{0} [{1}]",
                 _model.StreamName,
                 Win32Api.StrFormatByteSize(_model.StreamSize)); }
+        }
+
+        /// <summary>
+        /// Gets the command which exports a stream to a file.
+        /// </summary>
+        public ICommand ExportStreamCommand { get; }
+
+        private async void ExportStream(object param)
+        {
+            const string MainDataStreamName = ":$DATA";
+
+            string streamPart = _model.StreamName;
+            if (streamPart.EndsWith(MainDataStreamName, StringComparison.OrdinalIgnoreCase))
+                streamPart = streamPart.Remove(streamPart.Length - MainDataStreamName.Length);
+            streamPart = streamPart.Replace(":", "➽");
+
+            string targetFileName = _model.FullPath + streamPart + ".txt";
+            targetFileName = PathUtils.GetUniqueFilename(targetFileName);
+            try
+            {
+                await AlternativeDataStream.SaveStreamAs(_model.FullPath, _model.StreamName, targetFileName);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, Language["guiNtfsAdsExport"], MessageBoxButton.OK, MessageBoxImage.Exclamation);
+            }
+        }
+
+        /// <summary>
+        /// Gets the command which exports a stream to a file.
+        /// </summary>
+        public ICommand DeleteStreamCommand { get; }
+
+        private void DeleteStream(object param)
+        {
+            try
+            {
+                AlternativeDataStream.DeleteStream(_model.FullPath, _model.StreamName);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, Language["guiNtfsAdsDelete"], MessageBoxButton.OK, MessageBoxImage.Exclamation);
+            }
         }
     }
 }
