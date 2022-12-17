@@ -46,6 +46,15 @@ guiNtfsNewFolderShowMenu Show context menu "New folder".
 guiNtfsSymbolicLinkShowMenu Show context menu to create "symbolic link".
 guiNtfsSymbolicLinkInfo A "Symbolic link" points to another directory/file without making a copy. Deleting a "Symbolic link" doesn't delete the referenced directory/file.
 guiNtfsSymbolicLinkPickFolder Choose the directory which should be added as symbolic link.
+errNtfsSymbolicLinkRecursive Cannot create a "symbolic link" which would lead to a recursive path.
+
+// Do not translate "data stream"
+guiNtfsAds Alternative data streams (ADS)
+guiNtfsAdsExport Export stream to file
+guiNtfsAdsExportSuccess The stream was successfully exported to file "{0}".
+guiNtfsAdsDelete Delete stream
+guiNtfsAdsDeleteConfirm Are you sure you want to delete the stream "{0}" of file "{1}"?
+guiNtfsAdsDeleteSuccess The stream was successfully deleted.
 
 guiSystemFolders Systeemmappen
 guiGotoSystemFolder Ga naar de systeemmap

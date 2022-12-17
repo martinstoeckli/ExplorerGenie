@@ -210,5 +210,37 @@ namespace ExplorerGenieShared
             }
             return url;
         }
+
+        /// <summary>
+        /// Checks whether the file does not yet exist, and adds a number if necessary to get an
+        /// unused file name.
+        /// </summary>
+        /// <param name="filePath">Requested name of the file.</param>
+        /// <returns>Returns a unused filename based on the given <paramref name="filePath"/>.</returns>
+        public static string GetUniqueFilename(string filePath)
+        {
+            return GetUniqueFilename(filePath, File.Exists);
+        }
+
+        internal static string GetUniqueFilename(string filePath, Func<string, bool> fileExists)
+        {
+            if (!fileExists(filePath))
+                return filePath;
+
+            // If path has extension then insert the number pattern just before the extension
+            const string numberFormat = "({0})";
+            string pathFormat = Path.HasExtension(filePath)
+                ? filePath.Insert(filePath.LastIndexOf(Path.GetExtension(filePath)), numberFormat)
+                : filePath + numberFormat;
+
+            int index = 1;
+            string candidate = string.Format(pathFormat, index);
+            while (fileExists(candidate))
+            {
+                index++;
+                candidate = string.Format(pathFormat, index);
+            }
+            return candidate;
+        }
     }
 }

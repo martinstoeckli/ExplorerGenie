@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
 using System.Windows.Forms;
+using ExplorerGenieShared;
 
 namespace ExplorerGenieCmd
 {
@@ -28,7 +29,7 @@ namespace ExplorerGenieCmd
             string symbolicLinkDirectory = Path.Combine(clickedDirectory, directoryName);
             try
             {
-                WinApi.CreateSymbolicLink(symbolicLinkDirectory, linkTargetDirectory, WinApi.SYMBOLIC_LINK_FLAG.Directory);
+                Win32Api.CreateSymbolicLink(symbolicLinkDirectory, linkTargetDirectory, Win32Api.SYMBOLIC_LINK_FLAG.Directory);
             }
             catch (Win32Exception ex)
             {

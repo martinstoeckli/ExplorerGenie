@@ -17,6 +17,7 @@
         <Color x:Key="GridAlternatingBackgroundColor">AliceBlue</Color>
         <SolidColorBrush x:Key="GridAlternatingBackgroundBrush" Color="{StaticResource GridAlternatingBackgroundColor}" />
         <BooleanToVisibilityConverter x:Key="BoolToVisibility" />
+        <vm:InverseBooleanToVisibilityConverter x:Key="InverseBoolToVisibility" />
         <ImageSource x:Key="imgsrcLogo">/Resources/explorergenie.png</ImageSource>
         <DrawingImage x:Key="imgsrcOpenInExplorer">
             <DrawingImage.Drawing>
@@ -72,11 +73,47 @@
                 </DrawingGroup>
             </DrawingImage.Drawing>
         </DrawingImage>
+        <DrawingImage x:Key="imgsrcFile">
+            <DrawingImage.Drawing>
+                <DrawingGroup>
+                    <DrawingGroup.Children>
+                        <GeometryDrawing Brush="LightBlue" Geometry="M13,9V3.5L18.5,9M6,2C4.89,2 4,2.89 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2H6Z" />
+                    </DrawingGroup.Children>
+                </DrawingGroup>
+            </DrawingImage.Drawing>
+        </DrawingImage>
+        <DrawingImage x:Key="imgsrcFolder">
+            <DrawingImage.Drawing>
+                <DrawingGroup>
+                    <DrawingGroup.Children>
+                        <GeometryDrawing Brush="#fde17d" Geometry="M10,4H4C2.89,4 2,4.89 2,6V18A2,2 0 0,0 4,20H20A2,2 0 0,0 22,18V8C22,6.89 21.1,6 20,6H12L10,4Z" />
+                    </DrawingGroup.Children>
+                </DrawingGroup>
+            </DrawingImage.Drawing>
+        </DrawingImage>
+        <DrawingImage x:Key="imgsrcFileHidden">
+            <DrawingImage.Drawing>
+                <DrawingGroup>
+                    <DrawingGroup.Children>
+                        <GeometryDrawing Brush="#8ac8db" Geometry="M13,9H14V11H11V7H13V9M18.5,9L16.38,6.88L17.63,5.63L20,8V10H18V11H15V9H18.5M13,3.5V2H12V4H13V6H11V4H9V2H8V4H6V5H4V4C4,2.89 4.89,2 6,2H14L16.36,4.36L15.11,5.61L13,3.5M20,20A2,2 0 0,1 18,22H16V20H18V19H20V20M18,15H20V18H18V15M12,22V20H15V22H12M8,22V20H11V22H8M6,22C4.89,22 4,21.1 4,20V18H6V20H7V22H6M4,14H6V17H4V14M4,10H6V13H4V10M18,11H20V14H18V11M4,6H6V9H4V6Z" />
+                    </DrawingGroup.Children>
+                </DrawingGroup>
+            </DrawingImage.Drawing>
+        </DrawingImage>
         <DrawingImage x:Key="imgsrcInfo">
             <DrawingImage.Drawing>
                 <DrawingGroup>
                     <DrawingGroup.Children>
                         <GeometryDrawing Brush="#009900" Geometry="M13,9H11V7H13M13,17H11V11H13M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2Z" />
+                    </DrawingGroup.Children>
+                </DrawingGroup>
+            </DrawingImage.Drawing>
+        </DrawingImage>
+        <DrawingImage x:Key="imgsrcSave">
+            <DrawingImage.Drawing>
+                <DrawingGroup>
+                    <DrawingGroup.Children>
+                        <GeometryDrawing Brush="#007fff" Geometry="M15,9H5V5H15M12,19A3,3 0 0,1 9,16A3,3 0 0,1 12,13A3,3 0 0,1 15,16A3,3 0 0,1 12,19M17,3H5C3.89,3 3,3.9 3,5V19A2,2 0 0,0 5,21H19A2,2 0 0,0 21,19V7L17,3Z" />
                     </DrawingGroup.Children>
                 </DrawingGroup>
             </DrawingImage.Drawing>
@@ -96,6 +133,16 @@
         <Style TargetType="TextBlock" x:Key="Info">
             <Setter Property="Foreground" Value="DarkGreen"/>
             <Setter Property="FontSize" Value="11"/>
+        </Style>
+        <Style TargetType="TextBox" x:Key="TransparentTextBox">
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Background" Value="Transparent"/>
+        </Style>
+        <Style TargetType="Border" x:Key="Badge">
+            <Setter Property="Background" Value="#007fff"/>
+            <Setter Property="CornerRadius" Value="5"/>
+            <Setter Property="Padding" Value="6,0,6,0"/>
+            <Setter Property="TextBlock.Foreground" Value="White"/>
         </Style>
     </Window.Resources>
 
@@ -297,7 +344,8 @@
                                     <DataGridTemplateColumn Width="32">
                                         <DataGridTemplateColumn.CellTemplate>
                                             <DataTemplate>
-                                                <Button Command="{Binding Path=DataContext.CopyHashToClipboardCommand, RelativeSource={RelativeSource AncestorType={x:Type DataGrid}}}" CommandParameter="{Binding}" Margin="4,0,4,0" Style="{StaticResource ToolButton}">
+                                                <Button Command="{Binding Path=DataContext.CopyHashToClipboardCommand, RelativeSource={RelativeSource AncestorType={x:Type DataGrid}}}" CommandParameter="{Binding}" Margin="4,0,4,0" Style="{StaticResource ToolButton}"
+                                                        ToolTip="{Binding Path=DataContext.Language[guiCopy], RelativeSource={RelativeSource AncestorType={x:Type Window}}}">
                                                     <Image Source="{StaticResource imgsrcCopy}" Width="12" Height="18"/>
                                                 </Button>
                                             </DataTemplate>
@@ -382,6 +430,68 @@
                         <Image Grid.Column="0" Source="{StaticResource imgsrcInfo}" Margin="0,4,6,0" Height="14" VerticalAlignment="Top"/>
                         <TextBlock Grid.Column="1" Text="{Binding Language[guiNtfsSymbolicLinkInfo]}" TextWrapping="Wrap" Style="{StaticResource Info }"/>
                     </Grid>
+
+                    <GroupBox Grid.Row="3" Header="{Binding Language[guiNtfsAds]}" Margin="0,6,0,0" Padding="6">
+                        <ScrollViewer VerticalScrollBarVisibility="Auto">
+                            <ItemsControl ItemsSource="{Binding AlternativeDataStreams}" BorderThickness="0">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate DataType="{x:Type vm:AdsViewModel}">
+                                        <Border Background="AliceBlue" Margin="0,0,0,0" Padding="2,1,2,1">
+                                            <StackPanel Orientation="Vertical">
+                                                <StackPanel Orientation="Horizontal" Margin="0,4,0,6">
+                                                    <Image Source="{StaticResource imgsrcFolder}" Width="16" Height="16" Margin="2,0,8,0" Visibility="{Binding IsDirectory, Converter={StaticResource BoolToVisibility}}"/>
+                                                    <Image Source="{StaticResource imgsrcFile}" Width="16" Height="16" Margin="2,0,8,0" Visibility="{Binding IsDirectory, Converter={StaticResource InverseBoolToVisibility}}"/>
+                                                    <TextBox Text="{Binding FileOrDirectoryName, Mode=OneTime}" Margin="0,0,16,0" IsReadOnly="True" Style="{StaticResource TransparentTextBox}"/>
+                                                    <Border>
+                                                        <TextBlock Text="{Binding StreamCountBadge}" />
+                                                        <Border.Style>
+                                                            <Style TargetType="Border" BasedOn="{StaticResource Badge}">
+                                                                <Style.Triggers>
+                                                                    <DataTrigger Binding="{Binding HasStreams}" Value="true">
+                                                                        <Setter Property="Background" Value="#d22d2d"/>
+                                                                    </DataTrigger>
+                                                                </Style.Triggers>
+                                                            </Style>
+                                                        </Border.Style>
+                                                    </Border>
+                                                </StackPanel>
+
+                                                <ItemsControl ItemsSource="{Binding Streams}" BorderThickness="0">
+                                                    <ItemsControl.ItemTemplate>
+                                                        <DataTemplate DataType="{x:Type vm:AdsStreamViewModel}">
+                                                            <Grid Margin="0,0,0,4">
+                                                                <Grid.ColumnDefinitions>
+                                                                    <ColumnDefinition Width="36"/>
+                                                                    <ColumnDefinition Width="*"/>
+                                                                    <ColumnDefinition Width="20"/>
+                                                                    <ColumnDefinition Width="20"/>
+                                                                </Grid.ColumnDefinitions>
+                                                                <Image Grid.Column="0" Source="{StaticResource imgsrcFileHidden}" Width="16" Height="16" Margin="2,0,8,0" HorizontalAlignment="Right"/>
+                                                                <TextBox Grid.Column="1" Text="{Binding StreamDescription, Mode=OneTime}" IsReadOnly="True" Style="{StaticResource TransparentTextBox}"/>
+                                                                <Button Grid.Column="2" Command="{Binding ExportStreamCommand}" Margin="2,0,0,0" Style="{StaticResource ToolButton}"
+                                                                    ToolTip="{Binding Path=DataContext.Language[guiNtfsAdsExport], RelativeSource={RelativeSource AncestorType={x:Type Window}}}">
+                                                                    <Image Source="{StaticResource imgsrcSave}" Margin="1" Width="14" Height="14"/>
+                                                                </Button>
+                                                                <Button Grid.Column="3" Command="{Binding DeleteStreamCommand}" Margin="0,0,4,0" Style="{StaticResource ToolButton}"
+                                                                    ToolTip="{Binding Path=DataContext.Language[guiNtfsAdsDelete], RelativeSource={RelativeSource AncestorType={x:Type Window}}}">
+                                                                    <Image Source="{StaticResource imgsrcDelete}" Margin="1" Width="14" Height="14"/>
+                                                                </Button>
+                                                            </Grid>
+                                                        </DataTemplate>
+                                                    </ItemsControl.ItemTemplate>
+                                                </ItemsControl>
+                                            </StackPanel>
+                                        </Border>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                                <ItemsControl.ItemContainerStyle>
+                                    <Style>
+                                        <Setter Property="FrameworkElement.Margin" Value="0,1,0,1"/>
+                                    </Style>
+                                </ItemsControl.ItemContainerStyle>
+                            </ItemsControl>
+                        </ScrollViewer>
+                    </GroupBox>
                 </Grid>
             </TabItem>
 
