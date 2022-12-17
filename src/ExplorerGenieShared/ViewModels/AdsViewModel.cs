@@ -7,8 +7,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 using ExplorerGenieShared.Services;
@@ -36,20 +34,33 @@ namespace ExplorerGenieShared.ViewModels
 
         public string FileOrDirectoryName { get; }
 
+        /// <summary>
+        /// Gets a list of available streams for this file.
+        /// </summary>
         public List<AdsStreamViewModel> Streams
         {
             get 
-            { 
+            {
                 if (_streams == null)
                 {
-                    _streams = new List<AdsStreamViewModel>();
-                    var streamInfos = AlternativeDataStream.EnumerateStreams(FullPath);
-                    _streams.AddRange(streamInfos.Select(streamInfo => new AdsStreamViewModel(streamInfo, Language)));
+                    RefreshStreams();
                 }
                 return _streams; 
             }
+
+            private set
+            {
+                if (SetProperty(ref _streams, value, false))
+                {
+                    this.OnPropertyChanged(nameof(HasStreams));
+                    this.OnPropertyChanged(nameof(StreamCountBadge));
+                }
+            }
         }
 
+        /// <summary>
+        /// Gets a text like "1 stream" which shows how many streams are available.
+        /// </summary>
         public string StreamCountBadge
         {
             get
@@ -59,9 +70,19 @@ namespace ExplorerGenieShared.ViewModels
             }
         }
 
+        /// <summary>
+        /// Gets a value indicating whether there are streams in this file or not.
+        /// </summary>
         public bool HasStreams
         {
             get { return Streams.Count > 0; }
+        }
+
+        public void RefreshStreams()
+        {
+            var streamInfos = AlternativeDataStream.EnumerateStreams(FullPath);
+            var streamViewModels = streamInfos.Select(streamInfo => new AdsStreamViewModel(streamInfo, RefreshStreams, Language)).ToList();
+            Streams = streamViewModels.ToList();
         }
     }
 
@@ -71,13 +92,15 @@ namespace ExplorerGenieShared.ViewModels
     public class AdsStreamViewModel : ViewModelBaseWithLanguage
     {
         private FileStreamInfo _model;
+        private Action _refreshStreams;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="AdsStreamViewModel"/> class.
         /// </summary>
-        public AdsStreamViewModel(FileStreamInfo model, ILanguageService language)
+        public AdsStreamViewModel(FileStreamInfo model, Action refreshStreams, ILanguageService language)
         {
             _model = model;
+            _refreshStreams = refreshStreams;
             Language = language;
             ExportStreamCommand = new RelayCommand<string>(ExportStream);
             DeleteStreamCommand = new RelayCommand<string>(DeleteStream);
@@ -110,6 +133,10 @@ namespace ExplorerGenieShared.ViewModels
             try
             {
                 await AlternativeDataStream.SaveStreamAs(_model.FullPath, _model.StreamName, targetFileName);
+                MessageBox.Show(
+                    Language.LoadTextFmt("guiNtfsAdsExportSuccess", Path.GetFileName(targetFileName)), 
+                    Language["guiNtfsAdsExport"], 
+                    MessageBoxButton.OK);
             }
             catch (Exception ex)
             {
@@ -126,7 +153,16 @@ namespace ExplorerGenieShared.ViewModels
         {
             try
             {
-                AlternativeDataStream.DeleteStream(_model.FullPath, _model.StreamName);
+                if (MessageBox.Show(
+                    Language.LoadTextFmt("guiNtfsAdsDeleteConfirm", _model.StreamName, Path.GetFileName(_model.FullPath)),
+                    Language["guiNtfsAdsDelete"],
+                    MessageBoxButton.YesNoCancel,
+                    MessageBoxImage.Question) == MessageBoxResult.Yes)
+                {
+                    AlternativeDataStream.DeleteStream(_model.FullPath, _model.StreamName);
+                    _refreshStreams();
+                    MessageBox.Show(Language["guiNtfsAdsDeleteSuccess"], Language["guiNtfsAdsDelete"], MessageBoxButton.OK);
+                }
             }
             catch (Exception ex)
             {

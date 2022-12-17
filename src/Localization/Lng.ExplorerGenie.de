@@ -51,9 +51,9 @@ errNtfsSymbolicLinkRecursive Kann keinen "Symbolic link" erstellen der zu einem 
 // Do not translate "data stream"
 guiNtfsAds Alternative data streams (ADS)
 guiNtfsAdsExport Exportiere Stream in Datei
-guiNtfsAdsExportSuccess Der Stream wurde erfolgreich in die Datei {0} exportiert.
+guiNtfsAdsExportSuccess Der Stream wurde erfolgreich in die Datei "{0}" exportiert.
 guiNtfsAdsDelete Lösche Stream
-guiNtfsAdsDeleteConfirm Sind Sie sicher dass sie den Stream {0} von Datei {1} löschen wollen?
+guiNtfsAdsDeleteConfirm Sind Sie sicher dass sie den Stream "{0}" aus Datei "{1}" löschen wollen?
 guiNtfsAdsDeleteSuccess Der Stream wurde erfolgreich gelöscht.
 
 guiSystemFolders Systemverzeichnisse
