@@ -42,6 +42,7 @@ guiAlgorithm Algoritmo
 guiHashVerification Verifica un hash digitandolo o incollandolo nella casella di testo.
 
 guiNtfs Filesystem NTFS
+guiNtfsDirectoryExists The directory {0} already exists.
 guiNtfsNewFolderShowMenu Visualizza il menu contestuale "Nuova cartella".
 guiNtfsSymbolicLinkShowMenu Visualizza il menu contestuale per creare il "collegamento simbolico".
 guiNtfsSymbolicLinkInfo Un "Collegamento simbolico" punta ad un altro file o un'altra cartella senza creare una copia. L'eliminazione di un "Collegamento simbolico" non cancella il file o la cartella al(la) quale si riferisce.

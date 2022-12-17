@@ -42,6 +42,7 @@ guiAlgorithm Algorithmus
 guiHashVerification Verifiziere Hashwert durch Eintippen oder Einfügen in die Textbox.
 
 guiNtfs NTFS Dateisystem
+guiNtfsDirectoryExists Das Verzeichnis {0} existiert bereits.
 guiNtfsNewFolderShowMenu Kontextmenu "Neuer Ordner" anzeigen.
 guiNtfsSymbolicLinkShowMenu Kontextmenu zum Erstellen von "Symbolic link" anzeigen.
 guiNtfsSymbolicLinkInfo Ein "Symbolic link" zeigt auf eine anderes Verzeichnis/Datei ohne davon eine Kopie zu machen. Das Löschen des "Symbolic link" löscht nicht das referenzierte Verzeichnis/Datei.

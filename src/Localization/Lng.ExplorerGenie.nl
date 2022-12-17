@@ -42,6 +42,7 @@ guiAlgorithm Algoritme
 guiHashVerification Controleer een hash door deze in het tekstvak te typen of te plakken.
 
 guiNtfs NTFS file system
+guiNtfsDirectoryExists The directory {0} already exists.
 guiNtfsNewFolderShowMenu Show context menu "New folder".
 guiNtfsSymbolicLinkShowMenu Show context menu to create "symbolic link".
 guiNtfsSymbolicLinkInfo A "Symbolic link" points to another directory/file without making a copy. Deleting a "Symbolic link" doesn't delete the referenced directory/file.

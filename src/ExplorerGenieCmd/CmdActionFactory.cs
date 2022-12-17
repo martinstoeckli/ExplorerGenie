@@ -4,6 +4,7 @@
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 using System;
+using ExplorerGenieShared;
 using ExplorerGenieShared.Services;
 
 namespace ExplorerGenieCmd
@@ -48,13 +49,9 @@ namespace ExplorerGenieCmd
             {
                 return new CmdActionNewFolder();
             }
-            else if (commandLineAction.StartsWith("-NewSymbolicLinkElevated", StringComparison.OrdinalIgnoreCase))
-            {
-                return new CmdActionSymbolicLinkElevated();
-            }
             else if (commandLineAction.StartsWith("-NewSymbolicLink", StringComparison.OrdinalIgnoreCase))
             {
-                return new CmdActionSymbolicLink();
+                return new CmdActionSymbolicLink(new CommandPromptRunner());
             }
             else
             {

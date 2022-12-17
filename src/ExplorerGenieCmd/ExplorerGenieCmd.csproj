@@ -65,7 +65,6 @@
     <Compile Include="CmdActionNewFolder.cs" />
     <Compile Include="CmdActionOpenTool.cs" />
     <Compile Include="CmdActionSymbolicLink.cs" />
-    <Compile Include="CmdActionSymbolicLinkElevated.cs" />
     <Compile Include="ICmdAction.cs" />
     <Compile Include="CmdActionCopyEmail.cs" />
     <Compile Include="CmdActionCopyFile.cs" />

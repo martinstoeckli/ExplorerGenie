@@ -5,9 +5,10 @@
 
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
+using System.ComponentModel;
 using System.IO;
 using System.Windows.Forms;
+using ExplorerGenieShared;
 
 namespace ExplorerGenieCmd
 {
@@ -17,7 +18,28 @@ namespace ExplorerGenieCmd
     /// </summary>
     internal class CmdActionSymbolicLink : CmdActionBase, ICmdAction
     {
-        /// <inheritdoc/>
+        private ICommandPromptRunner _commandPrompt;
+
+        /// <summary>
+        /// Initialize a new instance of the <see cref="CmdActionSymbolicLink"/> class.
+        /// </summary>
+        /// <param name="commandPrompt"></param>
+        public CmdActionSymbolicLink(ICommandPromptRunner commandPrompt)
+        {
+            _commandPrompt = commandPrompt;
+        }
+
+        /// <summary>
+        /// Executes the action.
+        /// </summary>
+        /// <remarks>
+        /// Calling the Windows function "CreateSymbolicLink()" would be the easiest solution, but
+        /// unfortunately it runs only with elevated admin provileges. Since apps in the store are
+        /// not allowed to ask for elevation (allowElevation capability), the only way to create a
+        /// symbolic link is to open an elevated command prompt and call the "mklink" command.
+        /// </remarks>
+        /// <param name="filenames">List of filenames passed from the ExplorerGenieExt menu
+        /// extension.</param>
         public void Execute(List<string> filenames)
         {
             if (!TryGetDirectoryPath(filenames, out string clickedDirectory))
@@ -38,26 +60,25 @@ namespace ExplorerGenieCmd
                     return;
                 }
 
-                string commandlineArguments = string.Format(
-                    @"-NewSymbolicLinkElevated ""{0}"" ""{1}"" ""{2}""",
-                    clickedDirectory, clickedDirectory, linkTargetDirectory);
-
-                // Restart application elevated with admin privileges
-                ProcessStartInfo startInfo = new ProcessStartInfo
+                string symbolicLinkDirectory = Path.Combine(clickedDirectory, Path.GetFileName(linkTargetDirectory));
+                if (Directory.Exists(symbolicLinkDirectory))
                 {
-                    FileName = Application.ExecutablePath,
-                    Arguments = commandlineArguments,
-                    UseShellExecute = true,
-                    Verb = "runas",
-                    WindowStyle = ProcessWindowStyle.Hidden
-                };
+                    MessageBox.Show(Language.LoadTextFmt("guiNtfsDirectoryExists", symbolicLinkDirectory), Language["menuSymbolicLink"], MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                    return;
+                }
+
+                string commandlineArguments = string.Format(
+                    @"mklink /D ""{0}"" ""{1}""",
+                    symbolicLinkDirectory,
+                    linkTargetDirectory);
+
                 try
                 {
-                    Process.Start(startInfo);
+                    _commandPrompt.Run(commandlineArguments, true);
                 }
-                catch (Exception)
+                catch (Exception ex)
                 {
-                    // Probably not elevated by the user, the called action is responsible to inform the user.
+                    MessageBox.Show(ex.Message, Language["menuSymbolicLink"], MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                 }
             }
         }

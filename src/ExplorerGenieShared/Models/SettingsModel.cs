@@ -27,7 +27,7 @@ namespace ExplorerGenieShared.Models
             GotoExplorer = true;
             HashShowMenu = true;
             NewFolderShowMenu = false;
-            SymbolicLinkShowMenu = true;
+            SymbolicLinkShowMenu = false; // already available in Windows11
         }
 
         /// <summary>
