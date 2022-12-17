@@ -10,8 +10,8 @@ submenuGotoPowershellAdmin Apri in Power Shell come ammnistratore
 submenuGotoExplorer Apri in Esplora Risorse
 submenuGotoExplorerAdmin Apri in Esplora Risorse come amministratore
 menuHash Calcola hash
-menuNewFolder New folder
-menuSymbolicLink New symbolic link
+menuNewFolder Nuova cartella
+menuSymbolicLink Nuovo collegamento simbolico
 
 guiCopy Copia
 guiPaste Incolla
@@ -19,7 +19,7 @@ guiClose Chiudi
 guiShowMenu Visualizza Menu contestuale
 guiPreview Anteprima
 guiInfo Informazioni
-guiRestart After a new installation, a restart of Windows may be necessary, to make the context menu visible.
+guiRestart Dopo una nuova installazione potrebbe essere necessario un riavvio di Windows affinche' il menu contestuale sia visibile.
 
 guiAsOriginalPath Percorso Originale
 guiAsUri Come URI (Uniform Resource Identifier)
@@ -41,20 +41,20 @@ guiHashValue Valore Hash
 guiAlgorithm Algoritmo
 guiHashVerification Verifica un hash digitandolo o incollandolo nella casella di testo.
 
-guiNtfs NTFS file system
-guiNtfsNewFolderShowMenu Show context menu "New folder".
-guiNtfsSymbolicLinkShowMenu Show context menu to create "symbolic link".
-guiNtfsSymbolicLinkInfo A "Symbolic link" points to another directory/file without making a copy. Deleting a "Symbolic link" doesn't delete the referenced directory/file.
-guiNtfsSymbolicLinkPickFolder Choose the directory which should be added as symbolic link.
-errNtfsSymbolicLinkRecursive Cannot create a "symbolic link" which would lead to a recursive path.
+guiNtfs Filesystem NTFS
+guiNtfsNewFolderShowMenu Visualizza il menu contestuale "Nuova cartella".
+guiNtfsSymbolicLinkShowMenu Visualizza il menu contestuale per creare il "collegamento simbolico".
+guiNtfsSymbolicLinkInfo Un "Collegamento simbolico" punta ad un altro file o un'altra cartella senza creare una copia. L'eliminazione di un "Collegamento simbolico" non cancella il file o la cartella al(la) quale si riferisce.
+guiNtfsSymbolicLinkPickFolder Selezionare la cartella che dovrebbe essere aggiunta come collegamento simbolico.
+errNtfsSymbolicLinkRecursive Impossibile creare un "collegamento simbolico" che potrebbe portare ad un percorso ricorsivo.
 
 // Do not translate "data stream"
-guiNtfsAds Alternative data streams (ADS)
-guiNtfsAdsExport Export stream to file
-guiNtfsAdsExportSuccess The stream was successfully exported to file "{0}".
-guiNtfsAdsDelete Delete stream
-guiNtfsAdsDeleteConfirm Are you sure you want to delete the stream "{0}" of file "{1}"?
-guiNtfsAdsDeleteSuccess The stream was successfully deleted.
+guiNtfsAds Data stream alternativo (ADS)
+guiNtfsAdsExport Esporta lo stream in un file
+guiNtfsAdsExportSuccess Lo stream e' stato esportato con successo nel file {0}.
+guiNtfsAdsDelete Elimina lo stream
+guiNtfsAdsDeleteConfirm Siete sicuri di voler eliminare lo stream {0} del file {1}?
+guiNtfsAdsDeleteSuccess Lo stream e' stato eliminato con successo.
 
 guiSystemFolders Cartelle di sistema
 guiGotoSystemFolder Vai alle cartelle di sistema
